@@ -3,8 +3,17 @@ branches:
   only:
   - staging
   
-node_js:
-  - stable
+language: android
+
+jdk: oraclejdk8
+
+android:
+  components:
+    - platform-tools
+    - build-tools-23.0.1
+    - android-23
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-19
 
 install:
     - wget -O ./nativescript.tgz "https://s3.amazonaws.com/nativescript-ci/build_result/nativescript.tgz"
