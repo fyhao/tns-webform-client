@@ -12,3 +12,8 @@ install:
     - tns usage-reporting disable
     - tns error-reporting disable
     - npm install
+    
+    
+script:
+    - npm run tslint
+    - tns build android
