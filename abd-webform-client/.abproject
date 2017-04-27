@@ -1,0 +1,28 @@
+{
+  "ProjectName": "abd-webform-client",
+  "ProjectGuid": "fd6c5a4a-8d15-47af-a148-047aa067f403",
+  "projectVersion": 1,
+  "AppIdentifier": "com.telerik.abdwebformclient",
+  "DisplayName": "abd-webform-client",
+  "Author": "",
+  "Description": "abd-webform-client",
+  "BundleVersion": "1.0",
+  "AndroidVersionCode": "1",
+  "iOSDeviceFamily": [
+    "1",
+    "2"
+  ],
+  "iOSBackgroundMode": [],
+  "ProjectTypeGuids": "{F0A65104-D4F4-4012-B799-F612D75820F6}",
+  "AndroidPermissions": [
+    "android.permission.INTERNET"
+  ],
+  "DeviceOrientations": [
+    "Portrait",
+    "Landscape"
+  ],
+  "AndroidHardwareAcceleration": "true",
+  "iOSStatusBarStyle": "Default",
+  "FrameworkVersion": "2.5.0",
+  "Framework": "NativeScript"
+}
