@@ -7,7 +7,6 @@ node_js:
   - stable
 
 install:
-    - nvm install $NODE_VERSION
     - wget -O ./nativescript.tgz "https://s3.amazonaws.com/nativescript-ci/build_result/nativescript.tgz"
     - npm install -g nativescript.tgz --ignore-scripts
     - tns usage-reporting disable
