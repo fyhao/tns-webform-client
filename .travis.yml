@@ -10,11 +10,10 @@ branches:
 env:
   - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
   global:
-  - APP_NAME="tns_webform"
-  - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
-  - PROFILE_NAME="tnswebformprofile"
-  
-  
+    - APP_NAME="tns_webform"
+    - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
+    - PROFILE_NAME="tnswebformprofile"
+
 script:
   - tns build ios --release --for-device
 
