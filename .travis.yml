@@ -15,7 +15,9 @@ script:
   - export ANDROID_HOME=/usr/local/share/android-sdk
   - export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
   - npm run build
-  - npm i .. && tns build android && tns build ios
+  - npm i .. 
+  - tns build android
+  - tns build ios
   
 before_install:
   - export ANDROID_HOME=/usr/local/share/android-sdk
