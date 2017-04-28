@@ -9,6 +9,8 @@ branches:
   
 env:
   - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
+
+env:
   global:
     - APP_NAME="tns_webform"
     - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
