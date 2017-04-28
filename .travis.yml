@@ -25,7 +25,8 @@ before_script:
 - openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/tnswebformprofile.mobileprovision.enc -d -a -out scripts/profile/tnswebformprofile.mobileprovision
 - openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
 - openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
-
+- ./scripts/add-key.sh
+- ./scripts/update-bundle.sh
   
 before_install:
   - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
@@ -48,3 +49,10 @@ before_install:
   - xcpretty --version
   - xcodebuild -version
   - xcodebuild -showsdks
+
+  
+after_success:
+- ./scripts/sign-and-upload.sh
+after_script:
+- ./scripts/remove-key.sh
+
