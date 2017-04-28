@@ -7,7 +7,6 @@ branches:
   - staging
   - master
   
-  
 env:
   - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
   global:
