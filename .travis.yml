@@ -46,4 +46,3 @@ before_install:
   - xcodebuild -version
   - xcodebuild -showsdks
   - echo $ANDROID_HOME
-  - npm run clean
