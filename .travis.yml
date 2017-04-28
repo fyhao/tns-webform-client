@@ -10,9 +10,21 @@ branches:
   
 env:
   - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
-
+  global:
+  - APP_NAME="tns_webform"
+  - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
+  - PROFILE_NAME="tnswebformprofile"
+  
+  
 script:
-  - tns build ios --release
+  - tns build ios --release --for-device
+
+
+before_script:
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/tnswebformprofile.mobileprovision.enc -d -a -out scripts/profile/tnswebformprofile.mobileprovision
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
+
   
 before_install:
   - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
