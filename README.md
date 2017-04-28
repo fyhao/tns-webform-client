@@ -7,3 +7,8 @@ Staging: Dev to merge code to staging and should trigger automated test
 Master: Subsequently Staging to merge code back to master
 
 
+Reference:
+https://www.objc.io/issues/6-build-tools/travis-ci/
+http://stackoverflow.com/questions/16563364/how-can-i-add-private-key-to-the-distribution-certificate
+https://gist.github.com/johanneswuerbach/5559514
+https://medium.com/@atsakiridis/continuous-deployment-for-ios-using-travis-ci-55dcea342d9
