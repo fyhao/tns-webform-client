@@ -41,6 +41,7 @@
 		FEA162C209A141E395C0B244 /* icon-83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BBA3F91BB5404CECA34CBA5D /* icon-83.5@2x.png */; };
 		0DB435ED28E3407FB93C6CB6 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D90DCE9395C341CEBAC32E64 /* icon.png */; };
 		35D5836FC1B7464EAFF34DF4 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8006D201978948C490BD913A /* icon@2x.png */; };
+		5E3CFA9653774787A1FF3FD9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7821124B4D4A4423959A1279 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -99,6 +100,7 @@
 		BBA3F91BB5404CECA34CBA5D /* icon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-83.5@2x.png"; path = "tnswebformclient/Resources/icon-83.5@2x.png"; sourceTree = "<group>"; };
 		D90DCE9395C341CEBAC32E64 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = "tnswebformclient/Resources/icon.png"; sourceTree = "<group>"; };
 		8006D201978948C490BD913A /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon@2x.png"; path = "tnswebformclient/Resources/icon@2x.png"; sourceTree = "<group>"; };
+		7821124B4D4A4423959A1279 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = "tnswebformclient/Resources/LaunchScreen.xib"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +198,7 @@
 				BBA3F91BB5404CECA34CBA5D /* icon-83.5@2x.png */,
 				D90DCE9395C341CEBAC32E64 /* icon.png */,
 				8006D201978948C490BD913A /* icon@2x.png */,
+				7821124B4D4A4423959A1279 /* LaunchScreen.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				FEA162C209A141E395C0B244 /* icon-83.5@2x.png in Resources */,
 				0DB435ED28E3407FB93C6CB6 /* icon.png in Resources */,
 				35D5836FC1B7464EAFF34DF4 /* icon@2x.png in Resources */,
+				5E3CFA9653774787A1FF3FD9 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
