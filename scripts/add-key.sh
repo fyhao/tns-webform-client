@@ -31,6 +31,3 @@ echo "DEBUG add-key.sh check mobileprovision"
 echo "./scripts/profile/$PROFILE_NAME.mobileprovision"
 echo "DEBUG add-key.sh show Provisioning Profiles folder"
 ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-
-echo "DEBUG add-key.sh check tns prepare ios --provision"
-tns prepare ios --provision
