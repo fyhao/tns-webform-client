@@ -16,7 +16,6 @@ env:
     - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
     - PROFILE_NAME="tnswebformprofile"
     - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
-    - TNS_CMD = "nativescript-cli/bin/tns"
 
 
 
@@ -57,7 +56,7 @@ before_install:
   # Show environment invo
   - node --version
   - npm --version
-  - $TNS_CMD --version
+  - nativescript-cli/bin/tns --version
 
  
 
