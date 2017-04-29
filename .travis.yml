@@ -64,7 +64,7 @@ before_install:
   - xcodebuild -version
   - xcodebuild -showsdks
 
- after_success:
+after_success:
 - ./scripts/update-bundle.sh
 - ./scripts/sign-and-upload.sh
 after_script:
