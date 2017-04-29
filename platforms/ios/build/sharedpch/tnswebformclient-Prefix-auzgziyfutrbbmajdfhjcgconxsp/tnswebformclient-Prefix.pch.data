@@ -6,9 +6,9 @@ Environment  LANG=en_US.US-ASCII PATH=/Applications/Xcode.app/Contents/Developer
 BuilderIdent ProcessPCH\ /Users/user903758/git/tns-webform-client/platforms/ios/build/sharedpch/tnswebformclient-Prefix-auzgziyfutrbbmajdfhjcgconxsp/tnswebformclient-Prefix.pch.pch\ tnswebformclient/tnswebformclient-Prefix.pch\ normal\ x86_64\ objective-c\ com.apple.compilers.llvm.clang.1_0.compiler
 InputFile    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.2.sdk/SDKSettings.plist 0 1480627873 1868 33204
 InputFile    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.2.sdk/System/Library/CoreServices/SystemVersion.plist 0 1480571274 414 33060
-InputFile    /Users/user903758/git/tns-webform-client/platforms/ios/tnswebformclient/tnswebformclient-Prefix.pch 0 1493306298 236 33188
+InputFile    /Users/user903758/git/tns-webform-client/platforms/ios/tnswebformclient/tnswebformclient-Prefix.pch 0 1493438292 236 33188
 InputFile    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.2.sdk/SDKSettings.plist 0 1480627873 1868 33204
-InputFile    /Users/user903758/git/tns-webform-client/platforms/ios/tnswebformclient/tnswebformclient-Prefix.pch 0 1493306298 236 33188
+InputFile    /Users/user903758/git/tns-webform-client/platforms/ios/tnswebformclient/tnswebformclient-Prefix.pch 0 1493438292 236 33188
 InputFile    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.2.sdk/usr/include/Availability.h 0 1477084411 16062 33188
 InputFile    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.2.sdk/usr/include/AvailabilityInternal.h 0 1477084085 2392756 33188
 InputFile    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator10.2.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.h 0 1474672216 6943 33188

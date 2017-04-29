@@ -86,7 +86,7 @@
 		</data>
 		<key>Assets.car</key>
 		<data>
-		RgBI/r0yNXa2jQGmnskkNIZ7Tk0=
+		3jIz4Sy8Tzr22dT6g9NULw+rjeI=
 		</data>
 		<key>Default-568h@2x.png</key>
 		<data>
@@ -194,7 +194,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		6LYV0fltqXTq9iA4oFG380oDqLY=
+		nN01MQJUeWZZF5Xhxbg+5zC/lqE=
 		</data>
 		<key>LaunchImage-568h@2x.png</key>
 		<data>
@@ -260,9 +260,17 @@
 		<data>
 		5FwPyf/KfAgLkhx5lgXp74beCKw=
 		</data>
-		<key>LaunchScreen.nib</key>
+		<key>LaunchScreen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib</key>
 		<data>
-		ywoJ8Szmrfl7c6M3LuxFbRWX2ks=
+		zJczvsOgnb/GSKSjJFSRI5YCllY=
+		</data>
+		<key>LaunchScreen.storyboardc/Info.plist</key>
+		<data>
+		n2t8gsDpfE6XkhG31p7IQJRxTxU=
+		</data>
+		<key>LaunchScreen.storyboardc/UIViewController-01J-lp-oVM.nib</key>
+		<data>
+		2ZthumY/CNhNSL/N90p9hkTk29M=
 		</data>
 		<key>PkgInfo</key>
 		<data>
@@ -1732,6 +1740,10 @@
 		<data>
 		xtAfvBw7qQ6kvIvJaCmhvlkXjrY=
 		</data>
+		<key>build.xcconfig</key>
+		<data>
+		RNL/GAS4TOxSHBwCBUOpAd1PTlk=
+		</data>
 		<key>en.lproj/InfoPlist.strings</key>
 		<dict>
 			<key>hash</key>
@@ -2020,11 +2032,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			RgBI/r0yNXa2jQGmnskkNIZ7Tk0=
+			3jIz4Sy8Tzr22dT6g9NULw+rjeI=
 			</data>
 			<key>hash2</key>
 			<data>
-			0BlQT3pRJrcEyHasJt12L25dlSLCChJTqGgjqZl88qY=
+			QZOXzOQqHY7i/9BmMmVXxn+IZ2TefPJxLpl5ed/34Rc=
 			</data>
 		</dict>
 		<key>Default-568h@2x.png</key>
@@ -2489,15 +2501,37 @@
 			7FhMDIov73IMvT2r+CfasHQVWrA0aSOO2iT/zVNvcUk=
 			</data>
 		</dict>
-		<key>LaunchScreen.nib</key>
+		<key>LaunchScreen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ywoJ8Szmrfl7c6M3LuxFbRWX2ks=
+			zJczvsOgnb/GSKSjJFSRI5YCllY=
 			</data>
 			<key>hash2</key>
 			<data>
-			tQ1cb6pzK3AodmXfaxEIZSaQ7cucSaHLDka9S7qMrzw=
+			MKEmU+FCAgPTSO/koXNsTbg7COdRLfKUdomyfHxdcCs=
+			</data>
+		</dict>
+		<key>LaunchScreen.storyboardc/Info.plist</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			n2t8gsDpfE6XkhG31p7IQJRxTxU=
+			</data>
+			<key>hash2</key>
+			<data>
+			HyVdXMU7Ux4/KalAao30mpWOK/lEPT4gvYN09wf31cg=
+			</data>
+		</dict>
+		<key>LaunchScreen.storyboardc/UIViewController-01J-lp-oVM.nib</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			2ZthumY/CNhNSL/N90p9hkTk29M=
+			</data>
+			<key>hash2</key>
+			<data>
+			72BhfYIVy14RzfrT4y5QjHhSvqqh/zVNL3UgzczR7YQ=
 			</data>
 		</dict>
 		<key>app/LICENSE</key>
@@ -6524,6 +6558,17 @@
 			<key>hash2</key>
 			<data>
 			Gxjvr5iL0DeNQL7YC5Ts5vOqOF2cp0eftykLaF6/RcU=
+			</data>
+		</dict>
+		<key>build.xcconfig</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RNL/GAS4TOxSHBwCBUOpAd1PTlk=
+			</data>
+			<key>hash2</key>
+			<data>
+			qkKr/0jAqSAoWJnaBowLV4nYITPOZtUND1jJ3PDedII=
 			</data>
 		</dict>
 		<key>en.lproj/InfoPlist.strings</key>
