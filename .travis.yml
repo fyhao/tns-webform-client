@@ -1,4 +1,65 @@
-language: node_js
+os: osx
+osx_image: xcode8
+sudo: false
+language: objective-c
+branches:
+  only:
+  - staging
+  - master
+  
+env:
+  - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
 
-node_js:
-  - stable
+env:
+  global:
+    - APP_NAME="tns_webform"
+    - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
+    - PROFILE_NAME="tnswebformprofile"
+    - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
+
+script:
+  - tns build ios --release --for-device
+
+
+before_script:
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/tnswebformprofile.mobileprovision.enc -d -a -out scripts/profile/tnswebformprofile.mobileprovision
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
+- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
+- echo "DEBUG before_script folder"
+- ls -la scripts/certs
+- ls -la scripts/profile
+- chmod +x ./scripts/add-key.sh
+- chmod +x ./scripts/update-bundle.sh
+- chmod +x ./scripts/sign-and-upload.sh
+- chmod +x ./scripts/remove-key.sh
+- ./scripts/add-key.sh
+- ./scripts/update-bundle.sh
+  
+before_install:
+  - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+  - source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
+  - PATH="`npm bin`:`npm bin -g`:$PATH"
+  - brew update > /dev/null;
+ 
+  - npm install -g npm@$NPM_VERSION
+  - npm install -g nativescript@$TNS_VERSION
+  - npm install
+  # CocoaPods
+  - gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  - pod --version
+  - pod setup --silent
+  - pod repo update --silent
+  # Show environment invo
+  - node --version
+  - npm --version
+  - xcpretty --version
+  - xcodebuild -version
+  - xcodebuild -showsdks
+
+  
+after_success:
+- ./scripts/sign-and-upload.sh
+after_script:
+- ./scripts/remove-key.sh
+
