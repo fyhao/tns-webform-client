@@ -42,6 +42,11 @@
 		F0A43A00575E49569E565C79 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = FABD31935946412A9E73A324 /* Default.png */; };
 		F91E375175CD4F2E9B1E2887 /* icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 52B3839C28504A6C8B796CC4 /* icon-72@2x.png */; };
 		FEA162C209A141E395C0B244 /* icon-83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BBA3F91BB5404CECA34CBA5D /* icon-83.5@2x.png */; };
+
+		0DB435ED28E3407FB93C6CB6 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D90DCE9395C341CEBAC32E64 /* icon.png */; };
+		35D5836FC1B7464EAFF34DF4 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8006D201978948C490BD913A /* icon@2x.png */; };
+		5E3CFA9653774787A1FF3FD9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7821124B4D4A4423959A1279 /* LaunchScreen.xib */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -99,7 +104,24 @@
 		D16654C01276445CA371E842 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "tnswebformclient/Resources/Icon-Small.png"; sourceTree = "<group>"; };
 		D90DCE9395C341CEBAC32E64 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = tnswebformclient/Resources/icon.png; sourceTree = "<group>"; };
 		F3B00ECF92EA4F43B91269A4 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "tnswebformclient/Resources/Icon-Small@2x.png"; sourceTree = "<group>"; };
+
+		8A8E1ADB23F644B686B6C227 /* icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-40.png"; path = "tnswebformclient/Resources/icon-40.png"; sourceTree = "<group>"; };
+		726BE0FDE6EC4351865D047C /* icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-40@2x.png"; path = "tnswebformclient/Resources/icon-40@2x.png"; sourceTree = "<group>"; };
+		697E4C2C91774B1FB756CA18 /* icon-40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-40@3x.png"; path = "tnswebformclient/Resources/icon-40@3x.png"; sourceTree = "<group>"; };
+		1F8555D838AC44279998079C /* icon-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-60.png"; path = "tnswebformclient/Resources/icon-60.png"; sourceTree = "<group>"; };
+		27EAE329362F4065B21681B0 /* icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-60@2x.png"; path = "tnswebformclient/Resources/icon-60@2x.png"; sourceTree = "<group>"; };
+		0B616CB601B5485581C72F72 /* icon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-60@3x.png"; path = "tnswebformclient/Resources/icon-60@3x.png"; sourceTree = "<group>"; };
+		80BB526537B94311BF2BD0F1 /* icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-72.png"; path = "tnswebformclient/Resources/icon-72.png"; sourceTree = "<group>"; };
+		52B3839C28504A6C8B796CC4 /* icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-72@2x.png"; path = "tnswebformclient/Resources/icon-72@2x.png"; sourceTree = "<group>"; };
+		6AF3303BD66044AEA6FC6B00 /* icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-76.png"; path = "tnswebformclient/Resources/icon-76.png"; sourceTree = "<group>"; };
+		96C89B25066D499DA4079856 /* icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-76@2x.png"; path = "tnswebformclient/Resources/icon-76@2x.png"; sourceTree = "<group>"; };
+		BBA3F91BB5404CECA34CBA5D /* icon-83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon-83.5@2x.png"; path = "tnswebformclient/Resources/icon-83.5@2x.png"; sourceTree = "<group>"; };
+		D90DCE9395C341CEBAC32E64 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = "tnswebformclient/Resources/icon.png"; sourceTree = "<group>"; };
+		8006D201978948C490BD913A /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon@2x.png"; path = "tnswebformclient/Resources/icon@2x.png"; sourceTree = "<group>"; };
+		7821124B4D4A4423959A1279 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = "tnswebformclient/Resources/LaunchScreen.xib"; sourceTree = "<group>"; fileEncoding = 4; };
+
 		FABD31935946412A9E73A324 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = tnswebformclient/Resources/Default.png; sourceTree = "<group>"; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +219,7 @@
 				BBA3F91BB5404CECA34CBA5D /* icon-83.5@2x.png */,
 				D90DCE9395C341CEBAC32E64 /* icon.png */,
 				8006D201978948C490BD913A /* icon@2x.png */,
+				7821124B4D4A4423959A1279 /* LaunchScreen.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -294,6 +317,7 @@
 				FEA162C209A141E395C0B244 /* icon-83.5@2x.png in Resources */,
 				0DB435ED28E3407FB93C6CB6 /* icon.png in Resources */,
 				35D5836FC1B7464EAFF34DF4 /* icon@2x.png in Resources */,
+				5E3CFA9653774787A1FF3FD9 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
