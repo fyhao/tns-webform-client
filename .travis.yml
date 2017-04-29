@@ -45,7 +45,7 @@ before_install:
   - source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
   - PATH="`npm bin`:`npm bin -g`:$PATH"
   - brew update > /dev/null;
-  - npm install -g npm@$NPM_VERSION]
+  - npm install -g npm@$NPM_VERSION
   - npm install grunt-cli -g
   - git clone https://github.com/fyhao/nativescript-cli
   - cd nativescript-cli
