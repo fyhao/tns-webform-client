@@ -12,7 +12,7 @@ env:
 
 env:
   global:
-    - APP_NAME="tns_webform"
+    - APP_NAME="tnswebformclient"
     - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
     - PROFILE_NAME="tnswebformprofile"
     - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
@@ -34,7 +34,6 @@ before_script:
 - chmod +x ./scripts/remove-key.sh
 - rm -fr platforms/ios
 - ./scripts/add-key.sh
-- ./scripts/update-bundle.sh
   
 before_install:
   - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
@@ -60,6 +59,7 @@ before_install:
 
   
 after_success:
+- ./scripts/update-bundle.sh
 - ./scripts/sign-and-upload.sh
 after_script:
 - ./scripts/remove-key.sh
