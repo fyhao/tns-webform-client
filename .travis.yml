@@ -18,7 +18,7 @@ env:
     - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
 
 script:
-  - tns build ios --release --for-device --provision b96261dd-8691-46d4-89f4-1cfb195e10a3
+  - tns build ios --release --for-device --provision b96261dd-8691-46d4-89f4-1cfb195e10a3 --teamId C4F7EVGZVS --keystorePassword $ENCRYPTION_SECRET --codeSignIdentity "iPhone Distribution" --mobileProvisionIdentifier "tnswebformprofile" --teamIdentifier C4F7EVGZVS
 
 
 before_script:
