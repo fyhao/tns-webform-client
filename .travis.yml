@@ -17,8 +17,6 @@ env:
     - PROFILE_NAME="tnswebformprofile"
     - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
 
-script:
-  - tns build ios --release --for-device --provision b96261dd-8691-46d4-89f4-1cfb195e10a3 --teamId C4F7EVGZVS
 
 
 before_script:
@@ -40,9 +38,13 @@ before_install:
   - source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
   - PATH="`npm bin`:`npm bin -g`:$PATH"
   - brew update > /dev/null;
- 
   - npm install -g npm@$NPM_VERSION
-  - npm install -g nativescript@$TNS_VERSION
+  - git clone https://github.com/fyhao/nativescript-cli
+  - cd nativescript-cli
+  - git submodule update --init
+  - npm install
+  - grunt
+  - cd ../
   - npm install
   # CocoaPods
   - gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
@@ -53,14 +55,7 @@ before_install:
   # Show environment invo
   - node --version
   - npm --version
-  - xcpretty --version
-  - xcodebuild -version
-  - xcodebuild -showsdks
+  - tns --version
 
-  
-after_success:
-- ./scripts/update-bundle.sh
-- ./scripts/sign-and-upload.sh
-after_script:
-- ./scripts/remove-key.sh
+ 
 
