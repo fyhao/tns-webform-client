@@ -20,7 +20,7 @@ ls -la /Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/sharedpc
 PROVISIONING_PROFILE="~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_NAME.mobileprovision"
 OUTPUTDIR="platforms/ios/build/emulator"
 
-xcrun -log -sdk iphoneos PackageApplication "$OUTPUTDIR/$APP_NAME.app" -o "$OUTPUTDIR/$APP_NAME.ipa" -sign "$DEVELOPER_NAME" -embed "$PROVISIONING_PROFILE"
+##xcrun -log -sdk iphoneos PackageApplication "$OUTPUTDIR/$APP_NAME.app" -o "$OUTPUTDIR/$APP_NAME.ipa" -sign "$DEVELOPER_NAME" -embed "$PROVISIONING_PROFILE"
 
 echo "DEBUG update-bundle.sh after xcrun check folder"
 ls -la "$OUTPUTDIR"
