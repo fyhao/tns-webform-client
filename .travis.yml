@@ -35,7 +35,6 @@ before_script:
 - ./scripts/add-key.sh
   
 before_install:
-  - echo "TEST TNS CMD: $TNS_CMD"
   - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
   - source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
   - PATH="`npm bin`:`npm bin -g`:$PATH"
