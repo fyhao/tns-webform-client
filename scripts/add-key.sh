@@ -22,3 +22,12 @@ security import ./scripts/certs/dist.p12 -k ~/Library/Keychains/ios-build.keycha
 # Put the provisioning profile in place
 mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
 cp "./scripts/profile/$PROFILE_NAME.mobileprovision" ~/Library/MobileDevice/Provisioning\ Profiles/
+
+
+# DEBUG
+echo "DEBUG add-key.sh keychains folder"
+ls -la ~/Library/Keychains/
+echo "DEBUG add-key.sh check mobileprovision"
+echo "./scripts/profile/$PROFILE_NAME.mobileprovision"
+echo "DEBUG add-key.sh show Provisioning Profiles folder"
+ls -la ~/Library/MobileDevice/Provisioning\ Profiles/

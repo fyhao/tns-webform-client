@@ -8,6 +8,14 @@ if [[ "$TRAVIS_BRANCH" != "staging" ]]; then
   exit 0
 fi
 
+echo "DEBUG update-bundle.sh TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST"
+echo "DEBUG update-bundle.sh TRAVIS_BRANCH $TRAVIS_BRANCH"
+echo "DEBUG update-bundle.sh PROFILE_NAME $PROFILE_NAME"
+echo "DEBUG update-bundle.sh Check folder platforms/ios/build/device"
+ls -la /Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/device
+echo "DEBUG update-bundle.sh Check folder platforms/ios/build/sharedpch"
+ls -la /Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/sharedpch
+
 PROVISIONING_PROFILE="$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_NAME.mobileprovision"
 #OUTPUTDIR="$PWD/build/Release-iphoneos"
 
