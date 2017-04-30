@@ -22,60 +22,25 @@ env:
     - 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xcbuild-safe.sh"'
 
 script:
-  - echo "TEMP DEBUG14"
-  - nativescript-cli/bin/tns build ios --release --for-device --provision b96261dd-8691-46d4-89f4-1cfb195e10a3 --teamId C4F7EVGZVS
-
-
+  - echo "Travis script"
+  - ./scripts/script.sh
 
 before_script:
-- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/tnswebformprofile.mobileprovision.enc -d -a -out scripts/profile/tnswebformprofile.mobileprovision
-- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
-- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
-- echo "DEBUG before_script folder"
-- ls -la scripts/certs
-- ls -la scripts/profile
-- chmod +x ./scripts/before-script.sh
-- chmod +x ./scripts/xcbuild-safe.sh
-- chmod +x ./scripts/add-key.sh
-- chmod +x ./scripts/update-bundle.sh
-- chmod +x ./scripts/sign-and-upload.sh
-- chmod +x ./scripts/remove-key.sh
-- rm -fr platforms/ios
+- echo "Travis before_script"
+- chmod +x ./scripts/*.sh
 - ./scripts/before-script.sh
-- ./scripts/add-key.sh
   
 before_install:
-  - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
-  - source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
-  - PATH="`npm bin`:`npm bin -g`:$PATH"
-  - brew update > /dev/null;
-  - npm install -g npm@$NPM_VERSION
-  - npm install grunt-cli -g
-  - git clone https://github.com/fyhao/nativescript-cli
-  - cd nativescript-cli
-  - git submodule update --init
-  - npm install
-  - grunt
-  - cd ../
-  - npm install
-  # CocoaPods
-  - gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
-  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-  - pod --version
-  - pod setup --silent
-  - pod repo update --silent
-  # Show environment invo
-  - node --version
-  - npm --version
-  - nativescript-cli/bin/tns --version
-  - xcpretty --version
-  - xcodebuild -version
-  - xcodebuild -showsdks
+  - echo "Travis before_install"
+  - ./scripts/before-install.sh
 
 after_success:
-- ./scripts/update-bundle.sh
-- ./scripts/sign-and-upload.sh
+  - echo "Travis after_success"
+  - ./scripts/after-success.sh
+  
+  
 after_script:
-- ./scripts/remove-key.sh
+- echo "Travis after_script"
+- ./scripts/after-script.sh
 
 
