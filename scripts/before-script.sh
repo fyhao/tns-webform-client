@@ -3,7 +3,7 @@ echo "Inside before-script"
 
 ## Here put a switch for ad hoc and app store distribution
 ## 1 = ad hoc, 2 = app store
-PROVISIONING_TYPE = "2"
+PROVISIONING_TYPE="2"
 if test "$PROVISIONING_TYPE" = '1'; then
 	PROFILE_NAME="tnswebformprofile"
 	PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
