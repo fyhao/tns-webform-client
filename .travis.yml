@@ -1,4 +1,46 @@
-language: node_js
+os: osx
+osx_image: xcode8
+sudo: false
+language: objective-c
+branches:
+  only:
+  - staging
+  - master
+  
+env:
+  - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
 
-node_js:
-  - stable
+env:
+  global:
+    - APP_NAME="tnswebformclient"
+    - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
+    - PROFILE_NAME="tnswebformprofile"
+    - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
+    - 'CODE_SIGN_IDENTITY="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
+    - PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+    - DEVELOPMENT_TEAM="C4F7EVGZVS"
+    - 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xcbuild-safe.sh"'
+
+script:
+  - echo "Travis script"
+  - ./scripts/script.sh
+
+before_script:
+- echo "Travis before_script"
+- ./scripts/before-script.sh
+  
+before_install:
+  - echo "Travis before_install"
+  - chmod +x ./scripts/*.sh
+  - ./scripts/before-install.sh
+
+after_success:
+  - echo "Travis after_success"
+  - ./scripts/after-success.sh
+  
+  
+after_script:
+- echo "Travis after_script"
+- ./scripts/after-script.sh
+
+
