@@ -36,6 +36,7 @@ before_script:
 - ls -la scripts/certs
 - ls -la scripts/profile
 - chmod +x ./scripts/before-script.sh
+- chmod +x ./scripts/xcbuild-safe.sh
 - chmod +x ./scripts/add-key.sh
 - chmod +x ./scripts/update-bundle.sh
 - chmod +x ./scripts/sign-and-upload.sh
