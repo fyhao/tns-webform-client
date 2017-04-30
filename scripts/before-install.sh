@@ -26,3 +26,6 @@ nativescript-cli/bin/tns --version
 xcpretty --version
 xcodebuild -version
 xcodebuild -showsdks
+
+
+echo "inside before install PROVISIONING_PROFILE = $PROVISIONING_PROFILE"
