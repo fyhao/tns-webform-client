@@ -27,11 +27,11 @@ script:
 
 before_script:
 - echo "Travis before_script"
-- chmod +x ./scripts/*.sh
 - ./scripts/before-script.sh
   
 before_install:
   - echo "Travis before_install"
+  - chmod +x ./scripts/*.sh
   - ./scripts/before-install.sh
 
 after_success:
