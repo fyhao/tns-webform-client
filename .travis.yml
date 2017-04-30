@@ -20,6 +20,7 @@ env:
     - PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
     - DEVELOPMENT_TEAM="C4F7EVGZVS"
     - EXPORT_PROVISIONING_PROFILE="tns-webform-profile"
+    - EXPORT_SIGN_IDENTITY="iOS Distribution"
 
 script:
   - echo "TEMP DEBUG8"
