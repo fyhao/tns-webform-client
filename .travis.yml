@@ -44,3 +44,6 @@ after_script:
 - ./scripts/after-script.sh
 
 
+addons:
+  sauce_connect: true
+
