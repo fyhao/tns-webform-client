@@ -47,9 +47,5 @@
     <string>ad-hoc</string>
 	<key>teamID</key>
     <string>C4F7EVGZVS</string>
-    <key>uploadBitcode</key>
-    <false/>
-    <key>uploadSymbols</key>
-    <false/>
 </dict>
 </plist>
