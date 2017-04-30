@@ -1,5 +1,10 @@
 #!/bin/sh
 
+read -r -a e < /tmp/tempout
+echo "DEBUG array e"
+echo "${e[@]}"
+PROFILE_NAME="${e[0]}"
+
 # Create a custom keychain
 security create-keychain -p travis ios-build.keychain
 
