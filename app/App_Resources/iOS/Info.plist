@@ -44,7 +44,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>method</key>
-    <string>app-store</string>
+    <string>ad-hoc</string>
 	<key>teamID</key>
     <string>C4F7EVGZVS</string>
 </dict>

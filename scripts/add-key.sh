@@ -1,8 +1,7 @@
 #!/bin/sh
-
+echo "Inside add-key"
 read -r -a e < /tmp/tempout
-echo "DEBUG array e"
-echo "${e[@]}"
+
 PROFILE_NAME="${e[0]}"
 
 # Create a custom keychain
