@@ -35,11 +35,13 @@ before_script:
 - echo "DEBUG before_script folder"
 - ls -la scripts/certs
 - ls -la scripts/profile
+- chmod +x ./scripts/before-script.sh
 - chmod +x ./scripts/add-key.sh
 - chmod +x ./scripts/update-bundle.sh
 - chmod +x ./scripts/sign-and-upload.sh
 - chmod +x ./scripts/remove-key.sh
 - rm -fr platforms/ios
+- ./scripts/before-script.sh
 - ./scripts/add-key.sh
   
 before_install:
