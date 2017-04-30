@@ -19,11 +19,11 @@ env:
     - 'CODE_SIGN_IDENTITY="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
     - PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
     - DEVELOPMENT_TEAM="C4F7EVGZVS"
-    - EXPORT_PROVISIONING_PROFILE="tns-webform-client"
+    - EXPORT_PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
     - 'EXPORT_SIGN_IDENTITY="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
 
 script:
-  - echo "TEMP DEBUG9"
+  - echo "TEMP DEBUG10"
   - nativescript-cli/bin/tns build ios --release --for-device --provision b96261dd-8691-46d4-89f4-1cfb195e10a3 --teamId C4F7EVGZVS
 
 
