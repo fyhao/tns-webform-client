@@ -45,6 +45,3 @@ after_script:
 - curl -u $SAUCE_USERNAME:$SAUCE_ACCESS_KEY -X POST -H "Content-Type: application/octet-stream" https://saucelabs.com/rest/v1/storage/$SAUCE_USERNAME/$APP_NAME?overwrite=true --data-binary @platforms/ios/build/device/$APP_NAME.ipa
 
 
-addons:
-  sauce_connect: true
-
