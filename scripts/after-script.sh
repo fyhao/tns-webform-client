@@ -21,8 +21,8 @@ fi
 TO_ZIP_FILE="1" 
 
 if test "$TO_ZIP_FILE" = '1'; then
-	zip -r "$APP_NAME.zip" "$APP_NAME*"
-	APP_PATH = "$APP_NAME.zip"
+	zip -r "$APP_NAME.zip" . -i "$APP_NAME*"
+	APP_PATH="$APP_NAME.zip"
 fi
 
 
