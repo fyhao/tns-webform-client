@@ -5,7 +5,7 @@ read -r -a e < /tmp/tempout
 PROVISIONING_PROFILE="${e[1]}"
 echo "inside script PROVISIONING_PROFILE = $PROVISIONING_PROFILE"
 
-PROVISIONING_TYPE="${e[0]}"
+PROVISIONING_TYPE="${e[2]}"
 
 
 if test "$PROVISIONING_TYPE" = '0'; then

@@ -3,7 +3,7 @@ echo "Inside after-script"
 
 read -r -a e < /tmp/tempout
 
-PROVISIONING_TYPE="${e[0]}"
+PROVISIONING_TYPE="${e[2]}"
 
 
 ./scripts/remove-key.sh
