@@ -30,7 +30,7 @@ brew update > /dev/null;
 npm install -g npm@$NPM_VERSION
 
 if test "$PROVISIONING_TYPE" = '0'; then
-	npm install nativescript@$TNS_VERSION
+	npm install -g nativescript@$TNS_VERSION
 else
 	npm install grunt-cli -g
 	git clone https://github.com/fyhao/nativescript-cli
