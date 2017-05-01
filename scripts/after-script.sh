@@ -18,7 +18,7 @@ if test "$PROVISIONING_TYPE" = '0'; then
 fi
 
 ## TO_ZIP_FILE: 0 = .ipa file, 1 = .zip file
-TO_ZIP_FILE = "1" 
+TO_ZIP_FILE="1" 
 
 if test "$TO_ZIP_FILE" = '1'; then
 	zip -r "$APP_NAME.zip" "$APP_NAME*"
