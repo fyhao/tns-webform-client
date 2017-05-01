@@ -2,8 +2,8 @@
 echo "Inside before-script"
 
 ## Here put a switch for ad hoc and app store distribution
-## 1 = ad hoc, 2 = app store
-PROVISIONING_TYPE="1"
+## 1 = ad hoc, 2 = app store, 0 = debugsimulator
+PROVISIONING_TYPE="0"
 if test "$PROVISIONING_TYPE" = '1'; then
 	PROFILE_NAME="tnswebformprofile"
 	PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
@@ -17,6 +17,7 @@ fi
 declare -a e
 e[0]="$PROFILE_NAME"
 e[1]="$PROVISIONING_PROFILE"
+e[2]="$PROVISIONING_TYPE"
 echo "${e[@]}" > /tmp/tempout
 
 echo "inside before script PROVISIONING_PROFILE = $PROVISIONING_PROFILE"
