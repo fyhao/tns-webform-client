@@ -43,12 +43,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	
-	<key>teamID</key>
-	<string>C4F7EVGZVS</string>
 	<key>method</key>
-	<string>app-store</string>
-	<key>uploadSymbols</key>
-	<true/>
+    <string>ad-hoc</string>
+	<key>teamID</key>
+    <string>C4F7EVGZVS</string>
 </dict>
 </plist>
