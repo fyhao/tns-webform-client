@@ -23,6 +23,12 @@ if test "$TO_ZIP_FILE" = '1'; then
 	pwd
 	zip -r "$APP_NAME.zip" "$APP_NAME.app" > /dev/null
 	APP_PATH="$APP_NAME.zip"
+	mkdir temp
+	cp -fr $APP_NAME.zip temp
+	cd temp
+	unzip $APP_NAME.zip
+	ls -la
+	
 	cd "/Users/travis/build/fyhao/tns-webform-client/"
 	pwd
 fi
@@ -34,3 +40,4 @@ ls -la ${APP_FOLDER}
 
 
 curl -u $SAUCE_USERNAME:$SAUCE_ACCESS_KEY -X POST -H "Content-Type: application/octet-stream" https://saucelabs.com/rest/v1/storage/$SAUCE_USERNAME/$APP_PATH?overwrite=true --data-binary "@${APP_FOLDER}$APP_PATH"
+
