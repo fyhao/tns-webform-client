@@ -21,7 +21,7 @@ TO_ZIP_FILE="1"
 if test "$TO_ZIP_FILE" = '1'; then
 	cd "$APP_FOLDER"
 	pwd
-	zip -r "$APP_NAME.zip" "$APP_NAME.app" > /dev/null
+	zip -r "$APP_NAME.zip" "$APP_NAME.a*" > /dev/null
 	APP_PATH="$APP_NAME.zip"
 	mkdir temp
 	cp -fr $APP_NAME.zip temp
