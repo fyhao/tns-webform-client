@@ -14,7 +14,7 @@ APP_PATH="$APP_NAME.ipa"
 if test "$PROVISIONING_TYPE" = '0'; then
 	APP_PATH="$APP_NAME.app"
 	APP_FOLDER="/Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/emulator/"
-"
+
 fi
 
 
