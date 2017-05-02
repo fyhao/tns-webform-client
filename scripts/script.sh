@@ -9,7 +9,7 @@ PROVISIONING_TYPE="${e[2]}"
 
 
 if test "$PROVISIONING_TYPE" = '0'; then
-	tns build ios --release
+	nativescript-cli/bin/tns build ios --emulator
 fi
 
 if test "$PROVISIONING_TYPE" = '1'; then

@@ -2,8 +2,8 @@
 echo "Inside before-install"
 
 ## Here put a switch for ad hoc and app store distribution
-## 1 = ad hoc, 2 = app store, 0 = debugsimulator
-PROVISIONING_TYPE="1"
+## 1 = ad hoc, 2 = app store, 0 = emulator
+PROVISIONING_TYPE="0"
 if test "$PROVISIONING_TYPE" = '1'; then
 	PROFILE_NAME="tnswebformprofile"
 	PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
@@ -29,7 +29,7 @@ PATH="`npm bin`:`npm bin -g`:$PATH"
 brew update > /dev/null;
 npm install -g npm@$NPM_VERSION
 
-if test "$PROVISIONING_TYPE" = '0'; then
+if test "$PROVISIONING_TYPE" = '10'; then
 	npm install -g nativescript@$TNS_VERSION
 else
 	npm install grunt-cli -g

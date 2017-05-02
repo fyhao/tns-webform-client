@@ -8,13 +8,16 @@ PROVISIONING_TYPE="${e[2]}"
 
 ./scripts/remove-key.sh
 
+APP_FOLDER="/Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/device/"
 
 APP_PATH="$APP_NAME.ipa"
 if test "$PROVISIONING_TYPE" = '0'; then
 	APP_PATH="$APP_NAME.app"
+	APP_FOLDER="/Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/emulator/"
+"
 fi
 
-APP_FOLDER="/Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/device/"
+
 ## TO_ZIP_FILE: 0 = .ipa file, 1 = .zip file
 TO_ZIP_FILE="1" 
 
