@@ -21,7 +21,7 @@ TO_ZIP_FILE="1"
 if test "$TO_ZIP_FILE" = '1'; then
 	cd "$APP_FOLDER"
 	pwd
-	zip -r "$APP_NAME.zip" . -i "$APP_NAME.app"
+	zip -r "$APP_NAME.zip" "$APP_NAME.app" > /dev/null
 	APP_PATH="$APP_NAME.zip"
 	cd "/Users/travis/build/fyhao/tns-webform-client/"
 	pwd
