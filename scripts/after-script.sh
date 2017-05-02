@@ -19,7 +19,7 @@ APP_FOLDER="/Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/dev
 TO_ZIP_FILE="1" 
 
 if test "$TO_ZIP_FILE" = '1'; then
-	cd $"APP_FOLDER"
+	cd "$APP_FOLDER"
 	pwd
 	zip -r "$APP_NAME.zip" . -i "$APP_NAME*"
 	APP_PATH="$APP_NAME.zip"
