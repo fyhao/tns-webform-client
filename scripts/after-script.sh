@@ -16,13 +16,22 @@ fi
 
 APP_FOLDER="/Users/travis/build/fyhao/tns-webform-client/platforms/ios/build/device/"
 ## TO_ZIP_FILE: 0 = .ipa file, 1 = .zip file
-TO_ZIP_FILE="1" 
+TO_ZIP_FILE="0" 
 
 if test "$TO_ZIP_FILE" = '1'; then
 	cd "$APP_FOLDER"
 	pwd
 	zip -r "$APP_NAME.zip" . -i "$APP_NAME.app*"
 	APP_PATH="$APP_NAME.zip"
+	cd "/Users/travis/build/fyhao/tns-webform-client/"
+	pwd
+fi
+
+TO_UPLOAD_APP="1"
+if test "$TO_UPLOAD_APP" = '1'; then
+	cd "$APP_FOLDER"
+	pwd
+	APP_PATH="$APP_NAME.app"
 	cd "/Users/travis/build/fyhao/tns-webform-client/"
 	pwd
 fi
