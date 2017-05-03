@@ -8,7 +8,7 @@ describe('test', function() {
   this.timeout(15000);
   
   describe('test', function() {
-	it('should able to test', function(done) {
+	it('should able to test something', function(done) {
 		done();
     });
   });
