@@ -14,6 +14,7 @@
     "tns-core-modules": "2.5.2"
   },
   "devDependencies": {
-    "nativescript-dev-android-snapshot": "^0.*.*"
+    "nativescript-dev-android-snapshot": "^0.*.*",
+    "wd": "^1.2.0"
   }
 }
