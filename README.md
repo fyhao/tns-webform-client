@@ -2,9 +2,15 @@
 
 Simple Introduction on Branches
 ------
-Dev: Both Telerik and tns use this branch to develop and share code
-Staging: Dev to merge code to staging and should trigger automated test
-Master: Subsequently Staging to merge code back to master
+Dev: Both Telerik and tns use this branch to develop and share code. Dev run automated unit test
+
+Integration: Dev to merge code to integration to trigger automated unit test & integration test on JavaScript code.
+
+Staging: Dev to merge code to staging and should trigger automated build
+
+StagingUITest: Staging to merge code to StagingUITest to run automated UI test.
+
+Master: Subsequently Staging OR StagingUITest to merge code back to master
 
 
 Reference:
