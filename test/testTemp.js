@@ -9,6 +9,8 @@ describe('test', function() {
   
   describe('test', function() {
 	it('should able to test something', function(done) {
+		var nav = ProjRequire('./app/navigation/navigation.js');
+		nav.pageLoaded({});
 		done();
     });
   });
