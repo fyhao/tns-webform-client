@@ -20,8 +20,6 @@ https://gist.github.com/johanneswuerbach/5559514
 https://medium.com/@atsakiridis/continuous-deployment-for-ios-using-travis-ci-55dcea342d9
 https://gist.github.com/phatblat/0dd175b406cf2f3fbfc9
 
-<<<<<<< HEAD
-http://fluentreports.com/blog/?p=396
 
 =======
 Confirmed faced issue here:
