@@ -15,6 +15,15 @@
   },
   "devDependencies": {
     "nativescript-dev-android-snapshot": "^0.*.*",
-    "wd": "^1.2.0"
+    "wd": "^1.2.0",
+	"istanbul": "^0.4.5",
+    "mitm": "^1.3.2",
+    "mocha": "^3.2.0",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^10.2.0",
+    "should": ">= 0.0.1"
+  },
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha test/alltests.js",
   }
 }
