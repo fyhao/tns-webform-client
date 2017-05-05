@@ -4,7 +4,8 @@ var isInit = true,
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
     viewModel = require('./browseView-view-model'),
-    modBrowse = require('../../lib/modBrowse/modBrowse.js');
+    modBrowse = require('../../lib/modBrowse/modBrowse.js'),
+    modBrowser = require('../../lib/modBrowser/modBrowser.js');
 
 // additional functions
 function pageLoaded(args) {
@@ -32,7 +33,9 @@ function goTap(args) {
         if (tf) {
             var url = tf.text;
             modBrowse.pushHistory(url, function(status) {
-                alert(url + ":" + status);
+                var browser = modBrowser.createBrowser();
+                browser.open(url);
+                alert("URL is opened");
             });
             
         }

@@ -4,7 +4,8 @@ var isInit = true,
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
     viewModel = require('./browseHistoryView-view-model'),
-    modBrowse = require('../../lib/modBrowse/modBrowse.js');
+    modBrowse = require('../../lib/modBrowse/modBrowse.js'),
+    modBrowser = require('../../lib/modBrowser/modBrowser.js');
 
 // additional functions
 function pageLoaded(args) {
@@ -48,7 +49,9 @@ function menuItemTap(args) {
     var menuItem = menuItems[args.index];
     var url = menuItem.url;
     modBrowse.pushHistory(url, function(status) {
-        alert(url + ":" + status);
+        var browser = modBrowser.createBrowser();
+        browser.open(url);
+        alert("URL is opened");
     });     
 }
 
