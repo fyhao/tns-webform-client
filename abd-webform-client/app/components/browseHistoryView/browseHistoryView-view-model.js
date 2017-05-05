@@ -11,7 +11,7 @@ menuItems = [
     },
     {
         "title": "Browse from History",
-        "moduleName": "components/browseHistoryView/browseHistoryView",
+        "moduleName": "components/homeView/homeView",
         "icon": "\ue0dd"
     },
     {
@@ -23,6 +23,5 @@ menuItems = [
 ];
 
 navigationViewModel.set('menuItems', menuItems);
-navigationViewModel.set('backButtonHidden', true);
 
 module.exports = navigationViewModel;
