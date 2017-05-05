@@ -1,0 +1,14 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:widgets="utils/widgets" loaded="pageLoaded" id="browseViewScreen" cssClass="screen">
+    <Page.actionBar>
+        <widgets:action-bar />
+    </Page.actionBar>
+
+    <StackLayout>
+        <!-- additional view content -->
+        <!-- START_CUSTOM_CODE_homeView -->
+        <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+        <TextView id="urlTF" text="someurl" />
+        <Button text="GO" tap="goTap" />
+        <!-- END_CUSTOM_CODE_homeView -->
+    </StackLayout>
+</Page>
