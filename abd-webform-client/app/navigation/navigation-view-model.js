@@ -6,7 +6,7 @@ var menuItems,
 menuItems = [
     {
         "title": "Browse",
-        "moduleName": "components/homeView/homeView",
+        "moduleName": "components/browseView/browseView",
         "icon": "\ue0dd"
     },
     {
