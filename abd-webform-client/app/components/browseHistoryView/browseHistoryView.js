@@ -3,7 +3,8 @@ var isInit = true,
     helpers = require('../../utils/widgets/helper'),
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
-    viewModel = require('./browseHistoryView-view-model');
+    viewModel = require('./browseHistoryView-view-model'),
+    modBrowse = require('../../lib/modBrowse/modBrowse.js');
 
 // additional functions
 function pageLoaded(args) {
@@ -17,6 +18,18 @@ function pageLoaded(args) {
         isInit = false;
 
         // additional pageInit
+        modBrowse.getHistory(function(items) {
+            var menuItems = [];
+            for(var i = 0; i < items.length; i++) {
+                var item = items[i];
+                menuItems.push({
+                    "title": "[" + item + "]",
+                    "url" : item,
+                    "icon": "\ue0dd"
+                },);
+            }
+            navigationViewModel.set('menuItems', menuItems);
+        });
     }
 }
 

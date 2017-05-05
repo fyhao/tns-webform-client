@@ -1,4 +1,4 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:widgets="utils/widgets" loaded="pageLoaded" id="browseHistoryViewScreen" cssClass="screen">
+expoexsdfsdfsdf<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:widgets="utils/widgets" loaded="pageLoaded" id="browseHistoryViewScreen" cssClass="screen">
     <Page.actionBar>
         <widgets:action-bar />
     </Page.actionBar>
