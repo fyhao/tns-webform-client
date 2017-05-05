@@ -42,7 +42,14 @@ function loadHistory() {
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 var view = require("ui/core/view");
 function menuItemTap(args) {
-    helpers.navigate(viewModel.menuItems[args.index]);
+    var sender = args.object;
+    var parent = sender.parent;
+    var menuItems = viewModel.get('menuItems');
+    var menuItem = menuItems[args.index];
+    var url = menuItem.url;
+    modBrowse.pushHistory(url, function(status) {
+        alert(url + ":" + status);
+    });     
 }
 
 exports.menuItemTap = menuItemTap;
