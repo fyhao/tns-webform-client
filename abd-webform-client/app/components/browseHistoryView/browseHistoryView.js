@@ -4,7 +4,8 @@ var isInit = true,
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
     viewModel = require('./browseHistoryView-view-model'),
-    modBrowse = require('../../lib/modBrowse/modBrowse.js');
+    modBrowse = require('../../lib/modBrowse/modBrowse.js'),
+    modBrowser = require('../../lib/modBrowser/modBrowser.js');
 
 // additional functions
 function pageLoaded(args) {
@@ -42,7 +43,16 @@ function loadHistory() {
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 var view = require("ui/core/view");
 function menuItemTap(args) {
-    helpers.navigate(viewModel.menuItems[args.index]);
+    var sender = args.object;
+    var parent = sender.parent;
+    var menuItems = viewModel.get('menuItems');
+    var menuItem = menuItems[args.index];
+    var url = menuItem.url;
+    modBrowse.pushHistory(url, function(status) {
+        var browser = modBrowser.createBrowser();
+        browser.open(url);
+        alert("URL is opened");
+    });     
 }
 
 exports.menuItemTap = menuItemTap;

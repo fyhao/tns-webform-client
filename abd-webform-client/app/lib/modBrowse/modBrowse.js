@@ -1,10 +1,16 @@
 exports.getHistory = function(fn) {
-    fn(items);
+    fn(items.slice().reverse());
 }
 
 exports.pushHistory = function(item, fn) {
-    items.push(item);
-    fn(0);
+    if(items.length >= 5 && items.indexOf(item) == -1) {
+        items.splice(0,1);
+        items.push(item);
+        fn(0);
+    }
+    else {
+        fn(1);
+    }
 }
 
 exports.clearHistory = function(fn) {
