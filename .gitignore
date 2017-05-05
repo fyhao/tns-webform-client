@@ -39,3 +39,7 @@ resources/signing
 node_modules/
 
 .nyc_output/
+
+coverage/
+
+platforms/
