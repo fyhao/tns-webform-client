@@ -3,7 +3,8 @@ var isInit = true,
     helpers = require('../../utils/widgets/helper'),
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
-    viewModel = require('./browseView-view-model');
+    viewModel = require('./browseView-view-model'),
+    modBrowse = require('../../lib/modBrowse/modBrowse.js');
 
 // additional functions
 function pageLoaded(args) {
@@ -30,7 +31,10 @@ function goTap(args) {
         var tf = view.getViewById(parent, "urlTF");
         if (tf) {
             var url = tf.text;
-            alert(url)
+            modBrowse.pushHistory(url, function(status) {
+                alert(url + ":" + status);
+            });
+            
         }
     }
 }
