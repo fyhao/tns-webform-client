@@ -3,11 +3,24 @@ var menuItems,
     observable = require('data/observable'),
     navigationViewModel = new observable.Observable();
 
-menuItems = [{
-    "title": "Home View",
-    "moduleName": "components/homeView/homeView",
-    "icon": "\ue0dd"
-}];
+menuItems = [
+    {
+        "title": "Browse",
+        "moduleName": "components/homeView/homeView",
+        "icon": "\ue0dd"
+    },
+    {
+        "title": "Browse from History",
+        "moduleName": "components/homeView/homeView",
+        "icon": "\ue0dd"
+    },
+    {
+        "title": "Home View",
+        "moduleName": "components/homeView/homeView",
+        "icon": "\ue0dd"
+    }
+
+];
 
 navigationViewModel.set('menuItems', menuItems);
 navigationViewModel.set('backButtonHidden', true);
