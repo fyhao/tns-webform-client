@@ -28,7 +28,7 @@ function pageLoaded(args) {
                     "icon": "\ue0dd"
                 },);
             }
-            navigationViewModel.set('menuItems', menuItems);
+            viewModel.set('menuItems', menuItems);
         });
     }
 }
