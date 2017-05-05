@@ -3,8 +3,10 @@ exports.getHistory = function(fn) {
 }
 
 exports.pushHistory = function(item, fn) {
-    if(items.length >= 5 && items.indexOf(item) == -1) {
-        items.splice(0,1);
+	while(items.length >= 5) {
+		items.splice(0,1);
+	}
+    if(items.indexOf(item) == -1) {
         items.push(item);
         fn(0);
     }
