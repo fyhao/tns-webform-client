@@ -2,10 +2,7 @@ os: osx
 osx_image: xcode8
 sudo: false
 language: objective-c
-branches:
-  only:
-  - staging
-  - master
+
   
 env:
   - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"

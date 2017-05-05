@@ -43,6 +43,10 @@
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+    <key>method</key>
+    <string>ad-hoc</string>
+    <key>teamID</key>
+    <string>C4F7EVGZVS</string>
     <key>CFBundleIdentifier</key>
     <string>org.nativescript.tnswebformclient</string>
   </dict>
