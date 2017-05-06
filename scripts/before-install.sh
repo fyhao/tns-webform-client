@@ -44,6 +44,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 		npm install
 		grunt
 		cd ../
+		nativescript-cli/bin/tns usage-reporting disable
 	fi
 fi
 npm install

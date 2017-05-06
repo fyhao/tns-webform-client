@@ -1,8 +1,8 @@
 {
   "description": "NativeScript Application",
-  "license": "SEE LICENSE IN <your-license-filename>",
+  "license": "MIT",
   "readme": "NativeScript Application",
-  "repository": "<fill-your-repository-here>",
+  "repository": "https://github.com/fyhao/tns-webform-client",
   "nativescript": {
     "id": "org.nativescript.tnswebformclient",
     "tns-ios": {
