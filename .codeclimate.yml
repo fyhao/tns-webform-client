@@ -1,0 +1,23 @@
+engines:
+  # ... CONFIG CONTENT ...
+  eslint:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    checks:
+      complexity:
+        enabled: false
+      comma-dangle:
+        enabled: false
+      global-require:
+        enabled: false
+      no-loop-func:
+        enabled: false
+      guard-for-in:
+        enabled: false
+      no-eval:
+        enabled: false
+# ... CONFIG CONTENT ...
+
+exclude_paths:
+- "ui/static/js/angular*"
+- "ui/static/js/ui*"

@@ -1,6 +1,8 @@
 #!/bin/sh
 echo "Inside before-install"
 
+echo "Current running branch $TRAVIS_BRANCH"
+
 ## Here put a switch for ad hoc and app store distribution
 ## 1 = ad hoc, 2 = app store, 0 = emulator
 PROVISIONING_TYPE="0"
@@ -26,33 +28,38 @@ echo "${e[@]}" > /tmp/tempout
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
 source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
 PATH="`npm bin`:`npm bin -g`:$PATH"
-brew update > /dev/null;
+if test "$TRAVIS_BRANCH" = 'staging'; then
+	brew update > /dev/null;
+fi
 npm install -g npm@$NPM_VERSION
 
-if test "$PROVISIONING_TYPE" = '10'; then
-	npm install -g nativescript@$TNS_VERSION
-else
-	npm install grunt-cli -g
-	git clone https://github.com/fyhao/nativescript-cli
-	cd nativescript-cli
-	git submodule update --init
-	npm install
-	grunt
-	cd ../
+if test "$TRAVIS_BRANCH" = 'staging'; then
+	if test "$PROVISIONING_TYPE" = '10'; then
+		npm install -g nativescript@$TNS_VERSION
+	else
+		npm install grunt-cli -g
+		git clone https://github.com/fyhao/nativescript-cli
+		cd nativescript-cli
+		git submodule update --init
+		npm install
+		grunt
+		cd ../
+		nativescript-cli/bin/tns usage-reporting disable
+	fi
 fi
-
 npm install
+if test "$TRAVIS_BRANCH" = 'staging'; then
   # CocoaPods
-gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
-gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-pod --version
-pod setup --silent
-pod repo update --silent
-  # Show environment invo
-node --version
-npm --version
-nativescript-cli/bin/tns --version
-xcpretty --version
-xcodebuild -version
-xcodebuild -showsdks
-
+	gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
+	gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+	pod --version
+	pod setup --silent
+	pod repo update --silent
+	  # Show environment invo
+	node --version
+	npm --version
+	nativescript-cli/bin/tns --version
+	xcpretty --version
+	xcodebuild -version
+	xcodebuild -showsdks
+fi
