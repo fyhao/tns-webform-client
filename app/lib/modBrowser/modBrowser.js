@@ -392,7 +392,7 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'requestFlow') {
 			step.callbackJSON = function(json) {
-				new FlowEngine(json.flow).execute(next);
+				new FlowEngine(json.flow).setWv(wv).execute(next);
 			}
 			util.frequest(step);
 		}
@@ -444,7 +444,7 @@ var FlowEngine = function(flow) {
 			}
 			if(validated) {
 				if(step.yes_subflow != null) {
-					new FlowEngine(step.yes_subflow).execute(next);
+					new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
 				}
 				else {
 					setTimeout(next, 1);
@@ -452,7 +452,7 @@ var FlowEngine = function(flow) {
 			}
 			else {
 				if(step.no_subflow != null) {
-					new FlowEngine(step.no_subflow).execute(next);	
+					new FlowEngine(step.no_subflow).setWv(wv).execute(next);	
 				}
 				else {
 					setTimeout(next, 1);
@@ -469,7 +469,7 @@ var FlowEngine = function(flow) {
 			  dialog.addEventListener('click', function(e){
 				if(e.index == 0) {
 					if(step.yes_subflow != null) {
-						new FlowEngine(step.yes_subflow).execute(next);
+						new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
 					}
 					else {
 						setTimeout(next, 1);
@@ -477,7 +477,7 @@ var FlowEngine = function(flow) {
 				}
 				else {
 					if(step.no_subflow != null) {
-						new FlowEngine(step.no_subflow).execute(next);	
+						new FlowEngine(step.no_subflow).seWv(wv).execute(next);	
 					}
 					else {
 						setTimeout(next, 1);
