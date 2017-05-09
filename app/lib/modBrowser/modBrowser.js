@@ -275,7 +275,7 @@ var showItemWebform = function(item, opts) {
 					topmost.goBack();
 				}
 				if(json.flow) {
-					new FlowEngine(json.flow).execute(function() {});
+					new FlowEngine(json.flow,{wv:wv}).execute(function() {});
 				}
 			}
 		});
@@ -283,13 +283,20 @@ var showItemWebform = function(item, opts) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
+	var flow = item.flow;
+	if(typeof flow != 'undefined') {
+		new FlowEngine(flow,{wv:wv}).execute(function() {});
+	}
 }
 
 
 
 
 FLOW_ENGINE_CANCELED = false;
-var FlowEngine = function(flow) {
+var FlowEngine = function(flow,opts) {
+	if(typeof opts != 'undefined') opts = {};
+	var wv = null;
+	if(typeof opts.wv != 'undefined') wv = opts.wv;
 	this.flow = flow;
 	this.canceled = false;
 	var vars = {};
