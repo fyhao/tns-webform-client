@@ -183,7 +183,7 @@ var showItemWebform = function(item, opts) {
     			html += '<textarea id="' + param.name + '">' + def + '</textarea>';
     		}
     		else if(param.type == 'label') {
-    			html += '<span>' + param.name + '</span>';
+    			html += '<span id="' + param.id + '">' + param.name + '</span>';
     		}
     		else if(param.type == 'hidden') {
     			var def = typeof(param.def) != 'undefined' ? param.def : '';
