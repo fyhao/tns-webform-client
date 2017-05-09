@@ -287,6 +287,11 @@ var showItemWebform = function(item, opts) {
 	if(typeof flow != 'undefined') {
 		new FlowEngine(flow).setWv(wv).execute(function() {});
 	}
+
+	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
+		FLOW_ENGINE_CANCELED = true;
+		console.log('FLOW engine canceled')
+	})
 }
 
 
@@ -294,6 +299,7 @@ var showItemWebform = function(item, opts) {
 
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
+	FLOW_ENGINE_CANCELED = false;
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
