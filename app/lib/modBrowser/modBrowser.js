@@ -274,10 +274,205 @@ var showItemWebform = function(item, opts) {
 				if(json.closewin) {
 					topmost.goBack();
 				}
+				if(json.flow) {
+					new FlowEngine(json.flow).execute(function() {});
+				}
 			}
 		});
     });
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
+}
+
+
+
+
+FLOW_ENGINE_CANCELED = false;
+var FlowEngine = function(flow) {
+	this.flow = flow;
+	this.canceled = false;
+	var vars = {};
+	this.execute = function(done) {
+		var steps = this.flow.steps;
+		if(steps && steps.length) {
+			var curStep = -1;
+			var checkNext = function() {
+				curStep++;
+				if(curStep < steps.length) {
+					processStep(steps[curStep], checkNext);
+				}
+				else {
+					setTimeout(done, 1);
+				}
+			}
+			setTimeout(checkNext, 300);
+		}
+	}
+	this.cancel = function() {
+		this.canceled = true;
+	}
+	var replaceAll = function(s, n,v) {
+		while(s.indexOf(n) != -1) {
+			s = s.replace(n,v);
+		}
+		return s;
+	}
+	var replaceVars = function(c) {
+		for(var k in vars) {
+			c = replaceAll(c, '##' + k + '##', vars[k]);
+		}
+		return c;
+	}
+	var replaceVarsStep = function(step) {
+		for(var i in step) {
+			if(typeof step[i] != 'string') {
+				step[i] = replaceVarsStep(step[i]);
+			}
+			else {
+				step[i] = replaceVars(step[i]);
+			}
+		}
+		return step;
+	}
+	var processStep = function(step, next) {
+		if(FLOW_ENGINE_CANCELED) {
+			return;
+		}
+		step = replaceVarsStep(step);
+		if(step.type == 'setValue') {
+			var name = step.name;
+			var value = step.value;
+			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value = "' + value + '"');
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'addValue') {
+			var name = step.name;
+			var value = step.value;
+			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value += "' + value + '"');
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'setHtml') {
+			var name = step.name;
+			var value = step.value;
+			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").innerHTML = "' + value + '"');
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'addHtml') {
+			var name = step.name;
+			var value = step.value;
+			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").innerHTML += "' + value + '"');
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'alert') {
+			alert(step.message);
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'openWebView') {
+			openWebView(step.url);
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'setclipboard') {
+			Ti.UI.Clipboard.setText(step.message)
+		}
+		else if(step.type == 'wait') {
+			setTimeout(next, step.timeout);
+		}
+		else if(step.type == 'requestFlow') {
+			step.callbackJSON = function(json) {
+				new FlowEngine(json.flow).execute(next);
+			}
+			util.frequest(step);
+		}
+		else if(step.type == 'setVar') {
+			vars[step.name] = step.value;
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'evaljs') {
+			var val = eval('vars = ' + JSON.stringify(vars) + '; ' + step.code);
+			vars[step.var] = val;
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'closewin') {
+			win.close();
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'webform') {
+			showItemWebform(step.webform, {
+				refresh:function() {
+					if(opts.refresh) opts.refresh();
+				}
+			});
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'redirectUrl') {
+			showCategoriesItem({
+				'name' : step.redirectHeading,
+				sublist : []
+			}, {url:step.redirectUrl});
+			setTimeout(next, 1);
+		}
+		else if(step.type == 'if') {
+			var val = vars[step.var];
+			var validated = false;
+			if(step.if == 'contains') {
+				validated = val.indexOf(step.pattern) != -1;
+			}
+			else if(step.if == 'equal') {
+				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
+				validated = val == step.pattern;
+			}
+			else if(step.if == 'eq') {
+				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
+				validated = val == step.pattern;
+			}
+			else if(step.if == 'neq') {
+				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
+				validated = val != step.pattern;
+			}
+			if(validated) {
+				if(step.yes_subflow != null) {
+					new FlowEngine(step.yes_subflow).execute(next);
+				}
+				else {
+					setTimeout(next, 1);
+				}
+			}
+			else {
+				if(step.no_subflow != null) {
+					new FlowEngine(step.no_subflow).execute(next);	
+				}
+				else {
+					setTimeout(next, 1);
+				}
+			}
+		}
+		else if(step.type == 'confirm') {
+			var dialog = Ti.UI.createAlertDialog({
+				cancel: 1,
+				buttonNames: step.buttons,
+				message: step.message,
+				title: step.title
+			  });
+			  dialog.addEventListener('click', function(e){
+				if(e.index == 0) {
+					if(step.yes_subflow != null) {
+						new FlowEngine(step.yes_subflow).execute(next);
+					}
+					else {
+						setTimeout(next, 1);
+					}
+				}
+				else {
+					if(step.no_subflow != null) {
+						new FlowEngine(step.no_subflow).execute(next);	
+					}
+					else {
+						setTimeout(next, 1);
+					}
+				}
+			  });
+			  dialog.show();
+		}
+	}
 }
