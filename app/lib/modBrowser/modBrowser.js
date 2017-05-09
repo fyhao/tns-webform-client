@@ -297,11 +297,13 @@ var FlowEngine = function(flow) {
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
+		return this;
 	}
 	this.flow = flow;
 	this.canceled = false;
 	var vars = {};
 	this.execute = function(done) {
+		console.log('Execute')
 		var steps = this.flow.steps;
 		if(steps && steps.length) {
 			var curStep = -1;
@@ -344,6 +346,8 @@ var FlowEngine = function(flow) {
 		return step;
 	}
 	var processStep = function(step, next) {
+		console.log('processStep ' + FLOW_ENGINE_CANCELED);
+		console.log(JSON.stringify(step)); 
 		if(FLOW_ENGINE_CANCELED) {
 			return;
 		}
