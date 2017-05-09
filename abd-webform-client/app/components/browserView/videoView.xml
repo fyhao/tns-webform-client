@@ -1,0 +1,8 @@
+<Page xmlns="http://www.nativescript.org/tns.xsd" xmlns:VideoPlayer="nativescript-videoplayer"  loaded="pageLoaded">
+  <ActionBar title="Video Player" />
+  <StackLayout>
+    <VideoPlayer:Video id="nativeVideoPlayer"
+            autoplay="true" 
+            height="300" />
+  </StackLayout>
+</Page>

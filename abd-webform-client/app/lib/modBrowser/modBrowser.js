@@ -4,6 +4,9 @@ module.exports.createBrowser = function() {
 
 function Browser() {
 	this.open = function(url) {
-		
+		helpers.navigate({
+			moduleName : 'components/browserView/browserView',
+			context : {url:url}
+		});
 	}
 }
