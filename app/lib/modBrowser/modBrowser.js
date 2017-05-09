@@ -275,7 +275,7 @@ var showItemWebform = function(item, opts) {
 					topmost.goBack();
 				}
 				if(json.flow) {
-					new FlowEngine(json.flow,{wv:wv}).execute(function() {});
+					new FlowEngine(json.flow).setWv(wv).execute(function() {});
 				}
 			}
 		});
@@ -285,7 +285,7 @@ var showItemWebform = function(item, opts) {
     helpers.navigate(function(){return page;});
 	var flow = item.flow;
 	if(typeof flow != 'undefined') {
-		new FlowEngine(flow,{wv:wv}).execute(function() {});
+		new FlowEngine(flow).setWv(wv).execute(function() {});
 	}
 }
 
@@ -293,10 +293,11 @@ var showItemWebform = function(item, opts) {
 
 
 FLOW_ENGINE_CANCELED = false;
-var FlowEngine = function(flow,opts) {
-	if(typeof opts != 'undefined') opts = {};
+var FlowEngine = function(flow) {
 	var wv = null;
-	if(typeof opts.wv != 'undefined') wv = opts.wv;
+	this.setWv = function(v) {
+		wv = v;
+	}
 	this.flow = flow;
 	this.canceled = false;
 	var vars = {};
