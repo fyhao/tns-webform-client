@@ -368,7 +368,7 @@ var FlowEngine = function(flow) {
 		else if(step.type == 'getValue') {
 			var name = step.name;
 			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value');
-			vars['name'] = value;
+			vars[step.var] = value;
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'addValue') {
