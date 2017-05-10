@@ -393,6 +393,7 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'setclipboard') {
 			clipboard.setText(step.message);
+			setTimeout(next, 1);
 		}
 		else if(step.type == 'wait') {
 			setTimeout(next, step.timeout);
