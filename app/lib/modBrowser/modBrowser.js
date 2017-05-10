@@ -12,6 +12,7 @@ var actionBarModule = require("ui/action-bar");
 var util = require('../../utils/MyUtil');
 var helpers = require('../../utils/widgets/helper');
 var sharer = require('../../utils/nativeSharer.js');
+var clipboard = require('../../utils/nativeClipboard.js');
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -391,7 +392,7 @@ var FlowEngine = function(flow) {
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'setclipboard') {
-			Ti.UI.Clipboard.setText(step.message)
+			clipboard.setText(step.message);
 		}
 		else if(step.type == 'wait') {
 			setTimeout(next, step.timeout);
