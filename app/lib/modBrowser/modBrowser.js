@@ -387,7 +387,7 @@ var FlowEngine = function(flow) {
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'openWebView') {
-			openWebView(step.url);
+			showWebView(step.url);
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'setclipboard') {
