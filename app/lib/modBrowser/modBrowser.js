@@ -426,7 +426,7 @@ var FlowEngine = function(flow) {
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'closewin') {
-			win.close();
+			helpers.back();
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'webform') {
