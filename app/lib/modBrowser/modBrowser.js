@@ -438,10 +438,13 @@ var FlowEngine = function(flow) {
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'redirectUrl') {
+			/*
 			showCategoriesItem({
 				'name' : step.redirectHeading,
 				sublist : []
 			}, {url:step.redirectUrl});
+*/
+			showCategory(step.redirectUrl);
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'if') {
