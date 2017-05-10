@@ -365,6 +365,12 @@ var FlowEngine = function(flow) {
 			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value = "' + value + '"');
 			setTimeout(next, 1);
 		}
+		else if(step.type == 'getValue') {
+			var name = step.name;
+			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value');
+			vars['name'] = value;
+			setTimeout(next, 1);
+		}
 		else if(step.type == 'addValue') {
 			var name = step.name;
 			var value = step.value;
