@@ -24,12 +24,10 @@ driver.init(desiredCaps, function(error) {
 }).delay(5000)
 .then(function() {
 	console.log('click tableview');
-	console.log(driver.elementsByName('Home View'));
-	console.log(driver.elementsByName('Home View').first());
-	return driver.elementsByName('Home View').first().click().delay(3000);
+	return driver.elementsByName('Browse').first().click().delay(3000);
 }).sleep(3000)
 .then(function() {
-	return driver.elementsByName('Sign in4567').first().tap().delay(3000);
+	return driver.elementByAccessibilityId('urlTF').clear().delay(1000).sendKeys('url').delay(3000);
 })
 .acceptAlert().sleep(3000)
 .then(function() {
