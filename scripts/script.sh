@@ -22,10 +22,6 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 
 fi
 
-if test "$TRAVIS_BRANCH" = 'dev'; then
-	npm test
-fi
-
 if test "$TRAVIS_BRANCH" = 'integration'; then
 	npm test
 fi
