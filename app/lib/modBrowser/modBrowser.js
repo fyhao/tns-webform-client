@@ -208,6 +208,8 @@ var showItemWebform = function(item, opts) {
     + 'select{height:30px;font-size:16px;width:360px;}'
     + 'input,textarea,select{margin:5 0 0 5;}'
     + '</style>' + html;
+
+    html += '<script src="app/lib/modBrowser/webview.js"></script>';
     wv.src = html;
     
     var submitBtnCallback = function() {
@@ -288,14 +290,47 @@ var showItemWebform = function(item, opts) {
 	if(typeof flow != 'undefined') {
 		new FlowEngine(flow).setWv(wv).execute(function() {});
 	}
+    wv.on('loadStarted', _interceptCallsFromWebview)
+    var events = item.events;
+    var _js = '';
+    if(typeof events != 'undefined') {
+        for(var _evt in events) {
+            var _arr = _evt.split('_');
+            if(_arr.length != 2) continue;
+            var widgetName = _arr[0];
+            var eventName = _arr[1];
+            if(eventName == 'onclick') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
+            }
+        }
+    }
 
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
 	})
+
+        
+    var _interceptCallsFromWebview = function (args) {
+        var request = args.url;
+        var reqMsgProtocol = 'js2ios:';
+        var reqMsgStartIndex = request.indexOf(reqMsgProtocol);
+        if (reqMsgStartIndex === 0) {
+            var reqMsg = decodeURIComponent(request.substring(reqMsgProtocol.length, request.length));
+            if(reqMsg.indexOf('evt:') == 0) {
+                var data = reqMsg.substring('evt:'.length);
+                handleEventResponse(data);
+            }
+        }
+    }
+    var handleEventResponse = function(data) {
+        for(var _evt in events) {
+            var flowName = events[_evt];
+            var flow = item[flowName];
+            new FlowEngine(flow).setWv(wv).execute(function() {});
+        }
+    }
 }
-
-
 
 
 FLOW_ENGINE_CANCELED = false;
