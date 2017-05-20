@@ -209,9 +209,42 @@ var showItemWebform = function(item, opts) {
     + 'input,textarea,select{margin:5 0 0 5;}'
     + '</style>' + html;
 
-    html += '<script src="app/lib/modBrowser/webview.js"></script>';
-    wv.src = html;
+    html += `<script>var _createIFrame = function (src) {
+    var rootElm = document.documentElement;
+    var newFrameElm = document.createElement("IFRAME");
+    newFrameElm.setAttribute("src", src);
+    rootElm.appendChild(newFrameElm);
+    return newFrameElm;
+};
+var _emitDataToIos = function (data) {
+    var url = "js2ios:" + data;
+    var iFrame = _createIFrame(url);
+    iFrame.parentNode.removeChild(iFrame);
+};
+
+var handleClick = function(widgetName) {
+    return function(e) {
+        _emitDataToIos("evt:" + widgetName + "_onclick");
+    }
+};</script>`;
+
+	var events = item.events;
+    var _js = '';
+    if(typeof events != 'undefined') {
+        for(var _evt in events) {
+            var _arr = _evt.split('_');
+            if(_arr.length != 2) continue;
+            var widgetName = _arr[0];
+            var eventName = _arr[1];
+            if(eventName == 'onclick') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
+            	
+            }
+        }
+    }
+    html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
+    wv.src = html;
     var submitBtnCallback = function() {
     	for(var i = 0; i < params.length; i++) {
     		var param = params[i];
@@ -290,21 +323,8 @@ var showItemWebform = function(item, opts) {
 	if(typeof flow != 'undefined') {
 		new FlowEngine(flow).setWv(wv).execute(function() {});
 	}
-    wv.on('loadStarted', _interceptCallsFromWebview)
-    var events = item.events;
-    var _js = '';
-    if(typeof events != 'undefined') {
-        for(var _evt in events) {
-            var _arr = _evt.split('_');
-            if(_arr.length != 2) continue;
-            var widgetName = _arr[0];
-            var eventName = _arr[1];
-            if(eventName == 'onclick') {
-                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
-            }
-        }
-    }
-
+    
+    
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
@@ -330,6 +350,8 @@ var showItemWebform = function(item, opts) {
             new FlowEngine(flow).setWv(wv).execute(function() {});
         }
     }
+
+    wv.on('loadStarted', _interceptCallsFromWebview)
 }
 
 

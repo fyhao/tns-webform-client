@@ -1,3 +1,5 @@
+alert("weiview")
+/*
 var _createIFrame = function (src) {
     var rootElm = document.documentElement;
     var newFrameElm = document.createElement("IFRAME");
@@ -12,14 +14,6 @@ var _createIFrame = function (src) {
  * 1. Send handshake signal, by loading custom url in iFrame with metadata (eventName, unique responseId)
  * 2. On intercept of this request, iOS calls _getIOSResponse with the responseId to fetch the data.
  */
-var _emitDataToIos = function (data) {
-    var url = 'js2ios:' + data;
-    var iFrame = _createIFrame(url);
-    iFrame.parentNode.removeChild(iFrame);
-};
+ /*
 
-var handleClick = function(widgetName) {
-    return function(e) {
-        _emitDataToIos('evt:' + widgetName + '_onclick');
-    }
-}
+*/
