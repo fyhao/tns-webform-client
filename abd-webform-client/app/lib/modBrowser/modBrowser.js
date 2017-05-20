@@ -209,9 +209,42 @@ var showItemWebform = function(item, opts) {
     + 'input,textarea,select{margin:5 0 0 5;}'
     + '</style>' + html;
 
-    html += '<script src="app/lib/modBrowser/webview.js"></script>';
-    wv.src = html;
+    html += `<script>var _createIFrame = function (src) {
+    var rootElm = document.documentElement;
+    var newFrameElm = document.createElement("IFRAME");
+    newFrameElm.setAttribute("src", src);
+    rootElm.appendChild(newFrameElm);
+    return newFrameElm;
+};
+var _emitDataToIos = function (data) {
+    var url = "js2ios:" + data;
+    var iFrame = _createIFrame(url);
+    iFrame.parentNode.removeChild(iFrame);
+};
+
+var handleClick = function(widgetName) {
+    return function(e) {
+        _emitDataToIos("evt:" + widgetName + "_onclick");
+    }
+};</script>`;
+
+	var events = item.events;
+    var _js = '';
+    if(typeof events != 'undefined') {
+        for(var _evt in events) {
+            var _arr = _evt.split('_');
+            if(_arr.length != 2) continue;
+            var widgetName = _arr[0];
+            var eventName = _arr[1];
+            if(eventName == 'onclick') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
+            	
+            }
+        }
+    }
+    html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
+    wv.src = html;
     var submitBtnCallback = function() {
     	for(var i = 0; i < params.length; i++) {
     		var param = params[i];
@@ -290,21 +323,8 @@ var showItemWebform = function(item, opts) {
 	if(typeof flow != 'undefined') {
 		new FlowEngine(flow).setWv(wv).execute(function() {});
 	}
-    wv.on('loadStarted', _interceptCallsFromWebview)
-    var events = item.events;
-    var _js = '';
-    if(typeof events != 'undefined') {
-        for(var _evt in events) {
-            var _arr = _evt.split('_');
-            if(_arr.length != 2) continue;
-            var widgetName = _arr[0];
-            var eventName = _arr[1];
-            if(eventName == 'onclick') {
-                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
-            }
-        }
-    }
-
+    
+    
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
@@ -330,6 +350,8 @@ var showItemWebform = function(item, opts) {
             new FlowEngine(flow).setWv(wv).execute(function() {});
         }
     }
+
+    wv.on('loadStarted', _interceptCallsFromWebview)
 }
 
 
@@ -341,7 +363,7 @@ var FlowEngine = function(flow) {
 		wv = v;
 		return this;
 	}
-	this.flow = flow;
+	this.flow = clone(flow);
 	this.canceled = false;
 	var vars = {};
 	this.execute = function(done) {
@@ -403,6 +425,7 @@ var FlowEngine = function(flow) {
 		else if(step.type == 'getValue') {
 			var name = step.name;
 			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value');
+			console.log('getValue ' + name + ' = ' + value)
 			vars[step.var] = value;
 			setTimeout(next, 1);
 		}
@@ -551,4 +574,48 @@ var FlowEngine = function(flow) {
 			  dialog.show();
 		}
 	}
+}
+
+var clone = function clone(item) {
+    if (!item) { return item; } // null, undefined values check
+
+    var types = [ Number, String, Boolean ], 
+        result;
+
+    // normalizing primitives if someone did new String('aaa'), or new Number('444');
+    types.forEach(function(type) {
+        if (item instanceof type) {
+            result = type( item );
+        }
+    });
+
+    if (typeof result === "undefined") {
+        if (Object.prototype.toString.call( item ) === "[object Array]") {
+            result = [];
+            item.forEach(function(child, index, array) { 
+                result[index] = clone( child );
+            });
+        } else if (typeof item === "object") {
+            // testing that this is DOM
+            if (item.nodeType && typeof item.cloneNode === "function") {
+                item.cloneNode( true );    
+            } else if (!item.prototype) { // check that this is a literal
+                if (item instanceof Date) {
+                    result = new Date(item);
+                } else {
+                    // it is an object literal
+                    result = {};
+                    for (var i in item) {
+                        result[i] = clone( item[i] );
+                    }
+                }
+            } else {
+                result = item;
+            }
+        } else {
+            result = item;
+        }
+    }
+
+    return result;
 }
