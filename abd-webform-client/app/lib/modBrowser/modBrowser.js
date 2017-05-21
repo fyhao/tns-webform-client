@@ -226,7 +226,14 @@ var handleClick = function(widgetName) {
     return function(e) {
         _emitDataToIos("evt:" + widgetName + "_onclick");
     }
-};</script>`;
+};
+
+var handleChange = function(widgetName) {
+    return function(e) {
+        _emitDataToIos("evt:" + widgetName + "_onchange");
+    }
+};
+</script>`;
 
 	var events = item.events;
     var _js = '';
@@ -238,6 +245,10 @@ var handleClick = function(widgetName) {
             var eventName = _arr[1];
             if(eventName == 'onclick') {
                 _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
+            	
+            }
+			else if(eventName == 'onchange') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("change", handleChange("' + widgetName + '"));\n\n';
             	
             }
         }
