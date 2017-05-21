@@ -323,7 +323,7 @@ var handleChange = function(widgetName) {
 					topmost.goBack();
 				}
 				if(json.flow) {
-					new FlowEngine(json.flow).setWv(wv).execute(function() {});
+					new FlowEngine(json.flow).setItem(item).setWv(wv).execute(function() {});
 				}
 			}
 		});
@@ -333,7 +333,7 @@ var handleChange = function(widgetName) {
     helpers.navigate(function(){return page;});
 	var flow = item.flow;
 	if(typeof flow != 'undefined') {
-		new FlowEngine(flow).setWv(wv).execute(function() {});
+		new FlowEngine(flow).setItem(item).setWv(wv).execute(function() {});
 	}
     
     
@@ -362,7 +362,7 @@ var handleChange = function(widgetName) {
                 var flowName = events[_evt];
                 var flow = item[flowName];
                 console.log('HandleEventResponse flow ' + flowName);
-                new FlowEngine(flow).setWv(wv).execute(function() {});
+                new FlowEngine(flow).setItem(item).setWv(wv).execute(function() {});
             }
         }
     }
@@ -377,6 +377,11 @@ var FlowEngine = function(flow) {
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
+		return this;
+	}
+	var item = null;
+	this.setItem = function(v) {
+		item = v;
 		return this;
 	}
 	this.flow = clone(flow);
@@ -492,7 +497,7 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'requestFlow') {
 			step.callbackJSON = function(json) {
-				new FlowEngine(json.flow).setWv(wv).execute(next);
+				new FlowEngine(json.flow).setItem(item).setWv(wv).execute(next);
 			}
 			util.frequest(step);
 		}
@@ -547,7 +552,7 @@ var FlowEngine = function(flow) {
 			}
 			if(validated) {
 				if(step.yes_subflow != null) {
-					new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+					new FlowEngine(step.yes_subflow).setItem(item).setWv(wv).execute(next);
 				}
 				else {
 					setTimeout(next, 1);
@@ -555,7 +560,7 @@ var FlowEngine = function(flow) {
 			}
 			else {
 				if(step.no_subflow != null) {
-					new FlowEngine(step.no_subflow).setWv(wv).execute(next);	
+					new FlowEngine(step.no_subflow).setItem(item).setWv(wv).execute(next);	
 				}
 				else {
 					setTimeout(next, 1);
@@ -572,7 +577,7 @@ var FlowEngine = function(flow) {
 			  dialog.addEventListener('click', function(e){
 				if(e.index == 0) {
 					if(step.yes_subflow != null) {
-						new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+						new FlowEngine(step.yes_subflow).setItem(item).setWv(wv).execute(next);
 					}
 					else {
 						setTimeout(next, 1);
@@ -580,7 +585,7 @@ var FlowEngine = function(flow) {
 				}
 				else {
 					if(step.no_subflow != null) {
-						new FlowEngine(step.no_subflow).seWv(wv).execute(next);	
+						new FlowEngine(step.no_subflow).setItem(item).seWv(wv).execute(next);	
 					}
 					else {
 						setTimeout(next, 1);
@@ -588,6 +593,15 @@ var FlowEngine = function(flow) {
 				}
 			  });
 			  dialog.show();
+		}
+		else {
+			// search item if any
+			if(typeof item != 'undefined') {
+				var flow = item[step.type];
+				if(typeof flow != 'undefined') {
+					new FlowEngine(flow).setItem(item).seWv(wv).execute(next);
+				}
+			}
 		}
 	}
 }
