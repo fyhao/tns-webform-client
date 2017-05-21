@@ -253,6 +253,7 @@ var handleChange = function(widgetName) {
             }
         }
     }
+
     html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
     wv.src = html;
@@ -355,10 +356,14 @@ var handleChange = function(widgetName) {
         }
     }
     var handleEventResponse = function(data) {
+        console.log('handleEventResponse ' + data)
         for(var _evt in events) {
-            var flowName = events[_evt];
-            var flow = item[flowName];
-            new FlowEngine(flow).setWv(wv).execute(function() {});
+            if(_evt == data) {
+                var flowName = events[_evt];
+                var flow = item[flowName];
+                console.log('HandleEventResponse flow ' + flowName);
+                new FlowEngine(flow).setWv(wv).execute(function() {});
+            }
         }
     }
 

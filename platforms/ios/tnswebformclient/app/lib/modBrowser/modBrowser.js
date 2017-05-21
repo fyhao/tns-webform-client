@@ -226,7 +226,14 @@ var handleClick = function(widgetName) {
     return function(e) {
         _emitDataToIos("evt:" + widgetName + "_onclick");
     }
-};</script>`;
+};
+
+var handleChange = function(widgetName) {
+    return function(e) {
+        _emitDataToIos("evt:" + widgetName + "_onchange");
+    }
+};
+</script>`;
 
 	var events = item.events;
     var _js = '';
@@ -240,8 +247,13 @@ var handleClick = function(widgetName) {
                 _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
             	
             }
+			else if(eventName == 'onchange') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("change", handleChange("' + widgetName + '"));\n\n';
+            	
+            }
         }
     }
+
     html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
     wv.src = html;
@@ -344,10 +356,14 @@ var handleClick = function(widgetName) {
         }
     }
     var handleEventResponse = function(data) {
+        console.log('handleEventResponse ' + data)
         for(var _evt in events) {
-            var flowName = events[_evt];
-            var flow = item[flowName];
-            new FlowEngine(flow).setWv(wv).execute(function() {});
+            if(_evt == data) {
+                var flowName = events[_evt];
+                var flow = item[flowName];
+                console.log('HandleEventResponse flow ' + flowName);
+                new FlowEngine(flow).setWv(wv).execute(function() {});
+            }
         }
     }
 
