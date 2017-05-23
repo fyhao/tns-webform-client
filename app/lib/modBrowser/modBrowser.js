@@ -439,6 +439,7 @@ var FlowEngine = function(flow) {
 		for(var i in v) {
 			vars[i] = v[i];
 		}
+		return this;
 	}
 	this.flow = util.clone(flow);
 	this.canceled = false;
@@ -763,9 +764,6 @@ var FlowEngine = function(flow) {
 							inputVars[i] = vars[i];
 						}
 					}
-					console.log(flow);
-					console.log(ctx);
-					console.log(inputVars);
 					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
 						if(typeof outputVars != 'undefined') {
 							for(var i in outputVars) {
