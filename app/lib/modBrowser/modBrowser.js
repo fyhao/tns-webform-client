@@ -749,6 +749,7 @@ var FlowEngine = function(flow) {
 			// search ctx.flows if any
 			if(typeof ctx.flows != 'undefined') {
 				var flow = ctx.flows[step.type];
+				console.log('search flow ' + step.type + " = " + (typeof flow));
 				if(typeof flow != 'undefined') {
 					var inputVars = {};
 					for(var i in step) {
