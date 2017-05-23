@@ -322,8 +322,6 @@ var handleChange = function(widgetName) {
 				if(json.closewin) {
 					topmost.goBack();
 				}
-				if(json.flow) {
-					new FlowEngine(json.flow).setItem(item).setWv(wv).execute(function() {});
 				
 				//#47 submit callback level
 				
@@ -352,10 +350,6 @@ var handleChange = function(widgetName) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
-	var flow = item.flow;
-	if(typeof flow != 'undefined') {
-		new FlowEngine(flow).setItem(item).setWv(wv).execute(function() {});
-	}
     
     
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
