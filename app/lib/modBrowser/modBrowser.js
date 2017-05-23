@@ -757,7 +757,7 @@ var FlowEngine = function(flow) {
 						if(i == 'inputall') continue;
 						inputVars[i] = step[i];
 					}
-					if(step.inputall) {
+					if(typeof step.inputall != 'undefined' && step.inputall) {
 						for(var i in vars) {
 							inputVars[i] = vars[i];
 						}
