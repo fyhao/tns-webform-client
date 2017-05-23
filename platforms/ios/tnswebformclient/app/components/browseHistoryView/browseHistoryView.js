@@ -51,7 +51,6 @@ function menuItemTap(args) {
     modBrowse.pushHistory(url, function(status) {
         var browser = modBrowser.createBrowser();
         browser.open(url);
-        alert("URL is opened");
     });     
 }
 
