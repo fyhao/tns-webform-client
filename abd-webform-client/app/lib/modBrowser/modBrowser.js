@@ -322,8 +322,27 @@ var handleChange = function(widgetName) {
 				if(json.closewin) {
 					topmost.goBack();
 				}
-				if(json.flow) {
-					new FlowEngine(json.flow).setWv(wv).execute(function() {});
+				
+				//#47 submit callback level
+				
+				if(typeof json.flows != 'undefined') {
+					for(var i in json.flows) {
+						ctx.flows[i] = json.flows[i];
+					}
+				}
+	
+				var flow = json.flow;
+				if(typeof flow != 'undefined') {
+					if(typeof flow == 'object') {
+						// flow object
+						new FlowEngine(flow).setContext(ctx).execute(function() {});
+					}
+					else if(typeof flow == 'string') {
+						// flow name
+						if(typeof ctx.flows[flow] != 'undefined') {
+							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+						}
+					}
 				}
 			}
 		});
@@ -331,10 +350,7 @@ var handleChange = function(widgetName) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
-	var flow = item.flow;
-	if(typeof flow != 'undefined') {
-		new FlowEngine(flow).setWv(wv).execute(function() {});
-	}
+	
     
     
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
@@ -360,28 +376,74 @@ var handleChange = function(widgetName) {
         for(var _evt in events) {
             if(_evt == data) {
                 var flowName = events[_evt];
-                var flow = item[flowName];
-                console.log('HandleEventResponse flow ' + flowName);
-                new FlowEngine(flow).setWv(wv).execute(function() {});
+                if(typeof ctx.flows[flowName] != 'undefined') {
+					new FlowEngine(ctx.flows[flowName]).setContext(ctx).execute(function() {});
+				}
             }
         }
     }
 
     wv.on('loadStarted', _interceptCallsFromWebview)
+	
+	var ctx = {}; // context object
+	ctx.item = item;
+	ctx.wv = wv;
+	ctx.flows = {};
+	
+	// #47 iterate all webform level flows and put into context flow collection
+	if(typeof item.flows != 'undefined') {
+		for(var i in item.flows) {
+			ctx.flows[i] = item.flows[i];
+		}
+	}
+	
+	var flow = item.flow;
+	// #47 FlowEngine webform level
+	if(typeof flow != 'undefined') {
+		if(typeof flow == 'object') {
+			// flow object
+			new FlowEngine(flow).setContext(ctx).execute(function() {});
+		}
+		else if(typeof flow == 'string') {
+			// flow name
+			if(typeof ctx.flows[flow] != 'undefined') {
+				new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+			}
+		}
+	}
 }
 
 
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
 	FLOW_ENGINE_CANCELED = false;
+	var vars = {};
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
 		return this;
 	}
-	this.flow = clone(flow);
+	var item = null;
+	this.setItem = function(v) {
+		item = v;
+		return this;
+	}
+	var ctx = null;
+	this.setContext = function(v) {
+		ctx = v;
+		wv = ctx.wv;
+		item = ctx.item;
+		return this;
+	}
+	this.setInputVars = function(v) {
+		for(var i in v) {
+			vars[i] = v[i];
+		}
+		return this;
+	}
+	this.flow = util.clone(flow);
 	this.canceled = false;
-	var vars = {};
+	
 	this.execute = function(done) {
 		console.log('Execute')
 		var steps = this.flow.steps;
@@ -393,7 +455,18 @@ var FlowEngine = function(flow) {
 					processStep(steps[curStep], checkNext);
 				}
 				else {
-					setTimeout(done, 1);
+					if(done.length == 1) {
+						setTimeout(function() {
+							var outputVars = {};
+							for(var i in vars) {
+								outputVars[i] = vars[i];
+							}
+							done(outputVars);
+						}, 1);
+					}
+					else {
+						setTimeout(done, 1);
+					}
 				}
 			}
 			setTimeout(checkNext, 300);
@@ -492,7 +565,32 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'requestFlow') {
 			step.callbackJSON = function(json) {
-				new FlowEngine(json.flow).setWv(wv).execute(next);
+				//#47 request flow step level
+				if(typeof json.flows != 'undefined') {
+					for(var i in json.flows) {
+						ctx.flows[i] = json.flows[i];
+					}
+				}
+	
+				var flow = json.flow;
+				if(typeof flow != 'undefined') {
+					if(typeof flow == 'object') {
+						// flow object
+						new FlowEngine(flow).setContext(ctx).execute(next);
+					}
+					else if(typeof flow == 'string') {
+						// flow name
+						if(typeof ctx.flows[flow] != 'undefined') {
+							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(next);
+						}
+					}
+					else {
+						setTimeout(next, 1);
+					}
+				}
+				else {
+					setTimeout(next, 1);
+				}
 			}
 			util.frequest(step);
 		}
@@ -547,7 +645,22 @@ var FlowEngine = function(flow) {
 			}
 			if(validated) {
 				if(step.yes_subflow != null) {
-					new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+					var tempFlow = null;
+					if(typeof ctx.flows != 'undefined') {
+						tempFlow = ctx.flows[step.yes_subflow];
+					}
+					var inputVars = {};
+					for(var i in vars) {
+						inputVars[i] = vars[i];
+					}
+					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
 					setTimeout(next, 1);
@@ -555,7 +668,22 @@ var FlowEngine = function(flow) {
 			}
 			else {
 				if(step.no_subflow != null) {
-					new FlowEngine(step.no_subflow).setWv(wv).execute(next);	
+					var tempFlow = null;
+					if(typeof ctx.flows != 'undefined') {
+						tempFlow = ctx.flows[step.no_subflow];
+					}
+					var inputVars = {};
+					for(var i in vars) {
+						inputVars[i] = vars[i];
+					}
+					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
 					setTimeout(next, 1);
@@ -572,7 +700,22 @@ var FlowEngine = function(flow) {
 			  dialog.addEventListener('click', function(e){
 				if(e.index == 0) {
 					if(step.yes_subflow != null) {
-						new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+						var tempFlow = null;
+						if(typeof ctx.flows != 'undefined') {
+							tempFlow = ctx.flows[step.yes_subflow];
+						}
+						var inputVars = {};
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+							if(typeof outputVars != 'undefined') {
+								for(var i in outputVars) {
+									vars[i] = outputVars[i];
+								}
+							}
+							setTimeout(next, 1);
+						});
 					}
 					else {
 						setTimeout(next, 1);
@@ -580,7 +723,22 @@ var FlowEngine = function(flow) {
 				}
 				else {
 					if(step.no_subflow != null) {
-						new FlowEngine(step.no_subflow).seWv(wv).execute(next);	
+						var tempFlow = null;
+						if(typeof ctx.flows != 'undefined') {
+							tempFlow = ctx.flows[step.no_subflow];
+						}
+						var inputVars = {};
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+							if(typeof outputVars != 'undefined') {
+								for(var i in outputVars) {
+									vars[i] = outputVars[i];
+								}
+							}
+							setTimeout(next, 1);
+						});
 					}
 					else {
 						setTimeout(next, 1);
@@ -589,49 +747,34 @@ var FlowEngine = function(flow) {
 			  });
 			  dialog.show();
 		}
+		else {
+			// search ctx.flows if any
+			if(typeof ctx.flows != 'undefined') {
+				var flow = ctx.flows[step.type];
+				console.log('search flow ' + step.type + " = " + (typeof flow));
+				if(typeof flow != 'undefined') {
+					var inputVars = {};
+					for(var i in step) {
+						if(i == 'type') continue;
+						if(i == 'inputall') continue;
+						inputVars[i] = step[i];
+					}
+					if(typeof step.inputall != 'undefined' && step.inputall) {
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+					}
+					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
+				}
+			}
+		}
 	}
 }
 
-var clone = function clone(item) {
-    if (!item) { return item; } // null, undefined values check
-
-    var types = [ Number, String, Boolean ], 
-        result;
-
-    // normalizing primitives if someone did new String('aaa'), or new Number('444');
-    types.forEach(function(type) {
-        if (item instanceof type) {
-            result = type( item );
-        }
-    });
-
-    if (typeof result === "undefined") {
-        if (Object.prototype.toString.call( item ) === "[object Array]") {
-            result = [];
-            item.forEach(function(child, index, array) { 
-                result[index] = clone( child );
-            });
-        } else if (typeof item === "object") {
-            // testing that this is DOM
-            if (item.nodeType && typeof item.cloneNode === "function") {
-                item.cloneNode( true );    
-            } else if (!item.prototype) { // check that this is a literal
-                if (item instanceof Date) {
-                    result = new Date(item);
-                } else {
-                    // it is an object literal
-                    result = {};
-                    for (var i in item) {
-                        result[i] = clone( item[i] );
-                    }
-                }
-            } else {
-                result = item;
-            }
-        } else {
-            result = item;
-        }
-    }
-
-    return result;
-}
