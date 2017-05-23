@@ -659,7 +659,22 @@ var FlowEngine = function(flow) {
 			}
 			else {
 				if(step.no_subflow != null) {
-					new FlowEngine(step.no_subflow).setItem(item).setWv(wv).execute(next);	
+					var tempFlow = null;
+					if(typeof ctx.flows != 'undefined') {
+						tempFlow = ctx.flows[step.no_subflow];
+					}
+					var inputVars = {};
+					for(var i in vars) {
+						inputVars[i] = vars[i];
+					}
+					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
 					setTimeout(next, 1);
