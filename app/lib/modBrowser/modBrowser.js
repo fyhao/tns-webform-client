@@ -446,7 +446,18 @@ var FlowEngine = function(flow) {
 					processStep(steps[curStep], checkNext);
 				}
 				else {
-					setTimeout(done, 1);
+					if(done.length == 1) {
+						setTimeout(function() {
+							var outputVars = {};
+							for(var i in vars) {
+								outputVars[i] = vars[i];
+							}
+							done(outputVars);
+						}, 1);
+					}
+					else {
+						setTimeout(done, 1);
+					}
 				}
 			}
 			setTimeout(checkNext, 300);
@@ -669,11 +680,29 @@ var FlowEngine = function(flow) {
 			  dialog.show();
 		}
 		else {
-			// search item if any
-			if(typeof item != 'undefined') {
-				var flow = item[step.type];
+			// search ctx.flows if any
+			if(typeof ctx.flows != 'undefined') {
+				var flow = ctx.flows[step.type];
 				if(typeof flow != 'undefined') {
-					new FlowEngine(flow).setItem(item).seWv(wv).execute(next);
+					var inputVars = {};
+					for(var i in step) {
+						if(i == 'type') continue;
+						if(i == 'inputall') continue;
+						inputVars[i] = step[i];
+					}
+					if(step.inputall) {
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+					}
+					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 			}
 		}
