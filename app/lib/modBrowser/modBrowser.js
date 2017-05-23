@@ -417,6 +417,7 @@ var handleChange = function(widgetName) {
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
 	FLOW_ENGINE_CANCELED = false;
+	var vars = {};
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
@@ -441,7 +442,7 @@ var FlowEngine = function(flow) {
 	}
 	this.flow = util.clone(flow);
 	this.canceled = false;
-	var vars = {};
+	
 	this.execute = function(done) {
 		console.log('Execute')
 		var steps = this.flow.steps;
@@ -762,6 +763,9 @@ var FlowEngine = function(flow) {
 							inputVars[i] = vars[i];
 						}
 					}
+					console.log(flow);
+					console.log(ctx);
+					console.log(inputVars);
 					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
 						if(typeof outputVars != 'undefined') {
 							for(var i in outputVars) {
