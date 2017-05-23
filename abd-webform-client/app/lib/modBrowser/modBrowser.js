@@ -208,8 +208,55 @@ var showItemWebform = function(item, opts) {
     + 'select{height:30px;font-size:16px;width:360px;}'
     + 'input,textarea,select{margin:5 0 0 5;}'
     + '</style>' + html;
-    wv.src = html;
+
+    html += `<script>var _createIFrame = function (src) {
+    var rootElm = document.documentElement;
+    var newFrameElm = document.createElement("IFRAME");
+    newFrameElm.setAttribute("src", src);
+    rootElm.appendChild(newFrameElm);
+    return newFrameElm;
+};
+var _emitDataToIos = function (data) {
+    var url = "js2ios:" + data;
+    var iFrame = _createIFrame(url);
+    iFrame.parentNode.removeChild(iFrame);
+};
+
+var handleClick = function(widgetName) {
+    return function(e) {
+        _emitDataToIos("evt:" + widgetName + "_onclick");
+    }
+};
+
+var handleChange = function(widgetName) {
+    return function(e) {
+        _emitDataToIos("evt:" + widgetName + "_onchange");
+    }
+};
+</script>`;
+
+	var events = item.events;
+    var _js = '';
+    if(typeof events != 'undefined') {
+        for(var _evt in events) {
+            var _arr = _evt.split('_');
+            if(_arr.length != 2) continue;
+            var widgetName = _arr[0];
+            var eventName = _arr[1];
+            if(eventName == 'onclick') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
+            	
+            }
+			else if(eventName == 'onchange') {
+                _js += 'document.getElementById("' + widgetName + '").addEventListener("change", handleChange("' + widgetName + '"));\n\n';
+            	
+            }
+        }
+    }
+
+    html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
+    wv.src = html;
     var submitBtnCallback = function() {
     	for(var i = 0; i < params.length; i++) {
     		var param = params[i];
@@ -275,8 +322,27 @@ var showItemWebform = function(item, opts) {
 				if(json.closewin) {
 					topmost.goBack();
 				}
-				if(json.flow) {
-					new FlowEngine(json.flow).setWv(wv).execute(function() {});
+				
+				//#47 submit callback level
+				
+				if(typeof json.flows != 'undefined') {
+					for(var i in json.flows) {
+						ctx.flows[i] = json.flows[i];
+					}
+				}
+	
+				var flow = json.flow;
+				if(typeof flow != 'undefined') {
+					if(typeof flow == 'object') {
+						// flow object
+						new FlowEngine(flow).setContext(ctx).execute(function() {});
+					}
+					else if(typeof flow == 'string') {
+						// flow name
+						if(typeof ctx.flows[flow] != 'undefined') {
+							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+						}
+					}
 				}
 			}
 		});
@@ -284,31 +350,100 @@ var showItemWebform = function(item, opts) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
-	var flow = item.flow;
-	if(typeof flow != 'undefined') {
-		new FlowEngine(flow).setWv(wv).execute(function() {});
-	}
-
+	
+    
+    
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
 	})
+
+        
+    var _interceptCallsFromWebview = function (args) {
+        var request = args.url;
+        var reqMsgProtocol = 'js2ios:';
+        var reqMsgStartIndex = request.indexOf(reqMsgProtocol);
+        if (reqMsgStartIndex === 0) {
+            var reqMsg = decodeURIComponent(request.substring(reqMsgProtocol.length, request.length));
+            if(reqMsg.indexOf('evt:') == 0) {
+                var data = reqMsg.substring('evt:'.length);
+                handleEventResponse(data);
+            }
+        }
+    }
+    var handleEventResponse = function(data) {
+        console.log('handleEventResponse ' + data)
+        for(var _evt in events) {
+            if(_evt == data) {
+                var flowName = events[_evt];
+                if(typeof ctx.flows[flowName] != 'undefined') {
+					new FlowEngine(ctx.flows[flowName]).setContext(ctx).execute(function() {});
+				}
+            }
+        }
+    }
+
+    wv.on('loadStarted', _interceptCallsFromWebview)
+	
+	var ctx = {}; // context object
+	ctx.item = item;
+	ctx.wv = wv;
+	ctx.flows = {};
+	
+	// #47 iterate all webform level flows and put into context flow collection
+	if(typeof item.flows != 'undefined') {
+		for(var i in item.flows) {
+			ctx.flows[i] = item.flows[i];
+		}
+	}
+	
+	var flow = item.flow;
+	// #47 FlowEngine webform level
+	if(typeof flow != 'undefined') {
+		if(typeof flow == 'object') {
+			// flow object
+			new FlowEngine(flow).setContext(ctx).execute(function() {});
+		}
+		else if(typeof flow == 'string') {
+			// flow name
+			if(typeof ctx.flows[flow] != 'undefined') {
+				new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+			}
+		}
+	}
 }
-
-
 
 
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
 	FLOW_ENGINE_CANCELED = false;
+	var vars = {};
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
 		return this;
 	}
-	this.flow = flow;
+	var item = null;
+	this.setItem = function(v) {
+		item = v;
+		return this;
+	}
+	var ctx = null;
+	this.setContext = function(v) {
+		ctx = v;
+		wv = ctx.wv;
+		item = ctx.item;
+		return this;
+	}
+	this.setInputVars = function(v) {
+		for(var i in v) {
+			vars[i] = v[i];
+		}
+		return this;
+	}
+	this.flow = util.clone(flow);
 	this.canceled = false;
-	var vars = {};
+	
 	this.execute = function(done) {
 		console.log('Execute')
 		var steps = this.flow.steps;
@@ -320,7 +455,18 @@ var FlowEngine = function(flow) {
 					processStep(steps[curStep], checkNext);
 				}
 				else {
-					setTimeout(done, 1);
+					if(done.length == 1) {
+						setTimeout(function() {
+							var outputVars = {};
+							for(var i in vars) {
+								outputVars[i] = vars[i];
+							}
+							done(outputVars);
+						}, 1);
+					}
+					else {
+						setTimeout(done, 1);
+					}
 				}
 			}
 			setTimeout(checkNext, 300);
@@ -368,6 +514,7 @@ var FlowEngine = function(flow) {
 		else if(step.type == 'getValue') {
 			var name = step.name;
 			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value');
+			console.log('getValue ' + name + ' = ' + value)
 			vars[step.var] = value;
 			setTimeout(next, 1);
 		}
@@ -418,7 +565,32 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'requestFlow') {
 			step.callbackJSON = function(json) {
-				new FlowEngine(json.flow).setWv(wv).execute(next);
+				//#47 request flow step level
+				if(typeof json.flows != 'undefined') {
+					for(var i in json.flows) {
+						ctx.flows[i] = json.flows[i];
+					}
+				}
+	
+				var flow = json.flow;
+				if(typeof flow != 'undefined') {
+					if(typeof flow == 'object') {
+						// flow object
+						new FlowEngine(flow).setContext(ctx).execute(next);
+					}
+					else if(typeof flow == 'string') {
+						// flow name
+						if(typeof ctx.flows[flow] != 'undefined') {
+							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(next);
+						}
+					}
+					else {
+						setTimeout(next, 1);
+					}
+				}
+				else {
+					setTimeout(next, 1);
+				}
 			}
 			util.frequest(step);
 		}
@@ -473,7 +645,22 @@ var FlowEngine = function(flow) {
 			}
 			if(validated) {
 				if(step.yes_subflow != null) {
-					new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+					var tempFlow = null;
+					if(typeof ctx.flows != 'undefined') {
+						tempFlow = ctx.flows[step.yes_subflow];
+					}
+					var inputVars = {};
+					for(var i in vars) {
+						inputVars[i] = vars[i];
+					}
+					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
 					setTimeout(next, 1);
@@ -481,7 +668,22 @@ var FlowEngine = function(flow) {
 			}
 			else {
 				if(step.no_subflow != null) {
-					new FlowEngine(step.no_subflow).setWv(wv).execute(next);	
+					var tempFlow = null;
+					if(typeof ctx.flows != 'undefined') {
+						tempFlow = ctx.flows[step.no_subflow];
+					}
+					var inputVars = {};
+					for(var i in vars) {
+						inputVars[i] = vars[i];
+					}
+					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
 					setTimeout(next, 1);
@@ -498,7 +700,22 @@ var FlowEngine = function(flow) {
 			  dialog.addEventListener('click', function(e){
 				if(e.index == 0) {
 					if(step.yes_subflow != null) {
-						new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+						var tempFlow = null;
+						if(typeof ctx.flows != 'undefined') {
+							tempFlow = ctx.flows[step.yes_subflow];
+						}
+						var inputVars = {};
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+							if(typeof outputVars != 'undefined') {
+								for(var i in outputVars) {
+									vars[i] = outputVars[i];
+								}
+							}
+							setTimeout(next, 1);
+						});
 					}
 					else {
 						setTimeout(next, 1);
@@ -506,7 +723,22 @@ var FlowEngine = function(flow) {
 				}
 				else {
 					if(step.no_subflow != null) {
-						new FlowEngine(step.no_subflow).seWv(wv).execute(next);	
+						var tempFlow = null;
+						if(typeof ctx.flows != 'undefined') {
+							tempFlow = ctx.flows[step.no_subflow];
+						}
+						var inputVars = {};
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+							if(typeof outputVars != 'undefined') {
+								for(var i in outputVars) {
+									vars[i] = outputVars[i];
+								}
+							}
+							setTimeout(next, 1);
+						});
 					}
 					else {
 						setTimeout(next, 1);
@@ -515,5 +747,34 @@ var FlowEngine = function(flow) {
 			  });
 			  dialog.show();
 		}
+		else {
+			// search ctx.flows if any
+			if(typeof ctx.flows != 'undefined') {
+				var flow = ctx.flows[step.type];
+				console.log('search flow ' + step.type + " = " + (typeof flow));
+				if(typeof flow != 'undefined') {
+					var inputVars = {};
+					for(var i in step) {
+						if(i == 'type') continue;
+						if(i == 'inputall') continue;
+						inputVars[i] = step[i];
+					}
+					if(typeof step.inputall != 'undefined' && step.inputall) {
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+					}
+					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
+				}
+			}
+		}
 	}
 }
+
