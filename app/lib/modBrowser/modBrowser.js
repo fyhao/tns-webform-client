@@ -389,6 +389,33 @@ var handleChange = function(widgetName) {
     }
 
     wv.on('loadStarted', _interceptCallsFromWebview)
+	
+	var ctx = {}; // context object
+	ctx.item = item;
+	ctx.wv = wv;
+	ctx.flows = {};
+	
+	// #47 iterate all webform level flows and put into context flow collection
+	if(typeof item.flows != 'undefined') {
+		for(var i in item.flows) {
+			ctx.flows[i] = item.flows[i];
+		}
+	}
+	
+	var flow = item.flow;
+	// #47 FlowEngine webform level
+	if(typeof flow != 'undefined') {
+		if(typeof flow == 'object') {
+			// flow object
+			new FlowEngine(flow).setContext(ctx).execute(function() {});
+		}
+		else if(typeof flow == 'string') {
+			// flow name
+			if(typeof ctx.flows[flow] != 'undefined') {
+				new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+			}
+		}
+	}
 }
 
 
