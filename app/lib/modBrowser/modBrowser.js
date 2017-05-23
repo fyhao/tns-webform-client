@@ -376,9 +376,9 @@ var handleChange = function(widgetName) {
         for(var _evt in events) {
             if(_evt == data) {
                 var flowName = events[_evt];
-                var flow = item[flowName];
-                console.log('HandleEventResponse flow ' + flowName);
-                new FlowEngine(flow).setItem(item).setWv(wv).execute(function() {});
+                if(typeof ctx.flows[flowName] != 'undefined') {
+					new FlowEngine(ctx.flows[flowName]).setContext(ctx).execute(function() {});
+				}
             }
         }
     }
