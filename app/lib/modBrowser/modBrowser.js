@@ -400,7 +400,7 @@ var handleChange = function(widgetName) {
 	var flow = item.flow;
 	// #47 FlowEngine webform level
 	if(typeof flow != 'undefined') {
-		console.log('WEBFORM level form type ' + typeof(flow));
+		console.log('WEBFORM level form type ' + (typeof flow) );
 		if(typeof flow == 'object') {
 			// flow object
 			new FlowEngine(flow).setContext(ctx).execute(function() {});
