@@ -350,6 +350,7 @@ var handleChange = function(widgetName) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
+	
     
     
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
