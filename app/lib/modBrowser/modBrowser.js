@@ -432,6 +432,18 @@ var FlowEngine = function(flow) {
 		item = v;
 		return this;
 	}
+	var ctx = null;
+	this.setContext = function(v) {
+		ctx = v;
+		wv = ctx.wv;
+		item = ctx.item;
+		return this;
+	}
+	this.setInputVars = function(v) {
+		for(var i in v) {
+			vars[i] = v[i];
+		}
+	}
 	this.flow = util.clone(flow);
 	this.canceled = false;
 	var vars = {};
