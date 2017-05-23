@@ -556,7 +556,6 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'requestFlow') {
 			step.callbackJSON = function(json) {
-				new FlowEngine(json.flow).setItem(item).setWv(wv).execute(next);
 				//#47 request flow step level
 				if(typeof json.flows != 'undefined') {
 					for(var i in json.flows) {
@@ -637,7 +636,22 @@ var FlowEngine = function(flow) {
 			}
 			if(validated) {
 				if(step.yes_subflow != null) {
-					new FlowEngine(step.yes_subflow).setItem(item).setWv(wv).execute(next);
+					var tempFlow = null;
+					if(typeof ctx.flows != 'undefined') {
+						tempFlow = ctx.flows[step.yes_subflow];
+					}
+					var inputVars = {};
+					for(var i in vars) {
+						inputVars[i] = vars[i];
+					}
+					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
 					setTimeout(next, 1);
@@ -662,7 +676,22 @@ var FlowEngine = function(flow) {
 			  dialog.addEventListener('click', function(e){
 				if(e.index == 0) {
 					if(step.yes_subflow != null) {
-						new FlowEngine(step.yes_subflow).setItem(item).setWv(wv).execute(next);
+						var tempFlow = null;
+						if(typeof ctx.flows != 'undefined') {
+							tempFlow = ctx.flows[step.yes_subflow];
+						}
+						var inputVars = {};
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+							if(typeof outputVars != 'undefined') {
+								for(var i in outputVars) {
+									vars[i] = outputVars[i];
+								}
+							}
+							setTimeout(next, 1);
+						});
 					}
 					else {
 						setTimeout(next, 1);
@@ -670,7 +699,22 @@ var FlowEngine = function(flow) {
 				}
 				else {
 					if(step.no_subflow != null) {
-						new FlowEngine(step.no_subflow).setItem(item).seWv(wv).execute(next);	
+						var tempFlow = null;
+						if(typeof ctx.flows != 'undefined') {
+							tempFlow = ctx.flows[step.no_subflow];
+						}
+						var inputVars = {};
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+							if(typeof outputVars != 'undefined') {
+								for(var i in outputVars) {
+									vars[i] = outputVars[i];
+								}
+							}
+							setTimeout(next, 1);
+						});
 					}
 					else {
 						setTimeout(next, 1);
