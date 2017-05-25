@@ -389,6 +389,7 @@ var handleChange = function(widgetName) {
 	ctx.item = item;
 	ctx.wv = wv;
 	ctx.flows = {};
+	ctx.vars = {};
 	
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {
@@ -484,6 +485,9 @@ var FlowEngine = function(flow) {
 	var replaceVars = function(c) {
 		for(var k in vars) {
 			c = replaceAll(c, '##' + k + '##', vars[k]);
+		}
+		for(var k in ctx.vars) {
+			c = replaceAll(c, '##' + k + '##', ctx.vars[k]);
 		}
 		return c;
 	}
@@ -596,6 +600,9 @@ var FlowEngine = function(flow) {
 		}
 		else if(step.type == 'setVar') {
 			vars[step.name] = step.value;
+			if(typeof step.global != 'undefined' && step.global == '1') {
+				ctx.vars[step.name] = step.value;
+			}
 			setTimeout(next, 1);
 		}
 		else if(step.type == 'evaljs') {
