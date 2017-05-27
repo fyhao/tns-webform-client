@@ -1,3 +1,4 @@
+var util = require('../../utils/MyUtil');
 
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
