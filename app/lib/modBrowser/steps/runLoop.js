@@ -17,8 +17,8 @@ var processLoop = function(ctx, step, next) {
 	var start = 0;
 	if(typeof step.start != 'undefined') start = parseInt(step.start);
 	var end = parseInt(step.end);
-	var step = 1;
-	if(typeof step.step != 'undefined') step = parseInt(step.step);
+	var _step = 1;
+	if(typeof step.step != 'undefined') _step = parseInt(step.step);
 	var i = start; // for start
 	var checkNext = function() {
 		if(i < end) { // for end condition
@@ -33,7 +33,7 @@ var processLoop = function(ctx, step, next) {
 						ctx._vars[i] = outputVars[i];
 					}
 				}
-				i += step; // for step
+				i += _step; // for step
 				setTimeout(checkNext, 1);
 			});
 		}
