@@ -34,6 +34,8 @@ module.exports = {
 							ctx._vars[i] = outputVars[i];
 						}
 					}
+					//console.log('IF ctx vars outputvars')
+					//console.log(JSON.stringify(ctx._vars))
 					setTimeout(next, 1);
 				});
 			}

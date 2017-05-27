@@ -490,7 +490,7 @@ var FlowEngine = function(flow) {
 	}
 	var replaceVars = function(c) {
 		for(var k in ctx._vars) {
-			c = replaceAll(c, '##' + k + '##', vars[k]);
+			c = replaceAll(c, '##' + k + '##', ctx._vars[k]);
 		}
 		for(var k in ctx.vars) {
 			c = replaceAll(c, '##' + k + '##', ctx.vars[k]);
@@ -511,11 +511,12 @@ var FlowEngine = function(flow) {
 	var processStep = function(step, next) {
 		console.log('processStep ' + FLOW_ENGINE_CANCELED);
 		console.log(JSON.stringify(step)); 
+		//console.log(JSON.stringify(ctx._vars));
 		if(FLOW_ENGINE_CANCELED) {
 			return;
 		}
 		step = replaceVarsStep(step);
-		
+		//console.log(JSON.stringify(step)); 
 		if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
 			showItemWebform(step.webform, {
 				refresh:function() {
@@ -538,7 +539,7 @@ var FlowEngine = function(flow) {
 			// search ctx.flows if any
 			if(typeof ctx.flows != 'undefined') {
 				var flow = ctx.flows[step.type];
-				console.log('search flow ' + step.type + " = " + (typeof flow));
+				//console.log('search flow ' + step.type + " = " + (typeof flow));
 				if(typeof flow != 'undefined') {
 					var inputVars = {};
 					for(var i in step) {

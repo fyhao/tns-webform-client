@@ -392,7 +392,9 @@ var handleChange = function(widgetName) {
 	ctx.wv = wv;
 	ctx.flows = {};
 	ctx.vars = {};
-	
+	ctx.createFlowEngine = function(flow) {
+		return new FlowEngine(flow).setContext(ctx);
+	}
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {
 		for(var i in item.flows) {
@@ -431,16 +433,18 @@ var FlowEngine = function(flow) {
 		item = v;
 		return this;
 	}
-	var ctx = null;
+	var ctx = {};
 	this.setContext = function(v) {
 		ctx = v;
 		wv = ctx.wv;
 		item = ctx.item;
+		// initialize ctx._vars for local var for step use
+		ctx._vars = vars;
 		return this;
 	}
 	this.setInputVars = function(v) {
 		for(var i in v) {
-			vars[i] = v[i];
+			ctx._vars[i] = v[i];
 		}
 		return this;
 	}
@@ -461,8 +465,8 @@ var FlowEngine = function(flow) {
 					if(done.length == 1) {
 						setTimeout(function() {
 							var outputVars = {};
-							for(var i in vars) {
-								outputVars[i] = vars[i];
+							for(var i in ctx._vars) {
+								outputVars[i] = ctx._vars[i];
 							}
 							done(outputVars);
 						}, 1);
@@ -485,8 +489,8 @@ var FlowEngine = function(flow) {
 		return s;
 	}
 	var replaceVars = function(c) {
-		for(var k in vars) {
-			c = replaceAll(c, '##' + k + '##', vars[k]);
+		for(var k in ctx._vars) {
+			c = replaceAll(c, '##' + k + '##', ctx._vars[k]);
 		}
 		for(var k in ctx.vars) {
 			c = replaceAll(c, '##' + k + '##', ctx.vars[k]);
@@ -507,12 +511,12 @@ var FlowEngine = function(flow) {
 	var processStep = function(step, next) {
 		console.log('processStep ' + FLOW_ENGINE_CANCELED);
 		console.log(JSON.stringify(step)); 
+		//console.log(JSON.stringify(ctx._vars));
 		if(FLOW_ENGINE_CANCELED) {
 			return;
 		}
 		step = replaceVarsStep(step);
-		// initialize ctx._vars for local var for step use
-		ctx._vars = vars;
+		//console.log(JSON.stringify(step)); 
 		if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
 			showItemWebform(step.webform, {
 				refresh:function() {
@@ -535,7 +539,7 @@ var FlowEngine = function(flow) {
 			// search ctx.flows if any
 			if(typeof ctx.flows != 'undefined') {
 				var flow = ctx.flows[step.type];
-				console.log('search flow ' + step.type + " = " + (typeof flow));
+				//console.log('search flow ' + step.type + " = " + (typeof flow));
 				if(typeof flow != 'undefined') {
 					var inputVars = {};
 					for(var i in step) {
@@ -544,14 +548,14 @@ var FlowEngine = function(flow) {
 						inputVars[i] = step[i];
 					}
 					if(typeof step.inputall != 'undefined' && step.inputall) {
-						for(var i in vars) {
-							inputVars[i] = vars[i];
+						for(var i in ctx._vars) {
+							inputVars[i] = ctx._vars[i];
 						}
 					}
 					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
 						if(typeof outputVars != 'undefined') {
 							for(var i in outputVars) {
-								vars[i] = outputVars[i];
+								ctx._vars[i] = outputVars[i];
 							}
 						}
 						setTimeout(next, 1);
