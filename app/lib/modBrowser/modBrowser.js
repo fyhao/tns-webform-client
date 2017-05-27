@@ -486,18 +486,12 @@ var FlowEngine = function(flow) {
 	this.cancel = function() {
 		this.canceled = true;
 	}
-	var replaceAll = function(s, n,v) {
-		while(s.indexOf(n) != -1) {
-			s = s.replace(n,v);
-		}
-		return s;
-	}
 	var replaceVars = function(c) {
 		for(var k in ctx._vars) {
-			c = replaceAll(c, '##' + k + '##', ctx._vars[k]);
+			c = util.replaceAll(c, '##' + k + '##', ctx._vars[k]);
 		}
 		for(var k in ctx.vars) {
-			c = replaceAll(c, '##' + k + '##', ctx.vars[k]);
+			c = util.replaceAll(c, '##' + k + '##', ctx.vars[k]);
 		}
 		return c;
 	}
