@@ -396,6 +396,8 @@ var handleChange = function(widgetName) {
 		return new FlowEngine(flow).setContext(ctx);
 	}
 	ctx.showWebView = showWebView;
+	ctx.showItemWebform = showItemWebform;
+	
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {
 		for(var i in item.flows) {
