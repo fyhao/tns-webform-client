@@ -1,6 +1,5 @@
 // IMPORT
 import * as fs from "tns-core-modules/file-system";
-var util = require('./lib/util.js');
 
 module.exports = {
 	bootstrap : function() {
