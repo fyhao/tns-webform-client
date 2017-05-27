@@ -13,6 +13,8 @@ var util = require('../../utils/MyUtil');
 var helpers = require('../../utils/widgets/helper');
 var sharer = require('../../utils/nativeSharer.js');
 var clipboard = require('../../utils/nativeClipboard.js');
+var modStep = require('./modStep.js');
+modStep.bootstrap();
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -511,112 +513,7 @@ var FlowEngine = function(flow) {
 		step = replaceVarsStep(step);
 		// initialize ctx._vars for local var for step use
 		ctx._vars = vars;
-		if(step.type == 'setValue') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value = "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'getValue') {
-			var name = step.name;
-			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value');
-			console.log('getValue ' + name + ' = ' + value)
-			vars[step.var] = value;
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'addValue') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value += "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'setHtml') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").innerHTML = "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'addHtml') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").innerHTML += "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'alert') {
-			alert(step.message);
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'openWebView') {
-			showWebView(step.url);
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'setclipboard') {
-			/*
-			var utils = require("utils/utils");
-			console.log(1);
-			var pasteboard = utils.ios.getter(UIPasteboard, UIPasteboard.generalPasteboard);
-		      console.log(2);
-		      try {
-		      	pasteboard.setValueForPasteboardType(step.message, kUTTypePlainText);
-		      } catch (e) {
-		      	console.log('some error detected')
-		      }
-		      
-		      console.log(3);
-		      */
-		      setTimeout(next, 1);
-		}
-		else if(step.type == 'wait') {
-			setTimeout(next, step.timeout);
-		}
-		else if(step.type == 'requestFlow') {
-			step.callbackJSON = function(json) {
-				//#47 request flow step level
-				if(typeof json.flows != 'undefined') {
-					for(var i in json.flows) {
-						ctx.flows[i] = json.flows[i];
-					}
-				}
-	
-				var flow = json.flow;
-				if(typeof flow != 'undefined') {
-					if(typeof flow == 'object') {
-						// flow object
-						new FlowEngine(flow).setContext(ctx).execute(next);
-					}
-					else if(typeof flow == 'string') {
-						// flow name
-						if(typeof ctx.flows[flow] != 'undefined') {
-							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(next);
-						}
-					}
-					else {
-						setTimeout(next, 1);
-					}
-				}
-				else {
-					setTimeout(next, 1);
-				}
-			}
-			util.frequest(step);
-		}
-		else if(step.type == 'setVar') {
-			vars[step.name] = step.value;
-			if(typeof step.global != 'undefined' && step.global == '1') {
-				ctx.vars[step.name] = step.value;
-			}
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'evaljs') {
-			var val = eval('vars = ' + JSON.stringify(vars) + '; ' + step.code);
-			vars[step.var] = val;
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'closewin') {
-			helpers.back();
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
+		if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
 			showItemWebform(step.webform, {
 				refresh:function() {
 					if(opts.refresh) opts.refresh();
@@ -633,128 +530,6 @@ var FlowEngine = function(flow) {
 */
 			showCategory(step.redirectUrl);
 			setTimeout(next, 1);
-		}
-		else if(step.type == 'if') {
-			var val = vars[step.var];
-			var validated = false;
-			if(step.if == 'contains') {
-				validated = val.indexOf(step.pattern) != -1;
-			}
-			else if(step.if == 'equal') {
-				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
-				validated = val == step.pattern;
-			}
-			else if(step.if == 'eq') {
-				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
-				validated = val == step.pattern;
-			}
-			else if(step.if == 'neq') {
-				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
-				validated = val != step.pattern;
-			}
-			if(validated) {
-				if(step.yes_subflow != null) {
-					var tempFlow = null;
-					if(typeof ctx.flows != 'undefined') {
-						tempFlow = ctx.flows[step.yes_subflow];
-					}
-					var inputVars = {};
-					for(var i in vars) {
-						inputVars[i] = vars[i];
-					}
-					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-						if(typeof outputVars != 'undefined') {
-							for(var i in outputVars) {
-								vars[i] = outputVars[i];
-							}
-						}
-						setTimeout(next, 1);
-					});
-				}
-				else {
-					setTimeout(next, 1);
-				}
-			}
-			else {
-				if(step.no_subflow != null) {
-					var tempFlow = null;
-					if(typeof ctx.flows != 'undefined') {
-						tempFlow = ctx.flows[step.no_subflow];
-					}
-					var inputVars = {};
-					for(var i in vars) {
-						inputVars[i] = vars[i];
-					}
-					new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-						if(typeof outputVars != 'undefined') {
-							for(var i in outputVars) {
-								vars[i] = outputVars[i];
-							}
-						}
-						setTimeout(next, 1);
-					});
-				}
-				else {
-					setTimeout(next, 1);
-				}
-			}
-		}
-		else if(step.type == 'confirm') {
-			var dialog = Ti.UI.createAlertDialog({
-				cancel: 1,
-				buttonNames: step.buttons,
-				message: step.message,
-				title: step.title
-			  });
-			  dialog.addEventListener('click', function(e){
-				if(e.index == 0) {
-					if(step.yes_subflow != null) {
-						var tempFlow = null;
-						if(typeof ctx.flows != 'undefined') {
-							tempFlow = ctx.flows[step.yes_subflow];
-						}
-						var inputVars = {};
-						for(var i in vars) {
-							inputVars[i] = vars[i];
-						}
-						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-							if(typeof outputVars != 'undefined') {
-								for(var i in outputVars) {
-									vars[i] = outputVars[i];
-								}
-							}
-							setTimeout(next, 1);
-						});
-					}
-					else {
-						setTimeout(next, 1);
-					}
-				}
-				else {
-					if(step.no_subflow != null) {
-						var tempFlow = null;
-						if(typeof ctx.flows != 'undefined') {
-							tempFlow = ctx.flows[step.no_subflow];
-						}
-						var inputVars = {};
-						for(var i in vars) {
-							inputVars[i] = vars[i];
-						}
-						new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-							if(typeof outputVars != 'undefined') {
-								for(var i in outputVars) {
-									vars[i] = outputVars[i];
-								}
-							}
-							setTimeout(next, 1);
-						});
-					}
-					else {
-						setTimeout(next, 1);
-					}
-				}
-			  });
-			  dialog.show();
 		}
 		else {
 			// search ctx.flows if any
@@ -782,6 +557,10 @@ var FlowEngine = function(flow) {
 						setTimeout(next, 1);
 					});
 				}
+			}
+			else {
+				// search step modules if any
+				modStep.processStep(ctx, step, next);
 			}
 		}
 	}
