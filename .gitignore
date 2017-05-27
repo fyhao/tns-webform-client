@@ -9,6 +9,7 @@
 platforms/ios/build/
 platforms/ios/www/
 platforms/ios/cordova/console.log
+platforms/ios/*
 *.xcuserdatad
 
 # android
