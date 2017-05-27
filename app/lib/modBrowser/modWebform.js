@@ -28,35 +28,6 @@ var showItemWebform = function(item, opts) {
 	var submitBtnName = 'Submit';
 	if(item.submitBtnName) submitBtnName = item.submitBtnName;
     
-    
-    var parseParamOptions = function(options) {
-    	if(!options.length) {
-    		// object, not array
-    		var temp = [];
-    		for(var k in options) {
-    			var v = options[k];
-    			temp.push({value:k,key:v});
-    		}
-    		options = temp;
-    		temp = null;
-    	}
-    	else {
-    		// is array
-    		var temp = [];
-    		for(var k in options) {
-    			var v = options[k];
-    			if(typeof v != 'object') {
-    				temp.push({value:v,key:v});
-    			}
-    			else {
-    				return options;
-    			}
-    		}
-    		options = temp;
-    		temp = null;
-    	}
-    	return options;
-    }
     var paramField = {};
     var html = '';
     var wv = new webViewModule.WebView();
@@ -218,8 +189,6 @@ var handleChange = function(widgetName) {
     
     helpers.navigate(function(){return page;});
 	
-    
-    
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
@@ -286,8 +255,6 @@ var handleChange = function(widgetName) {
 		}
 	}
 }
-
-
 
 module.exports.showItemWebform = showItemWebform;
 var _funcs = {};
