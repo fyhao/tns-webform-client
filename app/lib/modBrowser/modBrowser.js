@@ -73,7 +73,7 @@ function showItem(item) {
         showCategory(item.requesturl);
     }
     else if(item.type == 'webform') {
-        showItemWebform(item.webform);
+        modWebform.showItemWebform(item.webform);
     }
 }
 function showItemVideo(item) {
