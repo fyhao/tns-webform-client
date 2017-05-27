@@ -29,8 +29,9 @@ var _bootstrap = function() {
 	scanNodeModules();
 }
 var scanRootLevelFiles = function() {
-	var list = fs.readdirSync(fs.path.join(__dirname, LIB_STEPS_PATH)); 
+	var list = fs.Folder.getEntitiesSync(fs.path.join(__dirname, LIB_STEPS_PATH)); 
 	list.forEach(function(filename) {
+		console.log(filename)
 		if(filename.lastIndexOf('.js') > -1) {
 			var filepath = './' + LIB_STEPS_PATH + '/' + filename;
 			delete require.cache[require.resolve(filepath)]; // delete require cache
