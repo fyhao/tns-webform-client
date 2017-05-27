@@ -1,7 +1,7 @@
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		var val = vars[step.var];
+		var val = ctx._vars[step.var];
 		var validated = false;
 		if(step.if == 'contains') {
 			validated = val.indexOf(step.pattern) != -1;

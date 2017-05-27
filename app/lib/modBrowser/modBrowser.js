@@ -14,7 +14,7 @@ var helpers = require('../../utils/widgets/helper');
 var sharer = require('../../utils/nativeSharer.js');
 var clipboard = require('../../utils/nativeClipboard.js');
 var modStep = require('./modStep.js');
-modStep.bootstrap();
+
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -556,6 +556,10 @@ var FlowEngine = function(flow) {
 						}
 						setTimeout(next, 1);
 					});
+				}
+				else {
+					// search step modules if any
+					modStep.processStep(ctx, step, next);
 				}
 			}
 			else {

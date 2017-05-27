@@ -13,6 +13,8 @@ var util = require('../../utils/MyUtil');
 var helpers = require('../../utils/widgets/helper');
 var sharer = require('../../utils/nativeSharer.js');
 var clipboard = require('../../utils/nativeClipboard.js');
+var modStep = require('./modStep.js');
+
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -322,8 +324,27 @@ var handleChange = function(widgetName) {
 				if(json.closewin) {
 					topmost.goBack();
 				}
-				if(json.flow) {
-					new FlowEngine(json.flow).setWv(wv).execute(function() {});
+				
+				//#47 submit callback level
+				
+				if(typeof json.flows != 'undefined') {
+					for(var i in json.flows) {
+						ctx.flows[i] = json.flows[i];
+					}
+				}
+	
+				var flow = json.flow;
+				if(typeof flow != 'undefined') {
+					if(typeof flow == 'object') {
+						// flow object
+						new FlowEngine(flow).setContext(ctx).execute(function() {});
+					}
+					else if(typeof flow == 'string') {
+						// flow name
+						if(typeof ctx.flows[flow] != 'undefined') {
+							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+						}
+					}
 				}
 			}
 		});
@@ -331,10 +352,7 @@ var handleChange = function(widgetName) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
-	var flow = item.flow;
-	if(typeof flow != 'undefined') {
-		new FlowEngine(flow).setWv(wv).execute(function() {});
-	}
+	
     
     
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
@@ -360,28 +378,75 @@ var handleChange = function(widgetName) {
         for(var _evt in events) {
             if(_evt == data) {
                 var flowName = events[_evt];
-                var flow = item[flowName];
-                console.log('HandleEventResponse flow ' + flowName);
-                new FlowEngine(flow).setWv(wv).execute(function() {});
+                if(typeof ctx.flows[flowName] != 'undefined') {
+					new FlowEngine(ctx.flows[flowName]).setContext(ctx).execute(function() {});
+				}
             }
         }
     }
 
     wv.on('loadStarted', _interceptCallsFromWebview)
+	
+	var ctx = {}; // context object
+	ctx.item = item;
+	ctx.wv = wv;
+	ctx.flows = {};
+	ctx.vars = {};
+	
+	// #47 iterate all webform level flows and put into context flow collection
+	if(typeof item.flows != 'undefined') {
+		for(var i in item.flows) {
+			ctx.flows[i] = item.flows[i];
+		}
+	}
+	
+	var flow = item.flow;
+	// #47 FlowEngine webform level
+	if(typeof flow != 'undefined') {
+		if(typeof flow == 'object') {
+			// flow object
+			new FlowEngine(flow).setContext(ctx).execute(function() {});
+		}
+		else if(typeof flow == 'string') {
+			// flow name
+			if(typeof ctx.flows[flow] != 'undefined') {
+				new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+			}
+		}
+	}
 }
 
 
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
 	FLOW_ENGINE_CANCELED = false;
+	var vars = {};
 	var wv = null;
 	this.setWv = function(v) {
 		wv = v;
 		return this;
 	}
-	this.flow = clone(flow);
+	var item = null;
+	this.setItem = function(v) {
+		item = v;
+		return this;
+	}
+	var ctx = null;
+	this.setContext = function(v) {
+		ctx = v;
+		wv = ctx.wv;
+		item = ctx.item;
+		return this;
+	}
+	this.setInputVars = function(v) {
+		for(var i in v) {
+			vars[i] = v[i];
+		}
+		return this;
+	}
+	this.flow = util.clone(flow);
 	this.canceled = false;
-	var vars = {};
+	
 	this.execute = function(done) {
 		console.log('Execute')
 		var steps = this.flow.steps;
@@ -393,7 +458,18 @@ var FlowEngine = function(flow) {
 					processStep(steps[curStep], checkNext);
 				}
 				else {
-					setTimeout(done, 1);
+					if(done.length == 1) {
+						setTimeout(function() {
+							var outputVars = {};
+							for(var i in vars) {
+								outputVars[i] = vars[i];
+							}
+							done(outputVars);
+						}, 1);
+					}
+					else {
+						setTimeout(done, 1);
+					}
 				}
 			}
 			setTimeout(checkNext, 300);
@@ -411,6 +487,9 @@ var FlowEngine = function(flow) {
 	var replaceVars = function(c) {
 		for(var k in vars) {
 			c = replaceAll(c, '##' + k + '##', vars[k]);
+		}
+		for(var k in ctx.vars) {
+			c = replaceAll(c, '##' + k + '##', ctx.vars[k]);
 		}
 		return c;
 	}
@@ -432,84 +511,9 @@ var FlowEngine = function(flow) {
 			return;
 		}
 		step = replaceVarsStep(step);
-		if(step.type == 'setValue') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value = "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'getValue') {
-			var name = step.name;
-			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value');
-			console.log('getValue ' + name + ' = ' + value)
-			vars[step.var] = value;
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'addValue') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").value += "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'setHtml') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").innerHTML = "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'addHtml') {
-			var name = step.name;
-			var value = step.value;
-			wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").innerHTML += "' + value + '"');
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'alert') {
-			alert(step.message);
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'openWebView') {
-			showWebView(step.url);
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'setclipboard') {
-			/*
-			var utils = require("utils/utils");
-			console.log(1);
-			var pasteboard = utils.ios.getter(UIPasteboard, UIPasteboard.generalPasteboard);
-		      console.log(2);
-		      try {
-		      	pasteboard.setValueForPasteboardType(step.message, kUTTypePlainText);
-		      } catch (e) {
-		      	console.log('some error detected')
-		      }
-		      
-		      console.log(3);
-		      */
-		      setTimeout(next, 1);
-		}
-		else if(step.type == 'wait') {
-			setTimeout(next, step.timeout);
-		}
-		else if(step.type == 'requestFlow') {
-			step.callbackJSON = function(json) {
-				new FlowEngine(json.flow).setWv(wv).execute(next);
-			}
-			util.frequest(step);
-		}
-		else if(step.type == 'setVar') {
-			vars[step.name] = step.value;
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'evaljs') {
-			var val = eval('vars = ' + JSON.stringify(vars) + '; ' + step.code);
-			vars[step.var] = val;
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'closewin') {
-			helpers.back();
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'webform') {
+		// initialize ctx._vars for local var for step use
+		ctx._vars = vars;
+		if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
 			showItemWebform(step.webform, {
 				refresh:function() {
 					if(opts.refresh) opts.refresh();
@@ -517,7 +521,7 @@ var FlowEngine = function(flow) {
 			});
 			setTimeout(next, 1);
 		}
-		else if(step.type == 'redirectUrl') {
+		else if(step.type == 'redirectUrl') { //#46 Keep here instead of moving into individual step file
 			/*
 			showCategoriesItem({
 				'name' : step.redirectHeading,
@@ -527,111 +531,42 @@ var FlowEngine = function(flow) {
 			showCategory(step.redirectUrl);
 			setTimeout(next, 1);
 		}
-		else if(step.type == 'if') {
-			var val = vars[step.var];
-			var validated = false;
-			if(step.if == 'contains') {
-				validated = val.indexOf(step.pattern) != -1;
-			}
-			else if(step.if == 'equal') {
-				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
-				validated = val == step.pattern;
-			}
-			else if(step.if == 'eq') {
-				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
-				validated = val == step.pattern;
-			}
-			else if(step.if == 'neq') {
-				//console.log('execute if [' + val + '] = [' + step.pattern + ']');
-				validated = val != step.pattern;
-			}
-			if(validated) {
-				if(step.yes_subflow != null) {
-					new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
+		else {
+			// search ctx.flows if any
+			if(typeof ctx.flows != 'undefined') {
+				var flow = ctx.flows[step.type];
+				console.log('search flow ' + step.type + " = " + (typeof flow));
+				if(typeof flow != 'undefined') {
+					var inputVars = {};
+					for(var i in step) {
+						if(i == 'type') continue;
+						if(i == 'inputall') continue;
+						inputVars[i] = step[i];
+					}
+					if(typeof step.inputall != 'undefined' && step.inputall) {
+						for(var i in vars) {
+							inputVars[i] = vars[i];
+						}
+					}
+					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+						if(typeof outputVars != 'undefined') {
+							for(var i in outputVars) {
+								vars[i] = outputVars[i];
+							}
+						}
+						setTimeout(next, 1);
+					});
 				}
 				else {
-					setTimeout(next, 1);
+					// search step modules if any
+					modStep.processStep(ctx, step, next);
 				}
 			}
 			else {
-				if(step.no_subflow != null) {
-					new FlowEngine(step.no_subflow).setWv(wv).execute(next);	
-				}
-				else {
-					setTimeout(next, 1);
-				}
+				// search step modules if any
+				modStep.processStep(ctx, step, next);
 			}
-		}
-		else if(step.type == 'confirm') {
-			var dialog = Ti.UI.createAlertDialog({
-				cancel: 1,
-				buttonNames: step.buttons,
-				message: step.message,
-				title: step.title
-			  });
-			  dialog.addEventListener('click', function(e){
-				if(e.index == 0) {
-					if(step.yes_subflow != null) {
-						new FlowEngine(step.yes_subflow).setWv(wv).execute(next);
-					}
-					else {
-						setTimeout(next, 1);
-					}
-				}
-				else {
-					if(step.no_subflow != null) {
-						new FlowEngine(step.no_subflow).seWv(wv).execute(next);	
-					}
-					else {
-						setTimeout(next, 1);
-					}
-				}
-			  });
-			  dialog.show();
 		}
 	}
 }
 
-var clone = function clone(item) {
-    if (!item) { return item; } // null, undefined values check
-
-    var types = [ Number, String, Boolean ], 
-        result;
-
-    // normalizing primitives if someone did new String('aaa'), or new Number('444');
-    types.forEach(function(type) {
-        if (item instanceof type) {
-            result = type( item );
-        }
-    });
-
-    if (typeof result === "undefined") {
-        if (Object.prototype.toString.call( item ) === "[object Array]") {
-            result = [];
-            item.forEach(function(child, index, array) { 
-                result[index] = clone( child );
-            });
-        } else if (typeof item === "object") {
-            // testing that this is DOM
-            if (item.nodeType && typeof item.cloneNode === "function") {
-                item.cloneNode( true );    
-            } else if (!item.prototype) { // check that this is a literal
-                if (item instanceof Date) {
-                    result = new Date(item);
-                } else {
-                    // it is an object literal
-                    result = {};
-                    for (var i in item) {
-                        result[i] = clone( item[i] );
-                    }
-                }
-            } else {
-                result = item;
-            }
-        } else {
-            result = item;
-        }
-    }
-
-    return result;
-}
