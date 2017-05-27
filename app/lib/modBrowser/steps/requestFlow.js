@@ -14,12 +14,10 @@ module.exports = {
 			if(typeof flow != 'undefined') {
 				if(typeof flow == 'object') {
 					// flow object
-					new FlowEngine(flow).setContext(ctx).execute(next);
 				}
 				else if(typeof flow == 'string') {
 					// flow name
 					if(typeof ctx.flows[flow] != 'undefined') {
-						new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(next);
 					}
 				}
 				else {
