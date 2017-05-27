@@ -1,5 +1,5 @@
 // IMPORT
-import * as fs from "tns-core-modules/file-system";
+var fs = require("file-system");
 
 module.exports = {
 	bootstrap : function() {
