@@ -140,7 +140,8 @@ var handleChange = function(widgetName) {
     		if(typeof param == 'object') {
     			// search available widget
 				var value = modWidget.parseValue(param, {wv:wv})
-				paramField[param] = {value:value};
+				if(value != null)
+					paramField[param.name] = {value:value};
     		}
     		else {
     			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + param + '").value');
