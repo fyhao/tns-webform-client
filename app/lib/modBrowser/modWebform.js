@@ -170,18 +170,7 @@ var handleChange = function(widgetName) {
 				}
 	
 				var flow = json.flow;
-				if(typeof flow != 'undefined') {
-					if(typeof flow == 'object') {
-						// flow object
-						ctx.createFlowEngine(flow).execute(function() {});
-					}
-					else if(typeof flow == 'string') {
-						// flow name
-						if(typeof ctx.flows[flow] != 'undefined') {
-							ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
-						}
-					}
-				}
+				ctx.createFlowEngine(flow).execute(function() {});
 			}
 		});
     });
@@ -212,9 +201,7 @@ var handleChange = function(widgetName) {
         for(var _evt in events) {
             if(_evt == data) {
                 var flowName = events[_evt];
-                if(typeof ctx.flows[flowName] != 'undefined') {
-					ctx.createFlowEngine(ctx.flows[flowName]).execute(function() {});
-				}
+                ctx.createFlowEngine(flowName).execute(function() {});
             }
         }
     }
@@ -227,7 +214,35 @@ var handleChange = function(widgetName) {
 	ctx.flows = {};
 	ctx.vars = {};
 	ctx.createFlowEngine = function(flow) {
-		return new modFlow.FlowEngine(flow).setContext(ctx);
+		if(typeof flow != 'undefined') {
+			if(typeof flow == 'object') {
+				// flow object
+				return new modFlow.FlowEngine(flow).setContext(ctx);
+			}
+			else if(typeof flow == 'string') {
+				// flow name
+				if(typeof ctx.flows[flow] != 'undefined') {
+					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
+				}
+			}
+		}
+		// return dummy function for silent execution
+		return {
+			execute : function(next) {
+				if(next.length == 1) {
+					setTimeout(function() {
+						next({});
+					}, 1);
+				}
+				else {
+					setTimeout(next, 1);
+				}
+			}
+			,
+			setInputVars : function(_vars){
+				return this;
+			}
+		};
 	}
 	ctx.showItemWebform = showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
@@ -242,18 +257,7 @@ var handleChange = function(widgetName) {
 	
 	var flow = item.flow;
 	// #47 FlowEngine webform level
-	if(typeof flow != 'undefined') {
-		if(typeof flow == 'object') {
-			// flow object
-			ctx.createFlowEngine(flow).execute(function() {});
-		}
-		else if(typeof flow == 'string') {
-			// flow name
-			if(typeof ctx.flows[flow] != 'undefined') {
-				ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
-			}
-		}
-	}
+	ctx.createFlowEngine(flow).execute(function() {});
 }
 
 module.exports.showItemWebform = showItemWebform;
