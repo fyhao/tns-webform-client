@@ -392,7 +392,9 @@ var handleChange = function(widgetName) {
 	ctx.wv = wv;
 	ctx.flows = {};
 	ctx.vars = {};
-	
+	ctx.createFlowEngine = function(flow) {
+		return new FlowEngine(flow).setContext(ctx);
+	}
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {
 		for(var i in item.flows) {

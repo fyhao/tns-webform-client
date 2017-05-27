@@ -28,7 +28,7 @@ module.exports = {
 				for(var i in ctx._vars) {
 					inputVars[i] = ctx._vars[i];
 				}
-				new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+				ctx.createFlowEngine(tempFlow).setInputVars(inputVars).execute(function(outputVars) {
 					if(typeof outputVars != 'undefined') {
 						for(var i in outputVars) {
 							ctx._vars[i] = outputVars[i];
@@ -51,7 +51,7 @@ module.exports = {
 				for(var i in ctx._vars) {
 					inputVars[i] = ctx._vars[i];
 				}
-				new FlowEngine(tempFlow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+				ctx.createFlowEngine(tempFlow).setInputVars(inputVars).execute(function(outputVars) {
 					if(typeof outputVars != 'undefined') {
 						for(var i in outputVars) {
 							ctx._vars[i] = outputVars[i];
