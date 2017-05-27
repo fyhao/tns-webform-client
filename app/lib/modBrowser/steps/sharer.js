@@ -1,4 +1,4 @@
-var sharer = require('../../utils/nativeSharer');
+var sharer = require('../../../utils/nativeSharer');
 module.exports = {
 	
 	process : function(ctx, step, next) {
