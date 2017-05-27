@@ -10,6 +10,7 @@ var listViewModule = require("ui/list-view");
 var labelModule = require("ui/label");
 var actionBarModule = require("ui/action-bar");
 var util = require('../../utils/MyUtil');
+var sharer = require('../../utils/nativeSharer');
 var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
 

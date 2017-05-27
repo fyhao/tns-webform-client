@@ -28,35 +28,6 @@ var showItemWebform = function(item, opts) {
 	var submitBtnName = 'Submit';
 	if(item.submitBtnName) submitBtnName = item.submitBtnName;
     
-    
-    var parseParamOptions = function(options) {
-    	if(!options.length) {
-    		// object, not array
-    		var temp = [];
-    		for(var k in options) {
-    			var v = options[k];
-    			temp.push({value:k,key:v});
-    		}
-    		options = temp;
-    		temp = null;
-    	}
-    	else {
-    		// is array
-    		var temp = [];
-    		for(var k in options) {
-    			var v = options[k];
-    			if(typeof v != 'object') {
-    				temp.push({value:v,key:v});
-    			}
-    			else {
-    				return options;
-    			}
-    		}
-    		options = temp;
-    		temp = null;
-    	}
-    	return options;
-    }
     var paramField = {};
     var html = '';
     var wv = new webViewModule.WebView();
@@ -199,18 +170,7 @@ var handleChange = function(widgetName) {
 				}
 	
 				var flow = json.flow;
-				if(typeof flow != 'undefined') {
-					if(typeof flow == 'object') {
-						// flow object
-						ctx.createFlowEngine(flow).execute(function() {});
-					}
-					else if(typeof flow == 'string') {
-						// flow name
-						if(typeof ctx.flows[flow] != 'undefined') {
-							ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
-						}
-					}
-				}
+				ctx.createFlowEngine(flow).execute(function() {});
 			}
 		});
     });
@@ -218,8 +178,6 @@ var handleChange = function(widgetName) {
     
     helpers.navigate(function(){return page;});
 	
-    
-    
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
@@ -243,9 +201,7 @@ var handleChange = function(widgetName) {
         for(var _evt in events) {
             if(_evt == data) {
                 var flowName = events[_evt];
-                if(typeof ctx.flows[flowName] != 'undefined') {
-					ctx.createFlowEngine(ctx.flows[flowName]).execute(function() {});
-				}
+                ctx.createFlowEngine(flowName).execute(function() {});
             }
         }
     }
@@ -258,7 +214,35 @@ var handleChange = function(widgetName) {
 	ctx.flows = {};
 	ctx.vars = {};
 	ctx.createFlowEngine = function(flow) {
-		return new modFlow.FlowEngine(flow).setContext(ctx);
+		if(typeof flow != 'undefined') {
+			if(typeof flow == 'object') {
+				// flow object
+				return new modFlow.FlowEngine(flow).setContext(ctx);
+			}
+			else if(typeof flow == 'string') {
+				// flow name
+				if(typeof ctx.flows[flow] != 'undefined') {
+					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
+				}
+			}
+		}
+		// return dummy function for silent execution
+		return {
+			execute : function(next) {
+				if(next.length == 1) {
+					setTimeout(function() {
+						next({});
+					}, 1);
+				}
+				else {
+					setTimeout(next, 1);
+				}
+			}
+			,
+			setInputVars : function(_vars){
+				return this;
+			}
+		};
 	}
 	ctx.showItemWebform = showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
@@ -273,21 +257,8 @@ var handleChange = function(widgetName) {
 	
 	var flow = item.flow;
 	// #47 FlowEngine webform level
-	if(typeof flow != 'undefined') {
-		if(typeof flow == 'object') {
-			// flow object
-			ctx.createFlowEngine(flow).execute(function() {});
-		}
-		else if(typeof flow == 'string') {
-			// flow name
-			if(typeof ctx.flows[flow] != 'undefined') {
-				ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
-			}
-		}
-	}
+	ctx.createFlowEngine(flow).execute(function() {});
 }
-
-
 
 module.exports.showItemWebform = showItemWebform;
 var _funcs = {};
