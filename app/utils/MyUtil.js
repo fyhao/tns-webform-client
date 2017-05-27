@@ -72,6 +72,13 @@ var util = {
 
 		return result;
 	}
+	,
+	replaceAll : function(s, n,v) {
+		while(s.indexOf(n) != -1) {
+			s = s.replace(n,v);
+		}
+		return s;
+	}
 };
 
 module.exports = util;
