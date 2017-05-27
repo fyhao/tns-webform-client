@@ -433,16 +433,18 @@ var FlowEngine = function(flow) {
 		item = v;
 		return this;
 	}
-	var ctx = null;
+	var ctx = {};
 	this.setContext = function(v) {
 		ctx = v;
 		wv = ctx.wv;
 		item = ctx.item;
+		// initialize ctx._vars for local var for step use
+		ctx._vars = vars;
 		return this;
 	}
 	this.setInputVars = function(v) {
 		for(var i in v) {
-			vars[i] = v[i];
+			ctx._vars[i] = v[i];
 		}
 		return this;
 	}
@@ -463,8 +465,8 @@ var FlowEngine = function(flow) {
 					if(done.length == 1) {
 						setTimeout(function() {
 							var outputVars = {};
-							for(var i in vars) {
-								outputVars[i] = vars[i];
+							for(var i in ctx._vars) {
+								outputVars[i] = ctx._vars[i];
 							}
 							done(outputVars);
 						}, 1);
@@ -487,7 +489,7 @@ var FlowEngine = function(flow) {
 		return s;
 	}
 	var replaceVars = function(c) {
-		for(var k in vars) {
+		for(var k in ctx._vars) {
 			c = replaceAll(c, '##' + k + '##', vars[k]);
 		}
 		for(var k in ctx.vars) {
@@ -513,8 +515,7 @@ var FlowEngine = function(flow) {
 			return;
 		}
 		step = replaceVarsStep(step);
-		// initialize ctx._vars for local var for step use
-		ctx._vars = vars;
+		
 		if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
 			showItemWebform(step.webform, {
 				refresh:function() {
@@ -546,14 +547,14 @@ var FlowEngine = function(flow) {
 						inputVars[i] = step[i];
 					}
 					if(typeof step.inputall != 'undefined' && step.inputall) {
-						for(var i in vars) {
-							inputVars[i] = vars[i];
+						for(var i in ctx._vars) {
+							inputVars[i] = ctx._vars[i];
 						}
 					}
 					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
 						if(typeof outputVars != 'undefined') {
 							for(var i in outputVars) {
-								vars[i] = outputVars[i];
+								ctx._vars[i] = outputVars[i];
 							}
 						}
 						setTimeout(next, 1);
