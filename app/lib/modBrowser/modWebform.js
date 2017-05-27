@@ -236,12 +236,12 @@ var handleChange = function(widgetName) {
 				if(typeof flow != 'undefined') {
 					if(typeof flow == 'object') {
 						// flow object
-						new FlowEngine(flow).setContext(ctx).execute(function() {});
+						ctx.createFlowEngine(flow).execute(function() {});
 					}
 					else if(typeof flow == 'string') {
 						// flow name
 						if(typeof ctx.flows[flow] != 'undefined') {
-							new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+							ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
 						}
 					}
 				}
@@ -278,7 +278,7 @@ var handleChange = function(widgetName) {
             if(_evt == data) {
                 var flowName = events[_evt];
                 if(typeof ctx.flows[flowName] != 'undefined') {
-					new FlowEngine(ctx.flows[flowName]).setContext(ctx).execute(function() {});
+					ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
 				}
             }
         }
@@ -292,7 +292,7 @@ var handleChange = function(widgetName) {
 	ctx.flows = {};
 	ctx.vars = {};
 	ctx.createFlowEngine = function(flow) {
-		return new FlowEngine(flow).setContext(ctx);
+		return new modFlow.FlowEngine(flow).setContext(ctx);
 	}
 	ctx.showItemWebform = showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
@@ -310,12 +310,12 @@ var handleChange = function(widgetName) {
 	if(typeof flow != 'undefined') {
 		if(typeof flow == 'object') {
 			// flow object
-			new FlowEngine(flow).setContext(ctx).execute(function() {});
+			ctx.createFlowEngine(flow).execute(function() {});
 		}
 		else if(typeof flow == 'string') {
 			// flow name
 			if(typeof ctx.flows[flow] != 'undefined') {
-				new FlowEngine(ctx.flows[flow]).setContext(ctx).execute(function() {});
+				ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
 			}
 		}
 	}
