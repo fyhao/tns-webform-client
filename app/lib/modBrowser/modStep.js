@@ -29,7 +29,9 @@ var _bootstrap = function() {
 	scanNodeModules();
 }
 var scanRootLevelFiles = function() {
-	var list = fs.Folder.getEntitiesSync(fs.path.join(__dirname, LIB_STEPS_PATH)); 
+	var folderPath = fs.path.join(__dirname, LIB_STEPS_PATH);
+	console.log('folderPath ' + folderPath);
+	var list = fs.Folder.fromPath(folderPath).getEntitiesSync(); 
 	list.forEach(function(filename) {
 		console.log(filename)
 		if(filename.lastIndexOf('.js') > -1) {
