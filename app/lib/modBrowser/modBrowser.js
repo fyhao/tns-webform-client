@@ -509,6 +509,8 @@ var FlowEngine = function(flow) {
 			return;
 		}
 		step = replaceVarsStep(step);
+		// initialize ctx._vars for local var for step use
+		ctx._vars = vars;
 		if(step.type == 'setValue') {
 			var name = step.name;
 			var value = step.value;
@@ -614,7 +616,7 @@ var FlowEngine = function(flow) {
 			helpers.back();
 			setTimeout(next, 1);
 		}
-		else if(step.type == 'webform') {
+		else if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
 			showItemWebform(step.webform, {
 				refresh:function() {
 					if(opts.refresh) opts.refresh();
@@ -622,7 +624,7 @@ var FlowEngine = function(flow) {
 			});
 			setTimeout(next, 1);
 		}
-		else if(step.type == 'redirectUrl') {
+		else if(step.type == 'redirectUrl') { //#46 Keep here instead of moving into individual step file
 			/*
 			showCategoriesItem({
 				'name' : step.redirectHeading,
