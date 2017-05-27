@@ -11,9 +11,6 @@ var labelModule = require("ui/label");
 var actionBarModule = require("ui/action-bar");
 var util = require('../../utils/MyUtil');
 var helpers = require('../../utils/widgets/helper');
-var sharer = require('../../utils/nativeSharer.js');
-var clipboard = require('../../utils/nativeClipboard.js');
-var modStep = require('./modStep.js');
 var modWebform = require('./modWebform.js');
 
 module.exports.createBrowser = function() {
