@@ -15,6 +15,7 @@ var sharer = require('../../utils/nativeSharer.js');
 var clipboard = require('../../utils/nativeClipboard.js');
 var modStep = require('./modStep.js');
 var modFlow = require('./modFlow.js');
+var modWidget = require('./modWidget.js');
 var showItemWebform = function(item, opts) {
     
     var page = new pagesModule.Page();
@@ -64,33 +65,8 @@ var showItemWebform = function(item, opts) {
     for(var i = 0; i < params.length; i++) {
     	var param = params[i];
     	if(typeof param == 'object') {
-    		if(param.type == 'selectone') {
-    			param.options = parseParamOptions(param.options);
-    			html += '<select id="' + param.name + '">';
-    			for(var j = 0; j < param.options.length; j++) {
-    				var key = param.options[j]['key'];
-    				var val = param.options[j]['value'];
-    				var selected = param.def && param.def == val;
-    				var selectedStr = selected ? ' selected' : '';
-    				html += '<option value="' + val + '" ' + selectedStr + '>' + key + '</option>';
-    			}
-    			html += '</select>';
-    		}
-    		else if(param.type == 'text') {
-    			var def = typeof(param.def) != 'undefined' ? param.def : '';
-    			html += '<input type="text" id="' + param.name + '" value="' + def + '" placeholder="' + param.name + '" cols="100" />';
-    		}
-    		else if(param.type == 'textarea') {
-    			var def = typeof(param.def) != 'undefined' ? param.def : '';
-    			html += '<textarea id="' + param.name + '">' + def + '</textarea>';
-    		}
-    		else if(param.type == 'label') {
-    			html += '<span id="' + param.id + '">' + param.name + '</span>';
-    		}
-    		else if(param.type == 'hidden') {
-    			var def = typeof(param.def) != 'undefined' ? param.def : '';
-    			html += '<input type="hidden" id="' + param.name + '" value="' + def + '" />';
-    		}
+    		// search available widget
+			modWidget.renderWidget(param);
     	}
     	else {
     		html += '<input type="text" id="' + param + '" value="" placeholder="' + param + '" />';
@@ -162,26 +138,15 @@ var handleChange = function(widgetName) {
     	for(var i = 0; i < params.length; i++) {
     		var param = params[i];
     		if(typeof param == 'object') {
-    			if(param.type == 'label') continue;
-    			if(param.type == 'selectone') {
-                    //wv.ios.stringByEvaluatingJavaScriptFromString(strJSFunction);
-    				var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + param.name + '").selectedOptions[0].value');
-    				paramField[param.name] = {value:value};
-                    
-    			}
-    			else {
-    				var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + param.name + '").value');
-    				paramField[param.name] = {value:value};
-                  
-    			}
+    			// search available widget
+				var value = modWidget.parseValue(param, {wv:wv})
+				paramField[param] = {value:value};
     		}
     		else {
     			var value = wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + param + '").value');
     			paramField[param] = {value:value};
-               
     		}
     	}
-    	
     }
 
     var submitBtn = new buttonModule.Button();
