@@ -520,15 +520,7 @@ var FlowEngine = function(flow) {
 		}
 		step = replaceVarsStep(step);
 		//console.log(JSON.stringify(step)); 
-		if(step.type == 'webform') { //#46 Keep here instead of moving into individual step file
-			showItemWebform(step.webform, {
-				refresh:function() {
-					if(opts.refresh) opts.refresh();
-				}
-			});
-			setTimeout(next, 1);
-		}
-		else if(step.type == 'redirectUrl') { //#46 Keep here instead of moving into individual step file
+		if(step.type == 'redirectUrl') { //#46 Keep here instead of moving into individual step file
 			/*
 			showCategoriesItem({
 				'name' : step.redirectHeading,
