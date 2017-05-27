@@ -397,6 +397,7 @@ var handleChange = function(widgetName) {
 	}
 	ctx.showWebView = showWebView;
 	ctx.showItemWebform = showItemWebform;
+	ctx.showCategory = showCategory;
 	
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {
@@ -520,52 +521,41 @@ var FlowEngine = function(flow) {
 		}
 		step = replaceVarsStep(step);
 		//console.log(JSON.stringify(step)); 
-		if(step.type == 'redirectUrl') { //#46 Keep here instead of moving into individual step file
-			/*
-			showCategoriesItem({
-				'name' : step.redirectHeading,
-				sublist : []
-			}, {url:step.redirectUrl});
-*/
-			showCategory(step.redirectUrl);
-			setTimeout(next, 1);
-		}
-		else {
-			// search ctx.flows if any
-			if(typeof ctx.flows != 'undefined') {
-				var flow = ctx.flows[step.type];
-				//console.log('search flow ' + step.type + " = " + (typeof flow));
-				if(typeof flow != 'undefined') {
-					var inputVars = {};
-					for(var i in step) {
-						if(i == 'type') continue;
-						if(i == 'inputall') continue;
-						inputVars[i] = step[i];
+		// search ctx.flows if any
+		if(typeof ctx.flows != 'undefined') {
+			var flow = ctx.flows[step.type];
+			//console.log('search flow ' + step.type + " = " + (typeof flow));
+			if(typeof flow != 'undefined') {
+				var inputVars = {};
+				for(var i in step) {
+					if(i == 'type') continue;
+					if(i == 'inputall') continue;
+					inputVars[i] = step[i];
+				}
+				if(typeof step.inputall != 'undefined' && step.inputall) {
+					for(var i in ctx._vars) {
+						inputVars[i] = ctx._vars[i];
 					}
-					if(typeof step.inputall != 'undefined' && step.inputall) {
-						for(var i in ctx._vars) {
-							inputVars[i] = ctx._vars[i];
+				}
+				new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
+					if(typeof outputVars != 'undefined') {
+						for(var i in outputVars) {
+							ctx._vars[i] = outputVars[i];
 						}
 					}
-					new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-						if(typeof outputVars != 'undefined') {
-							for(var i in outputVars) {
-								ctx._vars[i] = outputVars[i];
-							}
-						}
-						setTimeout(next, 1);
-					});
-				}
-				else {
-					// search step modules if any
-					modStep.processStep(ctx, step, next);
-				}
+					setTimeout(next, 1);
+				});
 			}
 			else {
 				// search step modules if any
 				modStep.processStep(ctx, step, next);
 			}
 		}
+		else {
+			// search step modules if any
+			modStep.processStep(ctx, step, next);
+		}
+		
 	}
 }
 
