@@ -75,7 +75,7 @@ function showItem(item) {
 }
 function showItemVideo(item) {
     helpers.navigate({
-        moduleName : 'components/homeView/videoView',
+        moduleName : 'components/browserView/videoView',
         context : {url:item.content}
     });
 }
