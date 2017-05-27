@@ -66,7 +66,7 @@ var showItemWebform = function(item, opts) {
     	var param = params[i];
     	if(typeof param == 'object') {
     		// search available widget
-			modWidget.renderWidget(param);
+			html += modWidget.renderWidget(param);
     	}
     	else {
     		html += '<input type="text" id="' + param + '" value="" placeholder="' + param + '" />';
@@ -243,7 +243,7 @@ var handleChange = function(widgetName) {
             if(_evt == data) {
                 var flowName = events[_evt];
                 if(typeof ctx.flows[flowName] != 'undefined') {
-					ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
+					ctx.createFlowEngine(ctx.flows[flowName]).execute(function() {});
 				}
             }
         }
