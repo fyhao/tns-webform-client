@@ -8,7 +8,7 @@ module.exports.parseValue = function(param, opts) {
 	// Input: params object
 	// Input: opts object {wv}
 	// Output: fn (value)
-	new WidgetProcessor(param, opts).parseValue();
+	return new WidgetProcessor(param, opts).parseValue();
 }
 
 // public variable
