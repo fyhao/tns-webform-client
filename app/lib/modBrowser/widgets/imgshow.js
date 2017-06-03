@@ -8,7 +8,7 @@ module.exports = {
 	init : function(param, opts) {
 		var query = typeof(param.query) != 'undefined' ? param.query : '';
     	util.imgshow().load(query, function(html) {
-			opts.wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + param.id + '").innerHTML = "' + html + '"');
+			opts.wv.ios.stringByEvaluatingJavaScriptFromString("document.getElementById('" + param.id + "').innerHTML = '" + html + "'");
 		});
 	}
 }
