@@ -213,17 +213,40 @@ var handleChange = function(widgetName) {
 	ctx.wv = wv;
 	ctx.flows = {};
 	ctx.vars = {};
-	ctx.createFlowEngine = function(flow) {
+	ctx.createFlowEngine = function(flow, opts) {
+		if(typeof opts != 'undefined') var opts = {};
 		if(typeof flow != 'undefined') {
+			var flowObject = null;
 			if(typeof flow == 'object') {
 				// flow object
-				return new modFlow.FlowEngine(flow).setContext(ctx);
+				flowObject = new modFlow.FlowEngine(flow).setContext(ctx);
 			}
 			else if(typeof flow == 'string') {
 				// flow name
 				if(typeof ctx.flows[flow] != 'undefined') {
-					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
+					flowObject = new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
+			}
+			if(flowObject != null) {
+				var inputall = false;
+				if(opts.inputall) {
+					inputall = true;
+				}
+				if(opts.outputall) {
+					outputall = true;
+				}
+				if(opts.all) {
+					inputall = true;
+					outputall = true;
+				}
+				if(inputall) {
+					var inputVars = {};
+					for(var i in ctx._vars) {
+						inputVars[i] = ctx._vars[i];
+					}
+					flowObject.setInputVars(inputVars);
+				}
+				// TODO outputall, and how can it automatically defined here without user manually populate outputVars?
 			}
 		}
 		// return dummy function for silent execution
