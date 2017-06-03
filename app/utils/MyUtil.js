@@ -24,10 +24,19 @@ var util = {
                 body: opts.params
             })
             .then(function(response) {
-                opts.callbackJSON(JSON.parse(response._bodyInit));
+				if(typeof opts.callbackJSON !== 'undefined') {
+					opts.callbackJSON(JSON.parse(response._bodyInit));
+				}
+				else if(typeof opts.callback !== 'undefined') {
+					opts.callback(response._bodyInit);
+				}
+                
             }, function(error) {
-                alert(JSON.stringify(error));
-                console.log('homeView fetch error')
+				if(typeof opts.error !== 'undefined') {
+					opts.error(error);
+				}
+				else 
+					alert(JSON.stringify(error));
             });
     }
 	,
