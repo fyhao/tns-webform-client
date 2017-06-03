@@ -13,11 +13,12 @@ var util = {
             }
             opts.params = temp;
         }
+		if(typeof opts.headers == 'undefined') opts.headers = {};
         var fetchModule = require("fetch");
         
         fetchModule.fetch(opts.url, {
                 method: opts.method ? opts.method : 'GET',
-                headers: {},
+                headers: opts.headers,
                 body: opts.params
             })
             .then(function(response) {
