@@ -1,3 +1,4 @@
+var util = require('../../../utils/MyUtil');
 module.exports = {
 	process : function(ctx, step, checkNext) {
 		if(typeof step.method === 'undefined') step.method = 'GET';
@@ -30,7 +31,7 @@ module.exports = {
 			setTimeout(checkNext, 1);
 			return;
 		}
-		frequest(frequestObj);
+		util.frequest(frequestObj);
 	}
 }
 
