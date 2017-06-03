@@ -55,5 +55,12 @@ var WidgetProcessor = function(param, opts) {
 		});
 		return value;
 	}
+	this.init = function() {
+		if(def === null) {
+			return null;
+		}
+		if(typeof def.init === 'undefined') return null;
+		def.init(param, opts);
+	}
 	init();
 }
