@@ -227,27 +227,7 @@ var handleChange = function(widgetName) {
 					flowObject = new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
 			}
-			if(flowObject != null) {
-				var inputall = false;
-				if(opts.inputall) {
-					inputall = true;
-				}
-				if(opts.outputall) {
-					outputall = true;
-				}
-				if(opts.all) {
-					inputall = true;
-					outputall = true;
-				}
-				if(inputall) {
-					var inputVars = {};
-					for(var i in ctx._vars) {
-						inputVars[i] = ctx._vars[i];
-					}
-					flowObject.setInputVars(inputVars);
-				}
-				// TODO outputall, and how can it automatically defined here without user manually populate outputVars?
-			}
+			return flowObject;
 		}
 		// return dummy function for silent execution
 		return {

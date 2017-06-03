@@ -1,10 +1,10 @@
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		var val = ctx._vars[step.var];
+		var val = ctx.vars[step.var];
 		var validated = false;
 		if(typeof step.expr !== 'undefined') {
-			validated = eval('vars = ' + JSON.stringify(ctx._vars) + '; ' + step.expr);
+			validated = eval('vars = ' + JSON.stringify(ctx.vars) + '; ' + step.expr);
 		}
 		else {
 			if(step.if == 'contains') {
@@ -25,18 +25,7 @@ module.exports = {
 		}
 		if(validated) {
 			if(step.yes_subflow != null) {
-				var inputVars = {};
-				for(var i in ctx._vars) {
-					inputVars[i] = ctx._vars[i];
-				}
-				ctx.createFlowEngine(step.yes_subflow).setInputVars(inputVars).execute(function(outputVars) {
-					if(typeof outputVars != 'undefined') {
-						for(var i in outputVars) {
-							ctx._vars[i] = outputVars[i];
-						}
-					}
-					//console.log('IF ctx vars outputvars')
-					//console.log(JSON.stringify(ctx._vars))
+				ctx.createFlowEngine(step.yes_subflow).execute(function() {
 					setTimeout(next, 1);
 				});
 			}
@@ -46,16 +35,7 @@ module.exports = {
 		}
 		else {
 			if(step.no_subflow != null) {
-				var inputVars = {};
-				for(var i in ctx._vars) {
-					inputVars[i] = ctx._vars[i];
-				}
-				ctx.createFlowEngine(step.no_subflow).setInputVars(inputVars).execute(function(outputVars) {
-					if(typeof outputVars != 'undefined') {
-						for(var i in outputVars) {
-							ctx._vars[i] = outputVars[i];
-						}
-					}
+				ctx.createFlowEngine(step.no_subflow).execute(function() {
 					setTimeout(next, 1);
 				});
 			}

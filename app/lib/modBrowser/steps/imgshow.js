@@ -3,7 +3,7 @@ module.exports = {
 	process : function(ctx, step, checkNext) {
 		var query = typeof(step.query) != 'undefined' ? step.query : '';
     	util.imgshow().load(query, function(result) {
-			ctx._vars[step.var] = result;
+			ctx.vars[step.var] = result;
 			setTimeout(checkNext, 1);
 		});
 	}

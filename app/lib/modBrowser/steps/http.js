@@ -16,13 +16,13 @@ module.exports = {
 		
 		if(typeof step.varJson !== 'undefined') {
 			frequestObj.callbackJSON = function(json) {
-				ctx._vars[step.varJson] = json;
+				ctx.vars[step.varJson] = json;
 				setTimeout(checkNext, 1);
 			}
 		}
 		else if(typeof step.var !== 'undefined') {
 			frequestObj.callback = function(body) {
-				ctx._vars[step.var] = body;
+				ctx.vars[step.var] = body;
 				setTimeout(checkNext, 1);
 			}
 		}
@@ -36,17 +36,8 @@ module.exports = {
 
 
 var callErrorFlow = function(flow, err) {
-	ctx._vars['http_error'] = err;
-	var inputVars = {};
-	for(var i in ctx._vars) {
-		inputVars[i] = ctx._vars[i];
-	}
-	ctx.createFlowEngine(flow).setInputVars(inputVars).execute(function(outputVars) {
-		if(typeof outputVars != 'undefined') {
-			for(var i in outputVars) {
-				ctx._vars[i] = outputVars[i];
-			}
-		}
+	ctx.vars['http_error'] = err;
+	ctx.createFlowEngine(flow).execute(function() {
 		setTimeout(next, 1);
 	});
 }
