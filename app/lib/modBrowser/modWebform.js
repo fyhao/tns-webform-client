@@ -225,10 +225,7 @@ var handleChange = function(widgetName) {
 					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
 			}
-<<<<<<< HEAD
 			return flowObject;
-=======
->>>>>>> parent of f4f9564... #115
 		}
 		// return dummy function for silent execution
 		return {
