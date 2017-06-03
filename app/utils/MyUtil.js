@@ -101,6 +101,24 @@ var util = {
 		str += platform.device.osVersion;
 		return str;
 	}
+	,
+	imgshow : function(request) {
+		return {
+            load : function(query, callback) {
+				var url = "https://imgshow-platform.p.mashape.com/?k=" + encodeURIComponent(query) + "&api=1";
+                var headers = { 
+                    "X-Mashape-Authorization": "i5deY4OELqM0XZp3NioVjsjhhi2nbTKF"
+                  };
+				util.frequest({
+					url : url,
+					method : 'POST',
+					callback : function(data) {
+						callback(data);
+					}
+				});
+            }
+        }
+	}
 };
 
 module.exports = util;
