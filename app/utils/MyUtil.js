@@ -1,3 +1,4 @@
+var platform = require('tns-core-modules/platform');
 var util = {
     frequest : function(opts) {
         if(typeof opts == 'undefined') opts = {};
@@ -14,6 +15,7 @@ var util = {
             opts.params = temp;
         }
 		if(typeof opts.headers == 'undefined') opts.headers = {};
+		opts.headers['X-WFClient-Version'] = util.getVersionString();
         var fetchModule = require("fetch");
         
         fetchModule.fetch(opts.url, {
@@ -79,6 +81,16 @@ var util = {
 			s = s.replace(n,v);
 		}
 		return s;
+	}
+	,
+	getVersionString : function() {
+		var str = 'WF-';
+		str += "1.0.0";
+		str += "-";
+		str += platform.device.os;
+		str += "-";
+		str += platform.device.osVersion;
+		return str;
 	}
 };
 
