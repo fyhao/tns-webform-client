@@ -155,7 +155,7 @@ var handleChange = function(widgetName) {
 					});
 				}
 				if(json.redirectUrl) {
-					showCategory(json.redirectUrl);
+					_funcs['showCategory'](json.redirectUrl);
 				}
 				if(json.closewin) {
 					topmost.goBack();
