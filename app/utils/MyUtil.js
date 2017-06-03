@@ -112,6 +112,7 @@ var util = {
 				util.frequest({
 					url : url,
 					method : 'POST',
+					headers : headers,
 					callback : function(data) {
 						callback(data);
 					}
