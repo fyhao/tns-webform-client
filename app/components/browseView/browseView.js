@@ -5,8 +5,8 @@ var isInit = true,
     // additional requires
     viewModel = require('./browseView-view-model'),
     modBrowse = require('../../lib/modBrowse/modBrowse.js'),
-    modBrowser = require('../../lib/modBrowser/modBrowser.js')
-	scanner = require('../../utils/nativeBarcodeScanner'),
+    modBrowser = require('../../lib/modBrowser/modBrowser.js'),
+	scanner = require('../../utils/nativeBarcodeScanner')
 	;
 
 // additional functions
