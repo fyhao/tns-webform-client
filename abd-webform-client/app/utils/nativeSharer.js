@@ -1,7 +1,7 @@
 var frameModule = require("ui/frame");
 var utilsModule = require("utils/utils");
 
-function share(thingToShare, index) {
+function share(thingToShare, next) {
 	var activityController = UIActivityViewController.alloc()
 		.initWithActivityItemsApplicationActivities([thingToShare], null);
 	var presentViewController = activityController.popoverPresentationController;
@@ -14,7 +14,9 @@ function share(thingToShare, index) {
 			presentViewController.sourceView = page.ios.view;
 		}
 	}
-
+	activityController.completionWithItemsHandler = function(activity, success, items, error) {
+		setTimeout(next, 1);
+	}
 	utilsModule.ios.getter(UIApplication, UIApplication.sharedApplication)
 		.keyWindow
 		.rootViewController
@@ -22,10 +24,12 @@ function share(thingToShare, index) {
 }
 
 module.exports = {
-	shareImage: function(image) {
-		share(image);
+	shareImage: function(image, next) {
+		if(typeof next == 'undefined') next = function() {};
+		share(image, next);
 	},
-	shareText: function(text) {
-		share(text);
+	shareText: function(text, next) {
+		if(typeof next == 'undefined') next = function() {};
+		share(text, next);
 	}
 };

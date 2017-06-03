@@ -9,26 +9,8 @@ module.exports = {
 					ctx.flows[i] = json.flows[i];
 				}
 			}
-
 			var flow = json.flow;
-			if(typeof flow != 'undefined') {
-				if(typeof flow == 'object') {
-					// flow object
-					ctx.createFlowEngine(flow).execute(next);
-				}
-				else if(typeof flow == 'string') {
-					// flow name
-					if(typeof ctx.flows[flow] != 'undefined') {
-						ctx.createFlowEngine(ctx.flows[flow]).execute(next);
-					}
-				}
-				else {
-					setTimeout(next, 1);
-				}
-			}
-			else {
-				setTimeout(next, 1);
-			}
+			ctx.createFlowEngine(flow).execute(next);
 		}
 		util.frequest(step);
 	}
