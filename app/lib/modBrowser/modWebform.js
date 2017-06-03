@@ -213,21 +213,22 @@ var handleChange = function(widgetName) {
 	ctx.wv = wv;
 	ctx.flows = {};
 	ctx.vars = {};
-	ctx.createFlowEngine = function(flow, opts) {
-		if(typeof opts != 'undefined') var opts = {};
+	ctx.createFlowEngine = function(flow) {
 		if(typeof flow != 'undefined') {
-			var flowObject = null;
 			if(typeof flow == 'object') {
 				// flow object
-				flowObject = new modFlow.FlowEngine(flow).setContext(ctx);
+				return new modFlow.FlowEngine(flow).setContext(ctx);
 			}
 			else if(typeof flow == 'string') {
 				// flow name
 				if(typeof ctx.flows[flow] != 'undefined') {
-					flowObject = new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
+					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
 			}
+<<<<<<< HEAD
 			return flowObject;
+=======
+>>>>>>> parent of f4f9564... #115
 		}
 		// return dummy function for silent execution
 		return {
