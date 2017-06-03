@@ -178,6 +178,12 @@ var handleChange = function(widgetName) {
     
     helpers.navigate(function(){return page;});
 	
+	// Hook init function in widget
+	for(var i = 0; i < params.length; i++) {
+    	var param = params[i];
+    	modWidget.init(param, {wv:wv});
+	}
+	
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
