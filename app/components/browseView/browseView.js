@@ -46,7 +46,7 @@ function goScan(args) {
     var sender = args.object;
     var parent = sender.parent;
     if (parent) {
-        scanner.scan(function(result) {
+        scanner.scan(function(error, result) {
 			alert(JSON.stringify(result));
 		});
     }
