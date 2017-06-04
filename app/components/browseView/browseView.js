@@ -47,7 +47,12 @@ function goScan(args) {
     var parent = sender.parent;
     if (parent) {
         scanner.scan(function(error, result) {
-			alert(JSON.stringify(result));
+			//alert(JSON.stringify(result));
+			var url = result.text;
+			modBrowse.pushHistory(url, function(status) {
+                var browser = modBrowser.createBrowser();
+                browser.open(url);
+            });
 		});
     }
 }
