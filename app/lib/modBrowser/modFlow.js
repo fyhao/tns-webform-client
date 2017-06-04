@@ -19,14 +19,6 @@ var FlowEngine = function(flow) {
 		ctx = v;
 		wv = ctx.wv;
 		item = ctx.item;
-		// initialize ctx._vars for local var for step use
-		ctx._vars = vars;
-		return this;
-	}
-	this.setInputVars = function(v) {
-		for(var i in v) {
-			ctx._vars[i] = v[i];
-		}
 		return this;
 	}
 	this.flow = util.clone(flow);
@@ -46,8 +38,8 @@ var FlowEngine = function(flow) {
 					if(done.length == 1) {
 						setTimeout(function() {
 							var outputVars = {};
-							for(var i in ctx._vars) {
-								outputVars[i] = ctx._vars[i];
+							for(var i in ctx.vars) {
+								outputVars[i] = ctx.vars[i];
 							}
 							done(outputVars);
 						}, 1);
@@ -97,23 +89,7 @@ var FlowEngine = function(flow) {
 			var flow = ctx.flows[step.type];
 			//console.log('search flow ' + step.type + " = " + (typeof flow));
 			if(typeof flow != 'undefined') {
-				var inputVars = {};
-				for(var i in step) {
-					if(i == 'type') continue;
-					if(i == 'inputall') continue;
-					inputVars[i] = step[i];
-				}
-				if(typeof step.inputall != 'undefined' && step.inputall) {
-					for(var i in ctx._vars) {
-						inputVars[i] = ctx._vars[i];
-					}
-				}
-				new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-					if(typeof outputVars != 'undefined') {
-						for(var i in outputVars) {
-							ctx._vars[i] = outputVars[i];
-						}
-					}
+				new FlowEngine(flow).setContext(ctx).execute(function() {
 					setTimeout(next, 1);
 				});
 			}
