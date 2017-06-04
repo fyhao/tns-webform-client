@@ -155,7 +155,7 @@ var handleChange = function(widgetName) {
 					});
 				}
 				if(json.redirectUrl) {
-					showCategory(json.redirectUrl);
+					_funcs['showCategory'](json.redirectUrl);
 				}
 				if(json.closewin) {
 					topmost.goBack();
@@ -177,6 +177,12 @@ var handleChange = function(widgetName) {
     gridLayout.addChild(submitBtn);
     
     helpers.navigate(function(){return page;});
+	
+	// Hook init function in widget
+	for(var i = 0; i < params.length; i++) {
+    	var param = params[i];
+    	modWidget.init(param, {wv:wv});
+	}
 	
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
@@ -225,6 +231,7 @@ var handleChange = function(widgetName) {
 					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
 			}
+			return flowObject;
 		}
 		// return dummy function for silent execution
 		return {
