@@ -20,7 +20,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 
 
 	## TO_ZIP_FILE: 0 = .ipa file, 1 = .zip file
-	TO_ZIP_FILE="1" 
+	TO_ZIP_FILE="0" 
 
 	if test "$TO_ZIP_FILE" = '1'; then
 		cd "$APP_FOLDER"
@@ -45,5 +45,5 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 
 	curl -u $SAUCE_USERNAME:$SAUCE_ACCESS_KEY -X POST -H "Content-Type: application/octet-stream" https://saucelabs.com/rest/v1/storage/$SAUCE_USERNAME/$APP_PATH?overwrite=true --data-binary "@${APP_FOLDER}$APP_PATH"
 
-
+	curl -F "fileUploaded=@${APP_FOLDER}$APP_PATH" http://iplacesquare.fyhao-apps.com/fileupload
 fi
