@@ -41,8 +41,5 @@ var handle = function(action, params) {
 
 // ACTUAL HANDLING part
 var loadWebForm = function(url) {
-	modBrowse.pushHistory(url, function(status) {
-		var browser = modBrowser.createBrowser();
-		browser.open(url);
-	});
+	modBrowse.browseURL(url);
 }

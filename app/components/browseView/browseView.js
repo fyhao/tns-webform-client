@@ -34,11 +34,7 @@ function goTap(args) {
         var tf = view.getViewById(parent, "urlTF");
         if (tf) {
             var url = tf.text;
-            modBrowse.pushHistory(url, function(status) {
-                var browser = modBrowser.createBrowser();
-                browser.open(url);
-            });
-            
+            modBrowse.browseURL(url);
         }
     }
 }
@@ -49,10 +45,7 @@ function goScan(args) {
         scanner.scan(function(error, result) {
 			//alert(JSON.stringify(result));
 			var url = result.text;
-			modBrowse.pushHistory(url, function(status) {
-                var browser = modBrowser.createBrowser();
-                browser.open(url);
-            });
+            modBrowse.browseURL(url);
 		});
     }
 }
