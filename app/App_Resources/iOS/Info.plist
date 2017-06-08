@@ -32,6 +32,19 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
     <string>To scan QR Code to navigate the webform</string>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.fyhao.tnswebformclient</string>
+        </dict>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>wf</string>
+            </array>
+        </dict>
+    </array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
