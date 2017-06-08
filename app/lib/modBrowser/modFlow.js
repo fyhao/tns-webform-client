@@ -56,8 +56,8 @@ var FlowEngine = function(flow) {
 		this.canceled = true;
 	}
 	var replaceVars = function(c) {
-		for(var k in ctx._vars) {
-			c = util.replaceAll(c, '##' + k + '##', ctx._vars[k]);
+		for(var k in vars) {
+			c = util.replaceAll(c, '##' + k + '##', vars[k]);
 		}
 		for(var k in ctx.vars) {
 			c = util.replaceAll(c, '##' + k + '##', ctx.vars[k]);
@@ -92,17 +92,13 @@ var FlowEngine = function(flow) {
 				new FlowEngine(flow).setContext(ctx).execute(function() {
 					setTimeout(next, 1);
 				});
-			}
-			else {
-				// search step modules if any
-				modStep.processStep(ctx, step, next);
+				return;
 			}
 		}
-		else {
-			// search step modules if any
-			modStep.processStep(ctx, step, next);
-		}
-		
+		// search step modules if any
+		ctx._vars = vars; // get local vars
+		modStep.processStep(ctx, step, next);
+		vars = ctx._vars; // set local vars
 	}
 }
 
