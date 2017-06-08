@@ -30,6 +30,7 @@ exports.browseURL = function(url) {
 	pushHistory(url, function(status) {
 		var browser = modBrowser.createBrowser();
 		browser.open(url);
+		alert("DEBUG 2/2 " + url);
 	});
 }
 var items = [
