@@ -1,9 +1,5 @@
-var modBrowser = require('../modBrowser/modBrowser.js'),
-exports.getHistory = function(fn) {
-    fn(items.slice().reverse());
-}
-
-exports.pushHistory = function pushHistory(item, fn) {
+var modBrowser = require('../modBrowser/modBrowser.js');
+function pushHistory(item, fn) {
     if(items.length >= 5 && items.indexOf(item) == -1) {
         items.splice(0,1);
         items.push(item);
@@ -13,6 +9,11 @@ exports.pushHistory = function pushHistory(item, fn) {
         fn(1);
     }
 }
+exports.getHistory = function(fn) {
+    fn(items.slice().reverse());
+}
+
+exports.pushHistory = pushHistory;
 
 exports.clearHistory = function(fn) {
     items = [];
@@ -29,6 +30,7 @@ exports.browseURL = function(url) {
 	pushHistory(url, function(status) {
 		var browser = modBrowser.createBrowser();
 		browser.open(url);
+		alert("DEBUG 2/2 " + url);
 	});
 }
 var items = [
