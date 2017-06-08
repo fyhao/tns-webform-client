@@ -21,6 +21,7 @@ exports.clearHistory = function(fn) {
 }
 
 exports.browseURL = function(url) {
+	alert("DEBUG 1/2 " + url);
 	// Check URL
 	if(!url.startsWith("http")) {
 		alert('Invalid URL format: ' + url);
@@ -30,6 +31,7 @@ exports.browseURL = function(url) {
 	pushHistory(url, function(status) {
 		var browser = modBrowser.createBrowser();
 		browser.open(url);
+		alert("DEBUG 2/2 " + url);
 	});
 }
 var items = [
