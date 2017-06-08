@@ -1,10 +1,5 @@
 var modBrowser = require('../modBrowser/modBrowser.js');
-
-exports.getHistory = function(fn) {
-    fn(items.slice().reverse());
-}
-
-exports.pushHistory = function pushHistory(item, fn) {
+function pushHistory(item, fn) {
     if(items.length >= 5 && items.indexOf(item) == -1) {
         items.splice(0,1);
         items.push(item);
@@ -14,6 +9,11 @@ exports.pushHistory = function pushHistory(item, fn) {
         fn(1);
     }
 }
+exports.getHistory = function(fn) {
+    fn(items.slice().reverse());
+}
+
+exports.pushHistory = pushHistory;
 
 exports.clearHistory = function(fn) {
     items = [];
