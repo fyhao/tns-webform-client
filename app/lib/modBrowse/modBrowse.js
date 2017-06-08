@@ -1,4 +1,5 @@
-var modBrowser = require('../modBrowser/modBrowser.js'),
+var modBrowser = require('../modBrowser/modBrowser.js');
+
 exports.getHistory = function(fn) {
     fn(items.slice().reverse());
 }
