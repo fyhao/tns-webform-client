@@ -21,7 +21,6 @@ exports.clearHistory = function(fn) {
 }
 
 exports.browseURL = function(url) {
-	alert("DEBUG 1/2 " + url);
 	// Check URL
 	if(!url.startsWith("http")) {
 		alert('Invalid URL format: ' + url);
