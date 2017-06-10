@@ -78,7 +78,7 @@ function showCategory(url) {
 				navButton.on("tap", function() {
 					showOptionDialog(options);
 				})
-				page.actionBar.navigationButton = navButton;
+				util.setRightNavButton(page, navButton);
             }
         });
     }

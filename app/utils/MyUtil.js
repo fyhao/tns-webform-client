@@ -123,6 +123,13 @@ var util = {
 	,
 	showOptionDialog : function(options) {
 		
+	,
+	setRightNavButton : function(page, btn) {
+		var items = page.actionBar.actionItems.getItems();
+		for(var i = 0; i < items.length; i++) {
+			page.actionBar.actionItems.removeItem(item);
+		}
+		page.actionBar.actionItems.add(btn);
 	}
 };
 
