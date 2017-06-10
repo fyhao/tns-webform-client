@@ -2,11 +2,8 @@ var geolocation = require("nativescript-geolocation");
 module.exports = {
 	getLocation: function(fn) {
 		if (!geolocation.isEnabled()) {
-			geolocation.enableLocationRequest().then(function() {
-				getLocation(fn);
-			}, function(err) {
-				alert("Error enableLocationRequest: " + err);
-			});
+			geolocation.enableLocationRequest();
+			getLocation(fn);
 		}
 		else {
 			getLocation(fn);
