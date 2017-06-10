@@ -32,23 +32,23 @@ function showCategory(url) {
     
         util.frequest({
             url : url,
-            callbackJSON : function(data) {
+            callbackJSON : function(cat) {
                 
-                listView.items = data.list;
+                listView.items = cat.list;
                 listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
                     if (!args1.view) {
                         // Create label if it is not already created.
                         args1.view = new labelModule.Label();
                         args1.view.height = 44;
                     }
-                    args1.view.data = data.list[args1.index];
-                    args1.view.text = data.list[args1.index].title;
+                    args1.view.cat = cat.list[args1.index];
+                    args1.view.text = cat.list[args1.index].title;
 
                 });
                 listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
                     var tappedItemIndex = args2.index;
                     var tappedItemView = args2.view;
-                    var item = tappedItemView.data;
+                    var item = tappedItemView.cat;
                     showItem(item);
                 });
             }
