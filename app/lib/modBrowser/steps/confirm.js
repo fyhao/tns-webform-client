@@ -1,4 +1,4 @@
-var dialogs = require("ui/dialogs");
+var util = require('../../../utils/MyUtil');
 module.exports = {
 	
 	process : function(ctx, step, next) {
