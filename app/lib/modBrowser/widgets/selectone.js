@@ -6,7 +6,7 @@ module.exports = {
 		for(var j = 0; j < param.options.length; j++) {
 			var key = param.options[j]['key'];
 			var val = param.options[j]['value'];
-			var selected = param.def && param.def == val;
+			var selected = (param.value && param.value == val) || (param.def && param.def == val);
 			var selectedStr = selected ? ' selected' : '';
 			html += '<option value="' + val + '" ' + selectedStr + '>' + key + '</option>';
 		}

@@ -1,8 +1,9 @@
 module.exports = {
 	
 	renderWidget : function(param, fn) {
-		var def = typeof(param.def) != 'undefined' ? param.def : '';
-    	var html = '<textarea id="' + param.name + '">' + def + '</textarea>';
+		var value = typeof(param.value) != 'undefined' ? param.value : '';
+		value = typeof(param.def) != 'undefined' ? param.def : value;
+    	var html = '<textarea id="' + param.name + '">' + value + '</textarea>';
 		fn(html);
 	}
 	,

@@ -1,8 +1,9 @@
 module.exports = {
 	
 	renderWidget : function(param, fn) {
-		var def = typeof(param.def) != 'undefined' ? param.def : '';
-		var html = '<input type="time" name="' + param.name + '" value="' + def + '" />';
+		var value = typeof(param.value) != 'undefined' ? param.value : '';
+		value = typeof(param.def) != 'undefined' ? param.def : value;
+		var html = '<input type="time" name="' + param.name + '" value="' + value + '" />';
 		fn(html);
 	}
 	,
