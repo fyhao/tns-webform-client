@@ -1,5 +1,6 @@
 var platform = require('tns-core-modules/platform');
 var dialogs = require("ui/dialogs");
+var enums = require("ui/enums");
 var util = {
     frequest : function(opts) {
         if(typeof opts == 'undefined') opts = {};
@@ -137,6 +138,7 @@ var util = {
 		for(var i = 0; i < items.length; i++) {
 			page.actionBar.actionItems.removeItem(item);
 		}
+		btn.ios.position = enums.IOSActionItemPosition.right;
 		page.actionBar.actionItems.addItem(btn);
 	}
 };
