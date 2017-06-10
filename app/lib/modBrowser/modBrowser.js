@@ -73,7 +73,7 @@ function showCategory(url) {
 					options.splice(0,0,option);
 				}
 				
-				var navButton = new NavigationButton();
+				var navButton = new actionBarModule.NavigationButton();
 				navButton.icon = "res://icon";
 				navButton.on("tap", function() {
 					showOptionDialog(options);

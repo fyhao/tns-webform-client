@@ -123,7 +123,7 @@ var handleChange = function(widgetName) {
     	}
     }
 
-    var submitBtn = new buttonModule.Button();
+    var submitBtn = new actionBarModule.NavigationButton();
     submitBtn.text = 'Submit';
     submitBtn.height = 44;
     submitBtn.on(buttonModule.Button.tapEvent, function (args) {
@@ -176,7 +176,7 @@ var handleChange = function(widgetName) {
 			}
 		});
     });
-    gridLayout.addChild(submitBtn);
+    page.actionBar.navigationButton = navButton;
     
     helpers.navigate(function(){return page;});
 	
