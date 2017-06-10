@@ -66,9 +66,9 @@
 			<key>NSAllowsArbitraryLoads</key><true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>Need location when in use.</string>
+    <string>Need location when in use. </string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>Need location always.</string>
+    <string>Need location always. </string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
