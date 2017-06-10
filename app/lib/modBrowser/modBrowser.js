@@ -72,7 +72,13 @@ function showCategory(url) {
 					};
 					options.splice(0,0,option);
 				}
-				showOptionDialog(options);
+				
+				var navButton = new NavigationButton();
+				navButton.icon = "res://icon";
+				navButton.on("tap", function() {
+					showOptionDialog(options);
+				})
+				page.actionBar.navigationButton = navButton;
             }
         });
     }
