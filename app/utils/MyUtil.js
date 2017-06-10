@@ -120,6 +120,10 @@ var util = {
             }
         }
 	}
+	,
+	showOptionDialog : function(options) {
+		
+	}
 };
 
 module.exports = util;
