@@ -5,7 +5,9 @@ var isInit = true,
     // additional requires
     viewModel = require('./browseView-view-model'),
     modBrowse = require('../../lib/modBrowse/modBrowse.js'),
-    modBrowser = require('../../lib/modBrowser/modBrowser.js');
+    modBrowser = require('../../lib/modBrowser/modBrowser.js'),
+	scanner = require('../../utils/nativeBarcodeScanner.js')
+	;
 
 // additional functions
 function pageLoaded(args) {
@@ -32,15 +34,24 @@ function goTap(args) {
         var tf = view.getViewById(parent, "urlTF");
         if (tf) {
             var url = tf.text;
-            modBrowse.pushHistory(url, function(status) {
-                var browser = modBrowser.createBrowser();
-                browser.open(url);
-            });
-            
+            // Browse URL
+			modBrowse.browseURL(url);
         }
     }
 }
-
+function goScan(args) {
+    var sender = args.object;
+    var parent = sender.parent;
+    if (parent) {
+        scanner.scan(function(error, result) {
+			//alert(JSON.stringify(result));
+			var url = result.text;
+            // Browse URL
+			modBrowse.browseURL(url);
+		});
+    }
+}
 exports.goTap = goTap;
+exports.goScan = goScan;
 // END_CUSTOM_CODE_homeView
 exports.pageLoaded = pageLoaded;

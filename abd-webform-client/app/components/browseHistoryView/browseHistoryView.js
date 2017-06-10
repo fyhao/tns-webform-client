@@ -48,10 +48,7 @@ function menuItemTap(args) {
     var menuItems = viewModel.get('menuItems');
     var menuItem = menuItems[args.index];
     var url = menuItem.url;
-    modBrowse.pushHistory(url, function(status) {
-        var browser = modBrowser.createBrowser();
-        browser.open(url);
-    });     
+    modBrowse.browseURL(url);
 }
 
 exports.menuItemTap = menuItemTap;

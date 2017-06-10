@@ -1,3 +1,4 @@
+var platform = require('tns-core-modules/platform');
 var util = {
     frequest : function(opts) {
         if(typeof opts == 'undefined') opts = {};
@@ -13,18 +14,29 @@ var util = {
             }
             opts.params = temp;
         }
+		if(typeof opts.headers == 'undefined') opts.headers = {};
+		opts.headers['X-WFClient-Version'] = util.getVersionString();
         var fetchModule = require("fetch");
         
         fetchModule.fetch(opts.url, {
                 method: opts.method ? opts.method : 'GET',
-                headers: {},
+                headers: opts.headers,
                 body: opts.params
             })
             .then(function(response) {
-                opts.callbackJSON(JSON.parse(response._bodyInit));
+				if(typeof opts.callbackJSON !== 'undefined') {
+					opts.callbackJSON(JSON.parse(response._bodyInit));
+				}
+				else if(typeof opts.callback !== 'undefined') {
+					opts.callback(response._bodyInit);
+				}
+                
             }, function(error) {
-                alert(JSON.stringify(error));
-                console.log('homeView fetch error')
+				if(typeof opts.error !== 'undefined') {
+					opts.error(error);
+				}
+				else 
+					alert(JSON.stringify(error));
             });
     }
 	,
@@ -78,6 +90,39 @@ var util = {
 			s = s.replace(n,v);
 		}
 		return s;
+	}
+	,
+	getVersionString : function() {
+		var str = 'WF-';
+		str += "1.0.0";
+		str += "-";
+		str += platform.device.os;
+		str += "-";
+		str += platform.device.osVersion;
+		return str;
+	}
+	,
+	imgshow : function(request) {
+		return {
+            load : function(query, callback) {
+				var url = "https://imgshow-platform.p.mashape.com/?k=" + encodeURIComponent(query) + "&api=1";
+                var headers = { 
+                    "X-Mashape-Authorization": "i5deY4OELqM0XZp3NioVjsjhhi2nbTKF"
+                  };
+				util.frequest({
+					url : url,
+					method : 'POST',
+					headers : headers,
+					callback : function(data) {
+						callback(data);
+					}
+				});
+            }
+        }
+	}
+	,
+	showOptionDialog : function(options) {
+		
 	}
 };
 

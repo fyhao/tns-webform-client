@@ -28,35 +28,6 @@ var showItemWebform = function(item, opts) {
 	var submitBtnName = 'Submit';
 	if(item.submitBtnName) submitBtnName = item.submitBtnName;
     
-    
-    var parseParamOptions = function(options) {
-    	if(!options.length) {
-    		// object, not array
-    		var temp = [];
-    		for(var k in options) {
-    			var v = options[k];
-    			temp.push({value:k,key:v});
-    		}
-    		options = temp;
-    		temp = null;
-    	}
-    	else {
-    		// is array
-    		var temp = [];
-    		for(var k in options) {
-    			var v = options[k];
-    			if(typeof v != 'object') {
-    				temp.push({value:v,key:v});
-    			}
-    			else {
-    				return options;
-    			}
-    		}
-    		options = temp;
-    		temp = null;
-    	}
-    	return options;
-    }
     var paramField = {};
     var html = '';
     var wv = new webViewModule.WebView();
@@ -107,7 +78,9 @@ var handleClick = function(widgetName) {
 
 var handleChange = function(widgetName) {
     return function(e) {
-        _emitDataToIos("evt:" + widgetName + "_onchange");
+		var oldVal = document.getElementById(widgetName).defaultValue;
+		var newVal = document.getElementById(widgetName).value;
+        _emitDataToIos("evt:" + widgetName + "_onchange;from=" + oldVal + "&to=" + newVal);
     }
 };
 </script>`;
@@ -184,7 +157,7 @@ var handleChange = function(widgetName) {
 					});
 				}
 				if(json.redirectUrl) {
-					showCategory(json.redirectUrl);
+					_funcs['showCategory'](json.redirectUrl);
 				}
 				if(json.closewin) {
 					topmost.goBack();
@@ -199,18 +172,7 @@ var handleChange = function(widgetName) {
 				}
 	
 				var flow = json.flow;
-				if(typeof flow != 'undefined') {
-					if(typeof flow == 'object') {
-						// flow object
-						ctx.createFlowEngine(flow).execute(function() {});
-					}
-					else if(typeof flow == 'string') {
-						// flow name
-						if(typeof ctx.flows[flow] != 'undefined') {
-							ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
-						}
-					}
-				}
+				ctx.createFlowEngine(flow).execute(function() {});
 			}
 		});
     });
@@ -218,8 +180,12 @@ var handleChange = function(widgetName) {
     
     helpers.navigate(function(){return page;});
 	
-    
-    
+	// Hook init function in widget
+	for(var i = 0; i < params.length; i++) {
+    	var param = params[i];
+    	modWidget.init(param, {wv:wv});
+	}
+	
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
@@ -233,18 +199,47 @@ var handleChange = function(widgetName) {
         if (reqMsgStartIndex === 0) {
             var reqMsg = decodeURIComponent(request.substring(reqMsgProtocol.length, request.length));
             if(reqMsg.indexOf('evt:') == 0) {
-                var data = reqMsg.substring('evt:'.length);
-                handleEventResponse(data);
+                var temp = reqMsg.substring('evt:'.length);
+				var evt = '';
+				var evtParams = {};
+				if(temp.indexOf(';') > -1) {
+					evt = temp.substring(0, temp.indexOf(';'));
+					var paramstr = temp.substring(temp.indexOf(';') + 1);
+					var paramarr = paramstr.split('&');
+					for(var i = 0; i < paramarr.length; i++) {
+						var pairarr = paramarr[i].split('=');
+						evtParams[pairarr[0]] = pairarr[1];
+					}
+				}
+				else {
+					evt = temp;
+				}
+                handleEventResponse(evt, evtParams);
             }
         }
     }
-    var handleEventResponse = function(data) {
-        console.log('handleEventResponse ' + data)
+    var handleEventResponse = function(data, evtParams) {
+        console.log('handleEventResponse ' + data + ' ' + JSON.stringify(evtParams));
         for(var _evt in events) {
             if(_evt == data) {
-                var flowName = events[_evt];
-                if(typeof ctx.flows[flowName] != 'undefined') {
-					ctx.createFlowEngine(ctx.flows[flowName]).execute(function() {});
+                var e = events[_evt];
+				if(typeof e == 'string') {
+					var flowName = e;
+					ctx.createFlowEngine(flowName).execute(function() {});
+				}
+                else {
+					if(e.changed) {
+						var fromValue = e.changed.from;
+						var toValue = e.changed.to;
+						if(fromValue == evtParams.from && toValue == evtParams.to) {
+							var flowName = e.flow;
+							ctx.createFlowEngine(flowName).execute(function() {});
+						}
+					}
+					else {
+						var flowName = e.flow;
+						ctx.createFlowEngine(flowName).execute(function() {});
+					}
 				}
             }
         }
@@ -258,7 +253,36 @@ var handleChange = function(widgetName) {
 	ctx.flows = {};
 	ctx.vars = {};
 	ctx.createFlowEngine = function(flow) {
-		return new modFlow.FlowEngine(flow).setContext(ctx);
+		if(typeof flow != 'undefined') {
+			if(typeof flow == 'object') {
+				// flow object
+				return new modFlow.FlowEngine(flow).setContext(ctx);
+			}
+			else if(typeof flow == 'string') {
+				// flow name
+				if(typeof ctx.flows[flow] != 'undefined') {
+					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
+				}
+			}
+			return flowObject;
+		}
+		// return dummy function for silent execution
+		return {
+			execute : function(next) {
+				if(next.length == 1) {
+					setTimeout(function() {
+						next({});
+					}, 1);
+				}
+				else {
+					setTimeout(next, 1);
+				}
+			}
+			,
+			setInputVars : function(_vars){
+				return this;
+			}
+		};
 	}
 	ctx.showItemWebform = showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
@@ -273,21 +297,8 @@ var handleChange = function(widgetName) {
 	
 	var flow = item.flow;
 	// #47 FlowEngine webform level
-	if(typeof flow != 'undefined') {
-		if(typeof flow == 'object') {
-			// flow object
-			ctx.createFlowEngine(flow).execute(function() {});
-		}
-		else if(typeof flow == 'string') {
-			// flow name
-			if(typeof ctx.flows[flow] != 'undefined') {
-				ctx.createFlowEngine(ctx.flows[flow]).execute(function() {});
-			}
-		}
-	}
+	ctx.createFlowEngine(flow).execute(function() {});
 }
-
-
 
 module.exports.showItemWebform = showItemWebform;
 var _funcs = {};

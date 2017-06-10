@@ -11,6 +11,12 @@ module.exports.parseValue = function(param, opts) {
 	return new WidgetProcessor(param, opts).parseValue();
 }
 
+module.exports.init = function(param, opts) {
+	// Input: params object
+	// Input: opts object {wv}
+	return new WidgetProcessor(param, opts).init();
+}
+
 // public variable
 var widgetDefinitions = [];
 
@@ -54,6 +60,13 @@ var WidgetProcessor = function(param, opts) {
 			value = v;
 		});
 		return value;
+	}
+	this.init = function() {
+		if(def === null) {
+			return null;
+		}
+		if(typeof def.init === 'undefined') return null;
+		def.init(param, opts);
 	}
 	init();
 }
