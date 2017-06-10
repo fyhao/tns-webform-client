@@ -12,6 +12,6 @@ module.exports = {
 			}
 			options.push(opt);
 		}
-		util.showOptionDialog(step.options);
+		util.showOptionDialog(options);
 	}
 }
