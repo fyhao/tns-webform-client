@@ -176,7 +176,7 @@ var handleChange = function(widgetName) {
 			}
 		});
     });
-    page.actionBar.navigationButton = navButton;
+    util.setRightNavButton(page, submitBtn);
     
     helpers.navigate(function(){return page;});
 	

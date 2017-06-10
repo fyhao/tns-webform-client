@@ -52,33 +52,36 @@ function showCategory(url) {
                     showItem(item);
                 });
 				var customMenus = cat.customMenus;
-				for(var i = customMenus.length - 1; i >= 0; i--) {
-					var menu = customMenus[i];
-					var option = {
-						'id' : 'menu_' + i,
-						'text' : menu.title,
-						'menu' : menu,
-						'func' : function() {
-							if(this.menu.url) {
-								showWebView(this.menu.url);
-							}
-							if(this.menu.requesturl) {
-								showCategory(this.menu.requesturl);
-							}
-							if(this.menu.webform) {
-								modWebform.showItemWebform(this.menu.webform);
-							}
-						}
-					};
-					options.splice(0,0,option);
-				}
-				
-				var navButton = new actionBarModule.NavigationButton();
-				navButton.icon = "res://icon";
-				navButton.on("tap", function() {
-					showOptionDialog(options);
-				})
-				page.actionBar.navigationButton = navButton;
+                if(customMenus && customMenus.length) {
+                    var options = [];
+                    for(var i = customMenus.length - 1; i >= 0; i--) {
+                        var menu = customMenus[i];
+                        var option = {
+                            'id' : 'menu_' + i,
+                            'text' : menu.title,
+                            'menu' : menu,
+                            'func' : function() {
+                                if(this.menu.url) {
+                                    showWebView(this.menu.url);
+                                }
+                                if(this.menu.requesturl) {
+                                    showCategory(this.menu.requesturl);
+                                }
+                                if(this.menu.webform) {
+                                    modWebform.showItemWebform(this.menu.webform);
+                                }
+                            }
+                        };
+                        options.splice(0,0,option);
+                    }
+                }
+                var navButton = new actionBarModule.NavigationButton();
+                navButton.text = '[ ]'
+                navButton.height = 44;
+                navButton.on(buttonModule.Button.tapEvent, function() {
+                    util.showOptionDialog(options);
+                })
+                util.setRightNavButton(page, navButton);
             }
         });
     }
