@@ -2,8 +2,7 @@ var util = require('../../../utils/MyUtil');
 module.exports = {
 	
 	renderWidget : function(param, fn) {
-		var visibility = typeof param.visibility != 'undefined' && param.visibility ? 'visible' : 'hidden';
-		fn('<div id="' + param.id + '" style="visibility:' + visibility + '"></div>');
+		fn('<div id="' + param.id + '"></div>');
 	}
 	,
 	init : function(param, opts) {
