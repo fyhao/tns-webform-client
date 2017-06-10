@@ -124,12 +124,31 @@ var util = {
 	}
 	,
 	showOptionDialog : function(options) {
+		
+		var options_dg = [];
+		var filterOptions = [];
+		for(var i = 0; i < options.length; i++) {
+			var option = options[i];
+			if(typeof option.enabled == 'undefined') option.enabled = function() { return true; }
+			if(!option.enabled()) continue; 
+			if(option.init) {
+				option.init();
+			}
+			options_dg.push(option.text);
+			filterOptions.push(option);
+		}
 		dialogs.action({
-			message: "Your message",
-			cancelButtonText: "Cancel text",
-			actions: ["Option1", "Option2"]
+			message: "Please select an option",
+			cancelButtonText: "Cancel",
+			actions: options_dg
 		}).then(function (result) {
 			console.log("Dialog result: " + result)
+			for(var i = 0; i < filterOptions.length; i++) {
+				var option = filterOptions[i];
+				if(option.text == result) {
+					if(option.func) option.func();
+				}
+			}
 		});
 	}
 	,
