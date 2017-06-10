@@ -1,7 +1,9 @@
-var barcodescanner = require("nativescript-barcodescanner")
+var BarcodeScanner = require("nativescript-barcodescanner").BarcodeScanner;
   
 module.exports = {
 	scan : function(fn) {
+		var barcodescanner = new BarcodeScanner();
+
 		  barcodescanner.scan({
 			formats: "QR_CODE,PDF_417",   // Pass in of you want to restrict scanning to certain types
 			cancelLabel: "EXIT. Also, try the volume buttons!", // iOS only, default 'Close'

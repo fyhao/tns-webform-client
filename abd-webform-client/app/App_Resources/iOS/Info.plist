@@ -32,6 +32,43 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
     <string>To scan QR Code to navigate the webform</string>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.fyhao.tnswebformclient</string>
+        </dict>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>wf</string>
+            </array>
+        </dict>
+    </array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>fyhao.com</key>
+			<dict>
+				<!--Include to allow subdomains-->
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<!--Include to allow HTTP requests-->
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<!--Include to specify minimum TLS version-->
+				<key>NSTemporaryExceptionMinimumTLSVersion</key>
+				<string>TLSv1.1</string>
+			</dict>
+		</dict>
+			<key>NSAllowsArbitraryLoads</key><true/>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Need location when in use. </string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Need location always. </string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

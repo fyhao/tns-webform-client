@@ -78,7 +78,9 @@ var handleClick = function(widgetName) {
 
 var handleChange = function(widgetName) {
     return function(e) {
-        _emitDataToIos("evt:" + widgetName + "_onchange");
+		var oldVal = document.getElementById(widgetName).defaultValue;
+		var newVal = document.getElementById(widgetName).value;
+        _emitDataToIos("evt:" + widgetName + "_onchange;from=" + oldVal + "&to=" + newVal);
     }
 };
 </script>`;
@@ -197,17 +199,48 @@ var handleChange = function(widgetName) {
         if (reqMsgStartIndex === 0) {
             var reqMsg = decodeURIComponent(request.substring(reqMsgProtocol.length, request.length));
             if(reqMsg.indexOf('evt:') == 0) {
-                var data = reqMsg.substring('evt:'.length);
-                handleEventResponse(data);
+                var temp = reqMsg.substring('evt:'.length);
+				var evt = '';
+				var evtParams = {};
+				if(temp.indexOf(';') > -1) {
+					evt = temp.substring(0, temp.indexOf(';'));
+					var paramstr = temp.substring(temp.indexOf(';') + 1);
+					var paramarr = paramstr.split('&');
+					for(var i = 0; i < paramarr.length; i++) {
+						var pairarr = paramarr[i].split('=');
+						evtParams[pairarr[0]] = pairarr[1];
+					}
+				}
+				else {
+					evt = temp;
+				}
+                handleEventResponse(evt, evtParams);
             }
         }
     }
-    var handleEventResponse = function(data) {
-        console.log('handleEventResponse ' + data)
+    var handleEventResponse = function(data, evtParams) {
+        console.log('handleEventResponse ' + data + ' ' + JSON.stringify(evtParams));
         for(var _evt in events) {
             if(_evt == data) {
-                var flowName = events[_evt];
-                ctx.createFlowEngine(flowName).execute(function() {});
+                var e = events[_evt];
+				if(typeof e == 'string') {
+					var flowName = e;
+					ctx.createFlowEngine(flowName).execute(function() {});
+				}
+                else {
+					if(e.changed) {
+						var fromValue = e.changed.from;
+						var toValue = e.changed.to;
+						if(fromValue == evtParams.from && toValue == evtParams.to) {
+							var flowName = e.flow;
+							ctx.createFlowEngine(flowName).execute(function() {});
+						}
+					}
+					else {
+						var flowName = e.flow;
+						ctx.createFlowEngine(flowName).execute(function() {});
+					}
+				}
             }
         }
     }
