@@ -49,7 +49,7 @@ var FlowEngine = function(flow) {
 					}
 				}
 			}
-			setTimeout(checkNext, 300);
+			setTimeout(checkNext, 10);
 		}
 	}
 	this.cancel = function() {
