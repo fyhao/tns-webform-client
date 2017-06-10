@@ -35,10 +35,7 @@ function goTap(args) {
         if (tf) {
             var url = tf.text;
             // Browse URL
-			modBrowse.pushHistory(url, function(status) {
-				var browser = modBrowser.createBrowser();
-				browser.open(url);
-			});
+			modBrowse.browseURL(url);
         }
     }
 }
@@ -50,10 +47,7 @@ function goScan(args) {
 			//alert(JSON.stringify(result));
 			var url = result.text;
             // Browse URL
-			modBrowse.pushHistory(url, function(status) {
-				var browser = modBrowser.createBrowser();
-				browser.open(url);
-			});
+			modBrowse.browseURL(url);
 		});
     }
 }
