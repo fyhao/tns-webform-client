@@ -2,7 +2,8 @@ module.exports = {
 	
 	renderWidget : function(param, fn) {
 		param.options = parseParamOptions(param.options);
-		var html = '<select id="' + param.name + '">';
+		var visibility = typeof param.visibility != 'undefined' && param.visibility ? 'visible' : 'hidden';
+		var html = '<select id="' + param.name + '"  style="visibility:' + visibility + '">';
 		for(var j = 0; j < param.options.length; j++) {
 			var key = param.options[j]['key'];
 			var val = param.options[j]['value'];
