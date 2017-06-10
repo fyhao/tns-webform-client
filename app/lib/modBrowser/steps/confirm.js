@@ -17,6 +17,6 @@ module.exports = {
 			}
 			options.push(opt);
 		}
-		util.showOptionDialog(options, {message:'Please confirm?');
+		util.showOptionDialog(options, {message:'Please confirm?'});
 	}
 }
