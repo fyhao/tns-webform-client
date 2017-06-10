@@ -19,14 +19,6 @@ var FlowEngine = function(flow) {
 		ctx = v;
 		wv = ctx.wv;
 		item = ctx.item;
-		// initialize ctx._vars for local var for step use
-		ctx._vars = vars;
-		return this;
-	}
-	this.setInputVars = function(v) {
-		for(var i in v) {
-			ctx._vars[i] = v[i];
-		}
 		return this;
 	}
 	this.flow = util.clone(flow);
@@ -46,8 +38,8 @@ var FlowEngine = function(flow) {
 					if(done.length == 1) {
 						setTimeout(function() {
 							var outputVars = {};
-							for(var i in ctx._vars) {
-								outputVars[i] = ctx._vars[i];
+							for(var i in ctx.vars) {
+								outputVars[i] = ctx.vars[i];
 							}
 							done(outputVars);
 						}, 1);
@@ -64,8 +56,8 @@ var FlowEngine = function(flow) {
 		this.canceled = true;
 	}
 	var replaceVars = function(c) {
-		for(var k in ctx._vars) {
-			c = util.replaceAll(c, '##' + k + '##', ctx._vars[k]);
+		for(var k in vars) {
+			c = util.replaceAll(c, '##' + k + '##', vars[k]);
 		}
 		for(var k in ctx.vars) {
 			c = util.replaceAll(c, '##' + k + '##', ctx.vars[k]);
@@ -97,36 +89,16 @@ var FlowEngine = function(flow) {
 			var flow = ctx.flows[step.type];
 			//console.log('search flow ' + step.type + " = " + (typeof flow));
 			if(typeof flow != 'undefined') {
-				var inputVars = {};
-				for(var i in step) {
-					if(i == 'type') continue;
-					if(i == 'inputall') continue;
-					inputVars[i] = step[i];
-				}
-				if(typeof step.inputall != 'undefined' && step.inputall) {
-					for(var i in ctx._vars) {
-						inputVars[i] = ctx._vars[i];
-					}
-				}
-				new FlowEngine(flow).setContext(ctx).setInputVars(inputVars).execute(function(outputVars) {
-					if(typeof outputVars != 'undefined') {
-						for(var i in outputVars) {
-							ctx._vars[i] = outputVars[i];
-						}
-					}
+				new FlowEngine(flow).setContext(ctx).execute(function() {
 					setTimeout(next, 1);
 				});
-			}
-			else {
-				// search step modules if any
-				modStep.processStep(ctx, step, next);
+				return;
 			}
 		}
-		else {
-			// search step modules if any
-			modStep.processStep(ctx, step, next);
-		}
-		
+		// search step modules if any
+		ctx._vars = vars; // get local vars
+		modStep.processStep(ctx, step, next);
+		vars = ctx._vars; // set local vars
 	}
 }
 
