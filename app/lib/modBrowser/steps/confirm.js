@@ -2,22 +2,21 @@ var dialogs = require("ui/dialogs");
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		var title = step.title ? step.title : 'Confirmation';
-		var message = step.message;
-		var okButtonText = step.okButtonText ? step.okButtonText : 'OK';
-		var cancelButtonText = step.cancelButtonText ? step.cancelButtonText : 'Cancel';
-		var neutralButtonText = step.neutralButtonText ? step.neutralButtonText : 'Neutral';
-		dialogs.confirm({
-			title: title,
-			message: message,
-			okButtonText: okButtonText,
-			cancelButtonText: cancelButtonText,
-			neutralButtonText: neutralButtonText
-		}).then(function (result) {
-			// result argument is boolean
-			console.log("Dialog result: " + result);
-			ctx.vars[step.result] = result;
-			setTimeout(next, 1);
-		});
+		var option_text = ['Yes','No'];
+		var options = [];
+		for(var i = 0; i < option_text.length; i++) {
+			var opt = {};
+			opt.text = option_text[i];
+			opt.func = function() {
+				var res = false;
+				if(this.text == 'Yes') {
+					res = true;
+				}
+				ctx.vars[step.result] = res;
+				setTimeout(next, 1);
+			}
+			options.push(opt);
+		}
+		util.showOptionDialog(options, {message:'Please confirm?');
 	}
 }

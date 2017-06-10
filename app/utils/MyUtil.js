@@ -123,8 +123,9 @@ var util = {
         }
 	}
 	,
-	showOptionDialog : function(options) {
-		
+	showOptionDialog : function(options, opts) {
+		if(typeof opts == 'undefined') opts = {};
+		var message = typeof opts.message == 'undefined' ? 'Please select an option' : opts.message;
 		var options_dg = [];
 		var filterOptions = [];
 		for(var i = 0; i < options.length; i++) {
@@ -138,7 +139,7 @@ var util = {
 			filterOptions.push(option);
 		}
 		dialogs.action({
-			message: "Please select an option",
+			message: message,
 			cancelButtonText: "Cancel",
 			actions: options_dg
 		}).then(function (result) {
