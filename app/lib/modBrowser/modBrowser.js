@@ -51,6 +51,28 @@ function showCategory(url) {
                     var item = tappedItemView.cat;
                     showItem(item);
                 });
+				var customMenus = cat.customMenus;
+				for(var i = customMenus.length - 1; i >= 0; i--) {
+					var menu = customMenus[i];
+					var option = {
+						'id' : 'menu_' + i,
+						'text' : menu.title,
+						'menu' : menu,
+						'func' : function() {
+							if(this.menu.url) {
+								showWebView(this.menu.url);
+							}
+							if(this.menu.requesturl) {
+								showCategory(this.menu.requesturl);
+							}
+							if(this.menu.webform) {
+								modWebform.showItemWebform(this.menu.webform);
+							}
+						}
+					};
+					options.splice(0,0,option);
+				}
+				showOptionDialog(options);
             }
         });
     }
