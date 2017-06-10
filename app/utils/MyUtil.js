@@ -137,7 +137,7 @@ var util = {
 		for(var i = 0; i < items.length; i++) {
 			page.actionBar.actionItems.removeItem(item);
 		}
-		page.actionBar.actionItems.addItem(btn);
+		page.actionBar.actionItems.add(btn);
 	}
 };
 
