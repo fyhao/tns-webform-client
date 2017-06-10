@@ -1,4 +1,5 @@
 var platform = require('tns-core-modules/platform');
+var dialogs = require("ui/dialogs");
 var util = {
     frequest : function(opts) {
         if(typeof opts == 'undefined') opts = {};
@@ -122,7 +123,14 @@ var util = {
 	}
 	,
 	showOptionDialog : function(options) {
-		
+		dialogs.action({
+			message: "Your message",
+			cancelButtonText: "Cancel text",
+			actions: ["Option1", "Option2"]
+		}).then(function (result) {
+			console.log("Dialog result: " + result)
+		});
+	}
 	,
 	setRightNavButton : function(page, btn) {
 		var items = page.actionBar.actionItems.getItems();
