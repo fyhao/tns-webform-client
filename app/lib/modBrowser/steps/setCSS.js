@@ -2,6 +2,7 @@ module.exports = {
 	
 	process : function(ctx, step, next) {
 		var name = step.name;
+		var styles = step.styles;
 		if(typeof styles != 'undefined') {
 			for(var style in styles) {
 				var value = styles[style];
