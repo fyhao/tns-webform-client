@@ -4,7 +4,7 @@ module.exports = {
 		var value = typeof(param.value) != 'undefined' ? param.value : '';
 		value = typeof(param.def) != 'undefined' ? param.def : value;
 		var visibility = typeof param.visibility != 'undefined' && !param.visibility ? 'hidden' : 'visible';
-    	var html = '<textarea id="' + param.name + '"  style="visibility:' + visibility + '">' + value + '</textarea>';
+    	var html = '<textarea id="' + param.name + '"  style="visibility:' + visibility + '" onfocus="this.oldvalue = this.value;">' + value + '</textarea>';
 		fn(html);
 	}
 	,
