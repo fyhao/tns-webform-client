@@ -5,16 +5,16 @@ module.exports = {
 		if(typeof styles != 'undefined') {
 			for(var style in styles) {
 				var value = styles[style];
-				setCSSStyle(ctx, style, value);
+				setCSSStyle(ctx, name, style, value);
 			}
 		}
 		else {
-			setCSSStyle(ctx, style, value);
+			setCSSStyle(ctx, name, style, value);
 		}
 		setTimeout(next, 1);
 	}
 }
 
-var setCSSStyle = function(ctx, style, value) {
+var setCSSStyle = function(ctx, name, style, value) {
 	ctx.wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"');
 }
