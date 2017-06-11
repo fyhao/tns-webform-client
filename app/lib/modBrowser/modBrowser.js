@@ -52,8 +52,8 @@ function showCategory(url) {
                     showItem(item);
                 });
 				var customMenus = cat.customMenus;
+				var options = [];
                 if(customMenus && customMenus.length) {
-                    var options = [];
                     for(var i = customMenus.length - 1; i >= 0; i--) {
                         var menu = customMenus[i];
                         var option = {
