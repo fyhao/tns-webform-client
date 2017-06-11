@@ -16,7 +16,5 @@ module.exports = {
 }
 
 var setCSSStyle = function(ctx, style, value) {
-	var style = step.style;
-	var value = step.value;
 	ctx.wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"');
 }
