@@ -4,7 +4,7 @@ module.exports = {
 		var value = typeof(param.value) != 'undefined' ? param.value : '';
 		value = typeof(param.def) != 'undefined' ? param.def : value;
 		var visibility = typeof param.visibility != 'undefined' && !param.visibility ? 'hidden' : 'visible';
-		var html = '<input type="text" id="' + param.name + '" value="' + value + '" placeholder="' + param.name + '" cols="100" style="visibility:' + visibility + '" />';
+		var html = '<input type="text" id="' + param.name + '" value="' + value + '" placeholder="' + param.name + '" cols="100" style="visibility:' + visibility + '" onfocus="this.oldvalue = this.value;"/>';
 		fn(html);
 	}
 	,
