@@ -78,7 +78,7 @@ var handleClick = function(widgetName) {
 
 var handleChange = function(widgetName) {
     return function(e) {
-		var oldVal = document.getElementById(widgetName).defaultValue;
+		var oldVal = document.getElementById(widgetName).oldvalue;
 		var newVal = document.getElementById(widgetName).value;
         _emitDataToIos("evt:" + widgetName + "_onchange;from=" + oldVal + "&to=" + newVal);
     }
