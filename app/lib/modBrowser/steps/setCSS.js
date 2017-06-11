@@ -9,6 +9,8 @@ module.exports = {
 			}
 		}
 		else {
+			var style = step.style;
+			var value = step.value;
 			setCSSStyle(ctx, name, style, value);
 		}
 		setTimeout(next, 1);
