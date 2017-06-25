@@ -273,7 +273,6 @@ var handleChange = function(widgetName) {
 					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
 			}
-			return flowObject;
 		}
 		// return dummy function for silent execution
 		return {
