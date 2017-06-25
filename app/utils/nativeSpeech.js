@@ -1,7 +1,7 @@
 // text to speech and speech recognition
 
 module.exports = {
-	speak : function(text) {
+	speak : function(text, done) {
 		/// javascript
 		try {
 			var TextToSpeech = require("nativescript-texttospeech");
@@ -16,13 +16,14 @@ module.exports = {
 				pitch: 1.0, // optional - default is 1.0
 				volume: 1.0, // optional - default is 1.0
 				language: "en-GB",  // optional - default is system language,
-				finishedCallback: function(){} // optional
+				finishedCallback: function(){ done() } // optional
 			}
 
 			// Call the `speak` method passing the SpeakOptions object
 			TTS.speak(speakOptions);
 		} catch (e) {
 			alert(e)
+			done()
 		}
 	}
 }
