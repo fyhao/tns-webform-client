@@ -1,17 +1,16 @@
 // text to speech and speech recognition
 
-module.exports = function() {
+module.exports = {}
 	speak : function(text) {
 		/// javascript
 		var TextToSpeech = require("nativescript-texttospeech");
 
+		var TNSTextToSpeech = TextToSpeech.TNSTextToSpeech;
+		var SpeakOptions = TextToSpeech.SpeakOptions;
+		
+		var TTS = new TNSTextToSpeech();
 
-		/// TypeScript
-		import { TNSTextToSpeech, SpeakOptions } from 'nativescript-texttospeech';
-
-		let TTS = new TNSTextToSpeech();
-
-		let speakOptions: SpeakOptions = {
+		var speakOptions: SpeakOptions = {
 			text: text, /// *** required ***
 			speakRate: 0.5 // optional - default is 1.0
 			pitch: 1.0 // optional - default is 1.0
