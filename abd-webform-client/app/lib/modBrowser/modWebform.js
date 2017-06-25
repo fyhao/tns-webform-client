@@ -78,9 +78,18 @@ var handleClick = function(widgetName) {
 
 var handleChange = function(widgetName) {
     return function(e) {
-		var oldVal = document.getElementById(widgetName).defaultValue;
-		var newVal = document.getElementById(widgetName).value;
-        _emitDataToIos("evt:" + widgetName + "_onchange;from=" + oldVal + "&to=" + newVal);
+		// check selectone
+		var oldVal = '';
+		var newVal = '';
+		if(document.getElementById(widgetName).selectedOptions && document.getElementById(widgetName).selectedOptions.length) {
+			oldVal = document.getElementById(widgetName).oldvalue;
+			newVal = document.getElementById(widgetName).selectedOptions[0].value;
+		}
+		else {
+			oldVal = document.getElementById(widgetName).oldvalue;
+			newVal = document.getElementById(widgetName).value;
+		}
+		_emitDataToIos("evt:" + widgetName + "_onchange;from=" + oldVal + "&to=" + newVal);
     }
 };
 </script>`;
@@ -123,7 +132,7 @@ var handleChange = function(widgetName) {
     	}
     }
 
-    var submitBtn = new buttonModule.Button();
+    var submitBtn = new actionBarModule.NavigationButton();
     submitBtn.text = 'Submit';
     submitBtn.height = 44;
     submitBtn.on(buttonModule.Button.tapEvent, function (args) {
@@ -176,7 +185,7 @@ var handleChange = function(widgetName) {
 			}
 		});
     });
-    gridLayout.addChild(submitBtn);
+    util.setRightNavButton(page, submitBtn);
     
     helpers.navigate(function(){return page;});
 	
