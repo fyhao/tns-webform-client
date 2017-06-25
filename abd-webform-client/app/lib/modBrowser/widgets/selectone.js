@@ -2,8 +2,8 @@ module.exports = {
 	
 	renderWidget : function(param, fn) {
 		param.options = parseParamOptions(param.options);
-		var visibility = typeof param.visibility != 'undefined' && param.visibility ? 'visible' : 'hidden';
-		var html = '<select id="' + param.name + '"  style="visibility:' + visibility + '">';
+		var visibility = typeof param.visibility != 'undefined' && !param.visibility ? 'hidden' : 'visible';
+		var html = '<select id="' + param.name + '"  style="visibility:' + visibility + '" onfocus="this.oldvalue = this.selectedOptions[0].value">';
 		for(var j = 0; j < param.options.length; j++) {
 			var key = param.options[j]['key'];
 			var val = param.options[j]['value'];

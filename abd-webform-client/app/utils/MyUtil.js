@@ -1,4 +1,6 @@
 var platform = require('tns-core-modules/platform');
+var dialogs = require("ui/dialogs");
+var enums = require("ui/enums");
 var util = {
     frequest : function(opts) {
         if(typeof opts == 'undefined') opts = {};
@@ -119,6 +121,45 @@ var util = {
 				});
             }
         }
+	}
+	,
+	showOptionDialog : function(options, opts) {
+		if(typeof opts == 'undefined') opts = {};
+		var message = typeof opts.message == 'undefined' ? 'Please select an option' : opts.message;
+		var options_dg = [];
+		var filterOptions = [];
+		for(var i = 0; i < options.length; i++) {
+			var option = options[i];
+			if(typeof option.enabled == 'undefined') option.enabled = function() { return true; }
+			if(!option.enabled()) continue; 
+			if(option.init) {
+				option.init();
+			}
+			options_dg.push(option.text);
+			filterOptions.push(option);
+		}
+		dialogs.action({
+			message: message,
+			cancelButtonText: "Cancel",
+			actions: options_dg
+		}).then(function (result) {
+			console.log("Dialog result: " + result)
+			for(var i = 0; i < filterOptions.length; i++) {
+				var option = filterOptions[i];
+				if(option.text == result) {
+					if(option.func) option.func();
+				}
+			}
+		});
+	}
+	,
+	setRightNavButton : function(page, btn) {
+		var items = page.actionBar.actionItems.getItems();
+		for(var i = 0; i < items.length; i++) {
+			page.actionBar.actionItems.removeItem(item);
+		}
+		btn.ios.position = enums.IOSActionItemPosition.right;
+		page.actionBar.actionItems.addItem(btn);
 	}
 };
 
