@@ -1,10 +1,8 @@
+var speech = require('../../../utils/nativeSpeech');
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		var _speechSynthesizer = AVSpeechSynthesizer.alloc().init();
-		var speechUtterance = AVSpeechUtterance.alloc().initWithString(step.text);
-		speechUtterance.rate = 0.3;
-		_speechSynthesizer.speakUtterance(speechUtterance);
+		speech.speak(step.text);
 		setTimeout(next, 1);
 	}
 }
