@@ -221,5 +221,28 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to runLoop with valid inputVars', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:1},
+					{type:'runLoop',flow:'subflowA',start:0,end:4,step:1,input1:'a',input2:'##apple##'}
+				]
+			},
+			flows : {
+				subflowA : {
+					steps: [
+						{type:'setVar',name:'result',value:'##apple## ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##'},
+					]
+				}
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result"]);
+			done();
+		});
+    });
   });
 });
