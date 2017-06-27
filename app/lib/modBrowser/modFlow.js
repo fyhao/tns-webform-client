@@ -21,6 +21,12 @@ var FlowEngine = function(flow) {
 		item = ctx.item;
 		return this;
 	}
+	this.setInputVars = function(v) {
+		for(var i in v) {
+			ctx.vars[i] = v[i];
+		}
+		return this;
+	}
 	this.flow = util.clone(flow);
 	this.canceled = false;
 	
@@ -88,7 +94,9 @@ var FlowEngine = function(flow) {
 			var flow = ctx.flows[step.type];
 			//console.log('search flow ' + step.type + " = " + (typeof flow));
 			if(typeof flow != 'undefined') {
-				new FlowEngine(flow).setContext(ctx).execute(function() {
+				var v = util.clone(step);
+				delete v.type;
+				new FlowEngine(flow).setContext(ctx).setInputVars(v).execute(function() {
 					setTimeout(next, 1);
 				});
 				return;
