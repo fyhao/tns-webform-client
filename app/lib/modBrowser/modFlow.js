@@ -25,7 +25,6 @@ var FlowEngine = function(flow) {
 	this.canceled = false;
 	
 	this.execute = function(done) {
-		console.log('Execute')
 		var steps = this.flow.steps;
 		if(steps && steps.length) {
 			var curStep = -1;
@@ -76,8 +75,8 @@ var FlowEngine = function(flow) {
 		return step;
 	}
 	var processStep = function(step, next) {
-		console.log('processStep ' + FLOW_ENGINE_CANCELED);
-		console.log(JSON.stringify(step)); 
+		//console.log('processStep ' + FLOW_ENGINE_CANCELED);
+		//console.log(JSON.stringify(step)); 
 		//console.log(JSON.stringify(ctx._vars));
 		if(FLOW_ENGINE_CANCELED) {
 			return;
