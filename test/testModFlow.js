@@ -396,4 +396,23 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#addValue', function() {
+	it('should able to add value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'addValue',name:'box',value:'result'},
+				]
+			}
+		};
+		webform._testValue = 'testval';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").value += "result"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
 });
