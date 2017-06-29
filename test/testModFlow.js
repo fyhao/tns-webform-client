@@ -45,7 +45,8 @@ describe('modFlow', function() {
 		}
 		ctx.showItemWebform = function() {}
 		ctx.showCategory = function() {}
-		ctx.showWebView = function() {}
+		//ctx.showWebView = function() {}
+		// start simulation
 		ctx._testRanCodes = [];
 		ctx.wv = {
 			ios : {
@@ -57,6 +58,11 @@ describe('modFlow', function() {
 				}
 			}
 		};
+		ctx._urls = [];
+		ctx.showWebView = function(url) {
+			ctx._urls.push(url);
+		}
+		// end simulation
 
 		// #47 iterate all webform level flows and put into context flow collection
 		if(typeof item.flows != 'undefined') {
@@ -448,5 +454,23 @@ describe('modFlow', function() {
 		});
     });
   });
-
+  describe('#openWebView', function() {
+	it('should able to open web view', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'openWebView',url:'http://www.google.com'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._urls.length);
+			assert.equal('http://www.google.com', ctx._urls[0]);
+			done();
+		});
+    });
+  });
 });
