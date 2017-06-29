@@ -358,4 +358,23 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#setHtml', function() {
+	it('should able to set html', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setHtml',name:'box',value:'result'},
+				]
+			}
+		};
+		webform._testValue = 'testval';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").innerHTML = "result"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
 });
