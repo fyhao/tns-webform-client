@@ -44,8 +44,28 @@ describe('modFlow', function() {
 			};
 		}
 		ctx.showItemWebform = function() {}
-		ctx.showCategory = function() {}
-		ctx.showWebView = function() {}
+		//ctx.showCategory = function() {}
+		//ctx.showWebView = function() {}
+		// start simulation
+		ctx._testRanCodes = [];
+		ctx.wv = {
+			ios : {
+				stringByEvaluatingJavaScriptFromString : function(code) {
+					ctx._testRanCodes.push(code);
+					if(typeof item._testValue != 'undefined') {
+						return item._testValue;
+					}
+				}
+			}
+		};
+		ctx._urls = [];
+		ctx.showWebView = function(url) {
+			ctx._urls.push(url);
+		}
+		ctx.showCategory = function(url) {
+			ctx._urls.push(url);
+		}
+		// end simulation
 
 		// #47 iterate all webform level flows and put into context flow collection
 		if(typeof item.flows != 'undefined') {
@@ -125,7 +145,7 @@ describe('modFlow', function() {
     });
   });
   
-  describe('#subflow', function() {
+  describe('#runLoop', function() {
 	it('should able to runLoop with array', function(done) {
 		var webform = {
 			heading:'test form',
@@ -249,6 +269,229 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result"]);
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result2"]);
+			done();
+		});
+    });
+  });
+  
+  describe('#setCSS', function() {
+	it('should able to set css style for single style and value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setCSS',name:'box',style:'backgroundColor',value:'red'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+	it('should able to set css style for multiple style and value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setCSS',name:'box2',styles:{ 'backgroundColor':'red','borderColor':'green'}}
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(2, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box2").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			assert.equal('document.getElementById("box2").style.borderColor = "green"', ctx._testRanCodes[1]);
+			done();
+		});
+    });
+  });
+  describe('#getCSS', function() {
+	it('should able to get css style', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'getCSS',name:'box',style:'backgroundColor',result:'result'},
+				]
+			}
+		};
+		webform._testValue = 'red';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.backgroundColor', ctx._testRanCodes[0]);
+			assert.equal('red', ctx.vars['result']);
+			done();
+		});
+    });
+  });
+  describe('#setValue', function() {
+	it('should able to set value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setValue',name:'box',value:'result'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").value = "result"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+  describe('#getValue', function() {
+	it('should able to get value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'getValue',name:'box',var:'result'},
+				]
+			}
+		};
+		webform._testValue = 'testval';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").value', ctx._testRanCodes[0]);
+			assert.equal('testval', ctx.vars['result']);
+			done();
+		});
+    });
+  });
+  describe('#setHtml', function() {
+	it('should able to set html', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setHtml',name:'box',value:'result'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").innerHTML = "result"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+  describe('#addHtml', function() {
+	it('should able to add html', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'addHtml',name:'box',value:'result'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").innerHTML += "result"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+  describe('#addValue', function() {
+	it('should able to add value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'addValue',name:'box',value:'result'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").value += "result"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+
+  describe('#show', function() {
+	it('should able to show component', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'show',name:'box'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.visibility = "visible"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+  describe('#hide', function() {
+	it('should able to hide component', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'hide',name:'box'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.visibility = "hidden"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+  describe('#openWebView', function() {
+	it('should able to open web view', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'openWebView',url:'http://www.google.com'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._urls.length);
+			assert.equal('http://www.google.com', ctx._urls[0]);
+			done();
+		});
+    });
+  });
+  describe('#redirectUrl', function() {
+	it('should able to redirect url', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'redirectUrl',redirectUrl:'http://www.google.com'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._urls.length);
+			assert.equal('http://www.google.com', ctx._urls[0]);
 			done();
 		});
     });
