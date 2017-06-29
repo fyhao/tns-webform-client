@@ -46,6 +46,14 @@ describe('modFlow', function() {
 		ctx.showItemWebform = function() {}
 		ctx.showCategory = function() {}
 		ctx.showWebView = function() {}
+		ctx._testRanCodes = [];
+		ctx.wv = {
+			ios : {
+				stringByEvaluatingJavaScriptFromString : function(code) {
+					ctx._testRanCodes.push(code);
+				}
+			}
+		};
 
 		// #47 iterate all webform level flows and put into context flow collection
 		if(typeof item.flows != 'undefined') {
