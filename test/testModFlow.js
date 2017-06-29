@@ -136,7 +136,6 @@ describe('modFlow', function() {
     });
   });
   
-  describe('#subflow', function() {
   describe('#runLoop', function() {
 	it('should able to runLoop with array', function(done) {
 		var webform = {
