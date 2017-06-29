@@ -300,6 +300,26 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#getCSS', function() {
+	it('should able to get css style', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'getCSS',name:'box',style:'backgroundColor',result:'result'},
+				]
+			}
+		};
+		webform._testValue = 'red';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.backgroundColor', ctx._testRanCodes[0]);
+			assert.equal('red', ctx.vars['result']);
+			done();
+		});
+    });
+  });
   describe('#setValue', function() {
 	it('should able to set value', function(done) {
 		var webform = {
