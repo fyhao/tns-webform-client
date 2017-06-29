@@ -44,7 +44,7 @@ describe('modFlow', function() {
 			};
 		}
 		ctx.showItemWebform = function() {}
-		ctx.showCategory = function() {}
+		//ctx.showCategory = function() {}
 		//ctx.showWebView = function() {}
 		// start simulation
 		ctx._testRanCodes = [];
@@ -60,6 +60,9 @@ describe('modFlow', function() {
 		};
 		ctx._urls = [];
 		ctx.showWebView = function(url) {
+			ctx._urls.push(url);
+		}
+		ctx.showCategory = function(url) {
 			ctx._urls.push(url);
 		}
 		// end simulation
@@ -463,6 +466,25 @@ describe('modFlow', function() {
 			flow : {
 				steps: [
 					{type:'openWebView',url:'http://www.google.com'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._urls.length);
+			assert.equal('http://www.google.com', ctx._urls[0]);
+			done();
+		});
+    });
+  });
+  describe('#redirectUrl', function() {
+	it('should able to redirect url', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'redirectUrl',redirectUrl:'http://www.google.com'},
 				]
 			}
 		};
