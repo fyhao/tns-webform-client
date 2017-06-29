@@ -51,6 +51,9 @@ describe('modFlow', function() {
 			ios : {
 				stringByEvaluatingJavaScriptFromString : function(code) {
 					ctx._testRanCodes.push(code);
+					if(typeof item._testValue != 'undefined') {
+						return item._testValue;
+					}
 				}
 			}
 		};
