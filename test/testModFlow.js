@@ -264,4 +264,40 @@ describe('modFlow', function() {
 		});
     });
   });
+  
+  describe('#setCSS', function() {
+	it('should able to set css style for single style and value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setCSS',name:'box',style:'backgroundColor',value:'red'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+	it('should able to set css style for multiple style and value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setCSS',name:'box2',styles:{ 'backgroundColor':'red','borderColor':'green'}}
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(2, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box2").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			assert.equal('document.getElementById("box2").style.borderColor = "green"', ctx._testRanCodes[1]);
+			done();
+		});
+    });
+  });
 });
