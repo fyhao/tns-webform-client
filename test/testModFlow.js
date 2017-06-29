@@ -46,6 +46,17 @@ describe('modFlow', function() {
 		ctx.showItemWebform = function() {}
 		ctx.showCategory = function() {}
 		ctx.showWebView = function() {}
+		ctx._testRanCodes = [];
+		ctx.wv = {
+			ios : {
+				stringByEvaluatingJavaScriptFromString : function(code) {
+					ctx._testRanCodes.push(code);
+					if(typeof item._testValue != 'undefined') {
+						return item._testValue;
+					}
+				}
+			}
+		};
 
 		// #47 iterate all webform level flows and put into context flow collection
 		if(typeof item.flows != 'undefined') {
@@ -125,7 +136,7 @@ describe('modFlow', function() {
     });
   });
   
-  describe('#subflow', function() {
+  describe('#runLoop', function() {
 	it('should able to runLoop with array', function(done) {
 		var webform = {
 			heading:'test form',
@@ -249,6 +260,62 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result"]);
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result2"]);
+			done();
+		});
+    });
+  });
+  
+  describe('#setCSS', function() {
+	it('should able to set css style for single style and value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setCSS',name:'box',style:'backgroundColor',value:'red'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+	it('should able to set css style for multiple style and value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setCSS',name:'box2',styles:{ 'backgroundColor':'red','borderColor':'green'}}
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(2, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box2").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			assert.equal('document.getElementById("box2").style.borderColor = "green"', ctx._testRanCodes[1]);
+			done();
+		});
+    });
+  });
+  describe('#getValue', function() {
+	it('should able to get value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'getValue',name:'box',var:'result'},
+				]
+			}
+		};
+		webform._testValue = 'testval';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").value', ctx._testRanCodes[0]);
+			assert.equal('testval', ctx.vars['result']);
 			done();
 		});
     });
