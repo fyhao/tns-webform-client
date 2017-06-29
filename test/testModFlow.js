@@ -349,7 +349,6 @@ describe('modFlow', function() {
 				]
 			}
 		};
-		webform._testValue = 'testval';
 		executeWebform(webform, function(ctx) {
 			assert.equal(1, ctx._testRanCodes.length);
 			assert.equal('document.getElementById("box").value', ctx._testRanCodes[0]);
@@ -412,6 +411,7 @@ describe('modFlow', function() {
 		});
     });
   });
+
   describe('#show', function() {
 	it('should able to show component', function(done) {
 		var webform = {
@@ -448,4 +448,5 @@ describe('modFlow', function() {
 		});
     });
   });
+
 });
