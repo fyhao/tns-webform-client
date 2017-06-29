@@ -412,6 +412,25 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#show', function() {
+	it('should able to show component', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'show',name:'box'},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").style.visibility = "visible"', ctx._testRanCodes[0]);
+			done();
+		});
+    });
+  });
+  describe('#hide', function() {
 	it('should able to hide component', function(done) {
 		var webform = {
 			heading:'test form',
