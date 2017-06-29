@@ -300,4 +300,24 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#getValue', function() {
+	it('should able to get value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'getValue',name:'box',var:'result'},
+				]
+			}
+		};
+		webform._testValue = 'testval';
+		executeWebform(webform, function(ctx) {
+			assert.equal(1, ctx._testRanCodes.length);
+			assert.equal('document.getElementById("box").value', ctx._testRanCodes[0]);
+			assert.equal('testval', ctx.vars['result']);
+			done();
+		});
+    });
+  });
 });
