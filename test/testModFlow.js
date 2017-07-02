@@ -496,4 +496,140 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#waitUntil', function() {
+	var globalTimeout = 300;
+	it('should able to wait until with success', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'a',value:1},
+					{type:'asyncFlow',flow:'subflow',delay:1},
+					{type:'waitUntil',var:'a',value:2}
+				]
+			},
+			flows : {
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:2},
+					]
+				}
+			}
+		};
+		var startTime = new Date().getTime();
+		executeWebform(webform, function(ctx) {
+			var endTime = new Date().getTime();
+			assert.equal(true, endTime - startTime < globalTimeout);
+			done();
+		});
+    });
+	it('should able to wait until with fail timeout', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'a',value:1},
+					{type:'asyncFlow',flow:'subflow'},
+					{type:'waitUntil',var:'a',value:2,timeout:globalTimeout}
+				]
+			},
+			flows : {
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:3},
+					]
+				}
+			}
+		};
+		var startTime = new Date().getTime();
+		executeWebform(webform, function(ctx) {
+			var endTime = new Date().getTime();
+			assert.equal(true, endTime - startTime >= globalTimeout);
+			done();
+		});
+    });
+	var buildTestCase = function(tc, a,b,c,d,e,f) {
+		it(tc, function(done) {
+			var webform = {
+				heading:'test form',
+				params: [],
+				flow : {
+					steps: [
+						{type:'setVar',name:'result',value:false},
+						{type:'setVar',name:'a',value:a},
+						{type:'asyncFlow',flow:'subflow'},
+						{type:'waitUntil',var:'a',value:b,on_success:'success_flow',on_fail:'fail_flow',timeout:globalTimeout}
+					]
+				},
+				flows : {
+					subflow: {
+						steps : [
+							{type:'setVar',name:'a',value:c},
+						]
+					},
+					success_flow: {
+						steps : [
+							{type:'setVar',name:'result',value:d},
+						]
+					},
+					fail_flow: {
+						steps : [
+							{type:'setVar',name:'result',value:!d},
+						]
+					}
+				}
+			};
+			var startTime = new Date().getTime();
+			executeWebform(webform, function(ctx) {
+				var endTime = new Date().getTime();
+				assert.equal(d, endTime - startTime < globalTimeout);
+				assert.equal(true, ctx.vars['result']);
+				done();
+			});
+		});
+	}
+	buildTestCase('should able to call on_success when success',1,2,2,true);
+	buildTestCase('should able to call on_fail when fail',1,2,3,false);
+	buildTestCase('should able to call on_success when success with boolean',false,true,true,true);
+	buildTestCase('should able to call on_fail when fail with boolean',false,true,false,false);
+	buildTestCase('should able to call on_success when success with string','fff','ttt','ttt',true);
+	buildTestCase('should able to call on_fail when fail with string','fff','ttt','fff',false);
+	it('should fail when tick larger than timeout although it could be success', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:false},
+					{type:'setVar',name:'a',value:1},
+					{type:'asyncFlow',flow:'subflow'},
+					{type:'waitUntil',var:'a',value:2,on_success:'success_flow',on_fail:'fail_flow',timeout:globalTimeout,tick:globalTimeout + 50}
+				]
+			},
+			flows : {
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:2},
+					]
+				},
+				success_flow: {
+					steps : [
+						{type:'setVar',name:'result',value:true},
+					]
+				},
+				fail_flow: {
+					steps : [
+						{type:'setVar',name:'result',value:false},
+					]
+				}
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(false, ctx.vars['result']);
+			done();
+		});
+    });
+  });
 });
