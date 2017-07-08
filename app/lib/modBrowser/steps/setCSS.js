@@ -4,15 +4,11 @@ module.exports = {
 		var name = step.name;
 		var styles = step.styles;
 		if(typeof styles != 'undefined') {
-			var hasStyle = false;
 			for(var style in styles) {
 				var value = styles[style];
-				setCSSStyle(ctx, name, style, value, next);
-				hasStyle = true;
+				setCSSStyleSync(ctx, name, style, value);
 			}
-			if(!hasStyle) {
-				setTimeout(next, 1);
-			}
+			setTimeout(next, 1);
 		}
 		else {
 			var style = step.style;
@@ -24,4 +20,7 @@ module.exports = {
 
 var setCSSStyle = function(ctx, name, style, value, next) {
 	ctx.wv.runJS('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"', next);
+}
+var setCSSStyleSync = function(ctx, name, style, value) {
+	ctx.wv.runJSSync('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"');
 }
