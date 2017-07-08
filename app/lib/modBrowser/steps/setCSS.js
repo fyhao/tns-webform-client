@@ -19,5 +19,5 @@ module.exports = {
 }
 
 var setCSSStyle = function(ctx, name, style, value) {
-	ctx.wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"');
+	ctx.wv.runJS('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"');
 }
