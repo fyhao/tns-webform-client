@@ -260,13 +260,14 @@ var handleChange = function(widgetName) {
 		}
     }
 	wv.webready = false;
-	wv.runJS = function(js) {
+	wv.runJS = function(js, next) {
 		function _run() {
 			if(!wv.webready) {
 				setTimeout(_run, 100)
 			}
 			else {
 				wv.ios.stringByEvaluatingJavaScriptFromString(js);
+				setTimeout(next, 1);
 			}
 		}
 		_run();
