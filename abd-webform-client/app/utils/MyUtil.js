@@ -1,6 +1,3 @@
-var platform = require('tns-core-modules/platform');
-var dialogs = require("ui/dialogs");
-var enums = require("ui/enums");
 var util = {
     frequest : function(opts) {
         if(typeof opts == 'undefined') opts = {};
@@ -95,6 +92,7 @@ var util = {
 	}
 	,
 	getVersionString : function() {
+		var platform = require('tns-core-modules/platform');
 		var str = 'WF-';
 		str += "1.0.0";
 		str += "-";
@@ -138,6 +136,7 @@ var util = {
 			options_dg.push(option.text);
 			filterOptions.push(option);
 		}
+		var dialogs = require("ui/dialogs");
 		dialogs.action({
 			message: message,
 			cancelButtonText: "Cancel",
@@ -154,6 +153,7 @@ var util = {
 	}
 	,
 	setRightNavButton : function(page, btn) {
+		var enums = require("ui/enums");
 		var items = page.actionBar.actionItems.getItems();
 		for(var i = 0; i < items.length; i++) {
 			page.actionBar.actionItems.removeItem(item);
