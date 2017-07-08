@@ -4,20 +4,24 @@ module.exports = {
 		var name = step.name;
 		var styles = step.styles;
 		if(typeof styles != 'undefined') {
+			var hasStyle = false;
 			for(var style in styles) {
 				var value = styles[style];
-				setCSSStyle(ctx, name, style, value);
+				setCSSStyle(ctx, name, style, value, next);
+				hasStyle = true;
+			}
+			if(!hasStyle) {
+				setTimeout(next, 1);
 			}
 		}
 		else {
 			var style = step.style;
 			var value = step.value;
-			setCSSStyle(ctx, name, style, value);
+			setCSSStyle(ctx, name, style, value, next);
 		}
-		setTimeout(next, 1);
 	}
 }
 
-var setCSSStyle = function(ctx, name, style, value) {
-	ctx.wv.runJS('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"');
+var setCSSStyle = function(ctx, name, style, value, next) {
+	ctx.wv.runJS('document.getElementById("' + name + '").style.' + style + ' = "' + value + '"', next);
 }
