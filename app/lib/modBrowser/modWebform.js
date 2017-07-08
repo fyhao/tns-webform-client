@@ -267,7 +267,7 @@ var handleChange = function(widgetName) {
 			}
 			else {
 				wv.ios.stringByEvaluatingJavaScriptFromString(js);
-				setTimeout(next, 1);
+				if(next) setTimeout(next, 1);
 			}
 		}
 		_run();
