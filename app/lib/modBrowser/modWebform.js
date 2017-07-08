@@ -112,6 +112,8 @@ var handleChange = function(widgetName) {
             }
         }
     }
+	
+	_js += '_emitDataToIos("evt:ready");\r\n';
 
     html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
@@ -252,6 +254,9 @@ var handleChange = function(widgetName) {
 				}
             }
         }
+		else if(data == 'ready') {
+			console.log('web ready');
+		}
     }
 
     wv.on('loadStarted', _interceptCallsFromWebview)
