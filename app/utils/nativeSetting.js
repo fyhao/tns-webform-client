@@ -1,5 +1,5 @@
 var appSettings = require("application-settings");
-module.exports.AppSetting = {
+module.exports = {
 	setString : function(name, value) {
 		appSettings.setString(name, value);
 	},
