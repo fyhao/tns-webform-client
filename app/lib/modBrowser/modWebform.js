@@ -269,7 +269,7 @@ var handleChange = function(widgetName) {
 				var value = wv.ios.stringByEvaluatingJavaScriptFromString(js);
 				if(next) {
 					setTimeout(function() {
-						if(a.length == 1) {
+						if(next.length == 1) {
 							next(value);
 						}
 						else {
