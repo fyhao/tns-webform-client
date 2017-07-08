@@ -56,6 +56,28 @@ describe('modFlow', function() {
 						return item._testValue;
 					}
 				}
+			},
+			runJS : function(code, next) {
+				ctx._testRanCodes.push(code);
+				
+				if(next) {
+					setTimeout(function() {
+						if(next.length == 1) {
+							if(typeof item._testValue != 'undefined') {
+								next(item._testValue);
+							}
+						}
+						else {
+							next();
+						}
+					}, 1);
+				}
+			},
+			runJSSync : function(code, next) {
+				ctx._testRanCodes.push(code);
+				if(typeof item._testValue != 'undefined') {
+					return item._testValue;
+				}
 			}
 		};
 		ctx._urls = [];

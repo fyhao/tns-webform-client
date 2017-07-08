@@ -16,7 +16,7 @@ module.exports = {
 	}
 	,
 	parseValue : function(param, opts, fn) {
-		var value = opts.wv.runJS('document.getElementById("' + param.name + '").selectedOptions[0].value');
+		var value = opts.wv.runJSSync('document.getElementById("' + param.name + '").selectedOptions[0].value');
 		fn(value);
 	}
 }
