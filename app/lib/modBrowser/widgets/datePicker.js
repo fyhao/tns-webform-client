@@ -4,7 +4,7 @@ module.exports = {
 		var value = typeof(param.value) != 'undefined' ? param.value : '';
 		value = typeof(param.def) != 'undefined' ? param.def : value;
 		var visibility = typeof param.visibility != 'undefined' && !param.visibility ? 'hidden' : 'visible';
-		var html = '<input type="date" id="' + param.name + '" value="' + value + '" />';
+		var html = '<input type="date" id="' + param.name + '" value="' + value + '" style="visibility:' + visibility + '"/>';
 		fn(html);
 	}
 	,
