@@ -282,6 +282,7 @@ var handleChange = function(widgetName) {
 		_run();
 	}
 	wv.runJSSync = function(js) {
+		while(!wv.webready) {}
 		var value = wv.ios.stringByEvaluatingJavaScriptFromString(js);
 		return value;		
 	}
