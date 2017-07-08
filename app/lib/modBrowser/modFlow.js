@@ -21,11 +21,11 @@ var FlowEngine = function(flow) {
 		item = ctx.item;
 		return this;
 	}
-	this.setInputVars = function(vars) {
-		var v = util.clone(vars);
+	this.setInputVars = function(_vars) {
+		var v = util.clone(_vars);
 		delete v.type;
 		for(var i in v) {
-			ctx.vars[i] = v[i];
+			vars[i] = v[i];
 		}
 		return this;
 	}

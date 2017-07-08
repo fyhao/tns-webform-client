@@ -117,7 +117,8 @@ describe('modFlow', function() {
 					{type:'setVar',name:'result',value:'test ##apple##'},
 					{type:'setVar',name:'someInput',value:'test4'},
 					{type:'setVar',name:'globalVar',value:'test6'},
-					{type:'subflowA',someInput2:'test5'}
+					{type:'subflowA',someInput2:'test5'},
+					{type:'setVar',name:'result2',value:'##someInput2##'},
 				]
 			},
 			flows : {
@@ -140,6 +141,7 @@ describe('modFlow', function() {
 			assert.equal("test6", ctx.vars["subResult1"]);
 			assert.equal("test7", ctx.vars["subResult2"]);
 			assert.equal("test7", ctx.vars["subResult3"]);
+			assert.equal("##someInput2##", ctx.vars["result2"]);
 			done();
 		});
     });
@@ -251,6 +253,7 @@ describe('modFlow', function() {
 					{type:'runLoop',flow:'subflowA',start:0,end:4,step:1,input1:'a',input2:'##apple##'},
 					{type:'setVar',name:'array1',value:[1,2,3,4]},
 					{type:'runLoop',flow:'subflowB',array:'array1',input1:'a',input2:'##apple##'},
+					{type:'setVar',name:'result3',value:'##apple## ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##'},
 				]
 			},
 			flows : {
@@ -269,6 +272,7 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result"]);
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result2"]);
+			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##', ctx.vars["result3"]);
 			done();
 		});
     });
