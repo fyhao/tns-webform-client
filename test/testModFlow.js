@@ -631,5 +631,44 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	
+	it('should able to wait until with success from sub async-ed flow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'asyncFlow',flow:'submain'},
+					{type:'waitUntil',var:'a',value:3},
+				]
+			},
+			flows : {
+				submain: {
+					steps: [
+						{type:'setVar',name:'a',value:1},
+						{type:'asyncFlow',flow:'subflow',delay:1},
+						{type:'waitUntil',var:'a',value:2},
+						{type:'setVar',name:'a',value:3},
+						// #187 waitUntil success when a variable value changed from 1 to 2 then after that change to 1, test few scenarios on tick time, and the time between changing value
+						//{type:'wait',timeout:1000},
+						//{type:'setVar',name:'a',value:2}
+					]
+				},
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:2},
+					]
+				}
+			}
+		};
+		var startTime = new Date().getTime();
+		executeWebform(webform, function(ctx) {
+			var endTime = new Date().getTime();
+			assert.equal(true, endTime - startTime < globalTimeout);
+			done();
+		});
+    });
+	
+	
   });
 });
