@@ -254,7 +254,7 @@ var handleChange = function(widgetName) {
 				}
             }
         }
-		else if(data == 'ready') {
+		if(data == 'ready') {
 			console.log('web ready');
 		}
     }
