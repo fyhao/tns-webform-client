@@ -9,7 +9,7 @@ module.exports = {
 	}
 	,
 	parseValue : function(param, opts, fn) {
-		var value = opts.wv.ios.stringByEvaluatingJavaScriptFromString('document.getElementById("' + param.name + '").value');
+		var value = opts.wv.runJS('document.getElementById("' + param.name + '").value');
 		fn(value);
 	}
 }

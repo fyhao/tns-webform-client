@@ -112,6 +112,8 @@ var handleChange = function(widgetName) {
             }
         }
     }
+	
+	_js += '_emitDataToIos("evt:ready");\r\n';
 
     html += '<script>window.onload = function() { ' + _js + ' }</script>';
     
@@ -252,8 +254,24 @@ var handleChange = function(widgetName) {
 				}
             }
         }
+		if(data == 'ready') {
+			console.log('web ready');
+			wv.webready = true;
+		}
     }
-
+	wv.webready = false;
+	wv.runJS = function(js, next) {
+		function _run() {
+			if(!wv.webready) {
+				setTimeout(_run, 100)
+			}
+			else {
+				wv.ios.stringByEvaluatingJavaScriptFromString(js);
+				if(next) setTimeout(next, 1);
+			}
+		}
+		_run();
+	}
     wv.on('loadStarted', _interceptCallsFromWebview)
 	
 	var ctx = {}; // context object
