@@ -117,7 +117,8 @@ describe('modFlow', function() {
 					{type:'setVar',name:'result',value:'test ##apple##'},
 					{type:'setVar',name:'someInput',value:'test4'},
 					{type:'setVar',name:'globalVar',value:'test6'},
-					{type:'subflowA',someInput2:'test5'}
+					{type:'subflowA',someInput2:'test5'},
+					{type:'setVar',name:'result2',value:'##someInput2##'},
 				]
 			},
 			flows : {
@@ -140,6 +141,7 @@ describe('modFlow', function() {
 			assert.equal("test6", ctx.vars["subResult1"]);
 			assert.equal("test7", ctx.vars["subResult2"]);
 			assert.equal("test7", ctx.vars["subResult3"]);
+			assert.equal("##someInput2##", ctx.vars["result2"]);
 			done();
 		});
     });
@@ -251,6 +253,7 @@ describe('modFlow', function() {
 					{type:'runLoop',flow:'subflowA',start:0,end:4,step:1,input1:'a',input2:'##apple##'},
 					{type:'setVar',name:'array1',value:[1,2,3,4]},
 					{type:'runLoop',flow:'subflowB',array:'array1',input1:'a',input2:'##apple##'},
+					{type:'setVar',name:'result3',value:'##apple## ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##'},
 				]
 			},
 			flows : {
@@ -269,6 +272,7 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result"]);
 			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result2"]);
+			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##', ctx.vars["result3"]);
 			done();
 		});
     });
@@ -495,5 +499,180 @@ describe('modFlow', function() {
 			done();
 		});
     });
+  });
+  describe('#waitUntil', function() {
+	var globalTimeout = 300;
+	it('should able to wait until with success', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'a',value:1},
+					{type:'asyncFlow',flow:'subflow',delay:1},
+					{type:'waitUntil',var:'a',value:2}
+				]
+			},
+			flows : {
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:2},
+					]
+				}
+			}
+		};
+		var startTime = new Date().getTime();
+		executeWebform(webform, function(ctx) {
+			var endTime = new Date().getTime();
+			assert.equal(true, endTime - startTime < globalTimeout);
+			done();
+		});
+    });
+	it('should able to wait until with fail timeout', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'a',value:1},
+					{type:'asyncFlow',flow:'subflow'},
+					{type:'waitUntil',var:'a',value:2,timeout:globalTimeout}
+				]
+			},
+			flows : {
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:3},
+					]
+				}
+			}
+		};
+		var startTime = new Date().getTime();
+		executeWebform(webform, function(ctx) {
+			var endTime = new Date().getTime();
+			assert.equal(true, endTime - startTime >= globalTimeout);
+			done();
+		});
+    });
+	var buildTestCase = function(tc, a,b,c,d,e,f) {
+		it(tc, function(done) {
+			var webform = {
+				heading:'test form',
+				params: [],
+				flow : {
+					steps: [
+						{type:'setVar',name:'result',value:false},
+						{type:'setVar',name:'a',value:a},
+						{type:'asyncFlow',flow:'subflow'},
+						{type:'waitUntil',var:'a',value:b,on_success:'success_flow',on_fail:'fail_flow',timeout:globalTimeout}
+					]
+				},
+				flows : {
+					subflow: {
+						steps : [
+							{type:'setVar',name:'a',value:c},
+						]
+					},
+					success_flow: {
+						steps : [
+							{type:'setVar',name:'result',value:d},
+						]
+					},
+					fail_flow: {
+						steps : [
+							{type:'setVar',name:'result',value:!d},
+						]
+					}
+				}
+			};
+			var startTime = new Date().getTime();
+			executeWebform(webform, function(ctx) {
+				var endTime = new Date().getTime();
+				assert.equal(d, endTime - startTime < globalTimeout);
+				assert.equal(true, ctx.vars['result']);
+				done();
+			});
+		});
+	}
+	buildTestCase('should able to call on_success when success',1,2,2,true);
+	buildTestCase('should able to call on_fail when fail',1,2,3,false);
+	buildTestCase('should able to call on_success when success with boolean',false,true,true,true);
+	buildTestCase('should able to call on_fail when fail with boolean',false,true,false,false);
+	buildTestCase('should able to call on_success when success with string','fff','ttt','ttt',true);
+	buildTestCase('should able to call on_fail when fail with string','fff','ttt','fff',false);
+	it('should fail when tick larger than timeout although it could be success', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:false},
+					{type:'setVar',name:'a',value:1},
+					{type:'asyncFlow',flow:'subflow'},
+					{type:'waitUntil',var:'a',value:2,on_success:'success_flow',on_fail:'fail_flow',timeout:globalTimeout,tick:globalTimeout + 50}
+				]
+			},
+			flows : {
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:2},
+					]
+				},
+				success_flow: {
+					steps : [
+						{type:'setVar',name:'result',value:true},
+					]
+				},
+				fail_flow: {
+					steps : [
+						{type:'setVar',name:'result',value:false},
+					]
+				}
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(false, ctx.vars['result']);
+			done();
+		});
+    });
+	
+	it('should able to wait until with success from sub async-ed flow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'asyncFlow',flow:'submain'},
+					{type:'waitUntil',var:'a',value:3},
+				]
+			},
+			flows : {
+				submain: {
+					steps: [
+						{type:'setVar',name:'a',value:1},
+						{type:'asyncFlow',flow:'subflow',delay:1},
+						{type:'waitUntil',var:'a',value:2},
+						{type:'setVar',name:'a',value:3},
+						// #187 waitUntil success when a variable value changed from 1 to 2 then after that change to 1, test few scenarios on tick time, and the time between changing value
+						//{type:'wait',timeout:1000},
+						//{type:'setVar',name:'a',value:2}
+					]
+				},
+				subflow: {
+					steps : [
+						{type:'setVar',name:'a',value:2},
+					]
+				}
+			}
+		};
+		var startTime = new Date().getTime();
+		executeWebform(webform, function(ctx) {
+			var endTime = new Date().getTime();
+			assert.equal(true, endTime - startTime < globalTimeout);
+			done();
+		});
+    });
+	
+	
   });
 });
