@@ -151,6 +151,7 @@ var showItemWebform = function(item, opts) {
     }
     var handleEventResponse = function(data, evtParams) {
         console.log('handleEventResponse ' + data + ' ' + JSON.stringify(evtParams));
+		var events = item.events;
         for(var _evt in events) {
             if(_evt == data) {
                 var e = events[_evt];
