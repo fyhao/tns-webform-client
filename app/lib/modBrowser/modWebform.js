@@ -266,11 +266,25 @@ var handleChange = function(widgetName) {
 				setTimeout(_run, 100)
 			}
 			else {
-				wv.ios.stringByEvaluatingJavaScriptFromString(js);
-				if(next) setTimeout(next, 1);
+				var value = wv.ios.stringByEvaluatingJavaScriptFromString(js);
+				if(next) {
+					setTimeout(function() {
+						if(next.length == 1) {
+							next(value);
+						}
+						else {
+							next();
+						}
+					}, 1);
+				}
 			}
 		}
 		_run();
+	}
+	wv.runJSSync = function(js) {
+		while(!wv.webready) {}
+		var value = wv.ios.stringByEvaluatingJavaScriptFromString(js);
+		return value;		
 	}
     wv.on('loadStarted', _interceptCallsFromWebview)
 	
