@@ -119,10 +119,10 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal("test", ctx.vars["apple"]);
-			assert.equal("test test", ctx.vars["result"]);
-			assert.equal("test2", ctx._vars["orange"]);
-			assert.equal("test2 test2", ctx.vars["result2"]);
+			assert.equal(ctx.vars["apple"],"test");
+			assert.equal(ctx.vars["result"],"test test");
+			assert.equal(ctx._vars["orange"],"test2");
+			assert.equal(ctx.vars["result2"],"test2 test2");
 			done();
 		});
     });
@@ -157,13 +157,13 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal("test", ctx.vars["apple"]);
-			assert.equal("test test", ctx.vars["result"]);
-			assert.equal("test3 test4 test5", ctx.vars["subResult"]);
-			assert.equal("test6", ctx.vars["subResult1"]);
-			assert.equal("test7", ctx.vars["subResult2"]);
-			assert.equal("test7", ctx.vars["subResult3"]);
-			assert.equal("##someInput2##", ctx.vars["result2"]);
+			assert.equal(ctx.vars["apple"], "test");
+			assert.equal(ctx.vars["result"],"test test");
+			assert.equal(ctx.vars["subResult"],"test3 test4 test5");
+			assert.equal(ctx.vars["subResult1"],"test6");
+			assert.equal(ctx.vars["subResult2"],"test7");
+			assert.equal(ctx.vars["subResult3"],"test7");
+			assert.equal(ctx.vars["result2"],"##someInput2##");
 			done();
 		});
     });
@@ -198,14 +198,14 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx.vars["result1"]);
-			assert.equal(2, ctx.vars["result2"]);
-			assert.equal(3, ctx.vars["result3"]);
-			assert.equal(4, ctx.vars["result4"]);
-			assert.equal(1, ctx.vars["resultB1"]);
-			assert.equal(2, ctx.vars["resultB2"]);
-			assert.equal(3, ctx.vars["resultB3"]);
-			assert.equal(4, ctx.vars["resultB4"]);
+			assert.equal(ctx.vars["result1"],1);
+			assert.equal(ctx.vars["result2"],2);
+			assert.equal(ctx.vars["result3"],3);
+			assert.equal(ctx.vars["result4"],4);
+			assert.equal(ctx.vars["resultB1"],1);
+			assert.equal(ctx.vars["resultB2"],2);
+			assert.equal(ctx.vars["resultB3"],3);
+			assert.equal(ctx.vars["resultB4"],4);
 			done();
 		});
     });
@@ -292,9 +292,9 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result"]);
-			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1', ctx.vars["result2"]);
-			assert.equal('1 ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##', ctx.vars["result3"]);
+			assert.equal(ctx.vars["result"],'1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1');
+			assert.equal(ctx.vars["result2"],'1 ##type## ##start## ##end## ##step## ##array## ##flow## a 1');
+			assert.equal(ctx.vars["result3"],'1 ##type## ##start## ##end## ##step## ##array## ##flow## ##input1## ##input2##');
 			done();
 		});
     });
@@ -312,8 +312,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").style.backgroundColor = "red"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length, 1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").style.backgroundColor = "red"');
 			done();
 		});
     });
@@ -328,9 +328,9 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(2, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box2").style.backgroundColor = "red"', ctx._testRanCodes[0]);
-			assert.equal('document.getElementById("box2").style.borderColor = "green"', ctx._testRanCodes[1]);
+			assert.equal(ctx._testRanCodes.length, 2);
+			assert.equal(ctx._testRanCodes[0], 'document.getElementById("box2").style.backgroundColor = "red"');
+			assert.equal(ctx._testRanCodes[1], 'document.getElementById("box2").style.borderColor = "green"');
 			done();
 		});
     });
@@ -348,9 +348,9 @@ describe('modFlow', function() {
 		};
 		webform._testValue = 'red';
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").style.backgroundColor', ctx._testRanCodes[0]);
-			assert.equal('red', ctx.vars['result']);
+			assert.equal(ctx._testRanCodes.length, 1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").style.backgroundColor');
+			assert.equal(ctx.vars['result'],'red');
 			done();
 		});
     });
@@ -367,8 +367,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").value = "result"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").value = "result"');
 			done();
 		});
     });
@@ -386,9 +386,9 @@ describe('modFlow', function() {
 		};
 		webform._testValue = 'testval';
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").value', ctx._testRanCodes[0]);
-			assert.equal('testval', ctx.vars['result']);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").value');
+			assert.equal(ctx.vars['result'],'testval');
 			done();
 		});
     });
@@ -405,8 +405,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").innerHTML = "result"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").innerHTML = "result"');
 			done();
 		});
     });
@@ -423,8 +423,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").innerHTML += "result"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").innerHTML += "result"');
 			done();
 		});
     });
@@ -441,8 +441,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").value += "result"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").value += "result"');
 			done();
 		});
     });
@@ -460,8 +460,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").style.visibility = "visible"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").style.visibility = "visible"');
 			done();
 		});
     });
@@ -478,8 +478,8 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._testRanCodes.length);
-			assert.equal('document.getElementById("box").style.visibility = "hidden"', ctx._testRanCodes[0]);
+			assert.equal(ctx._testRanCodes.length,1);
+			assert.equal(ctx._testRanCodes[0],'document.getElementById("box").style.visibility = "hidden"');
 			done();
 		});
     });
@@ -497,8 +497,8 @@ describe('modFlow', function() {
 		};
 		
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._urls.length);
-			assert.equal('http://www.google.com', ctx._urls[0]);
+			assert.equal(ctx._urls.length,1);
+			assert.equal(ctx._urls[0],'http://www.google.com');
 			done();
 		});
     });
@@ -516,8 +516,8 @@ describe('modFlow', function() {
 		};
 		
 		executeWebform(webform, function(ctx) {
-			assert.equal(1, ctx._urls.length);
-			assert.equal('http://www.google.com', ctx._urls[0]);
+			assert.equal(ctx._urls.length,1);
+			assert.equal(ctx._urls[0],'http://www.google.com');
 			done();
 		});
     });
@@ -546,7 +546,7 @@ describe('modFlow', function() {
 		var startTime = new Date().getTime();
 		executeWebform(webform, function(ctx) {
 			var endTime = new Date().getTime();
-			assert.equal(true, endTime - startTime < globalTimeout);
+			assert.equal(endTime - startTime < globalTimeout, true);
 			done();
 		});
     });
@@ -572,7 +572,7 @@ describe('modFlow', function() {
 		var startTime = new Date().getTime();
 		executeWebform(webform, function(ctx) {
 			var endTime = new Date().getTime();
-			assert.equal(true, endTime - startTime >= globalTimeout);
+			assert.equal(endTime - startTime >= globalTimeout, true);
 			done();
 		});
     });
@@ -610,8 +610,8 @@ describe('modFlow', function() {
 			var startTime = new Date().getTime();
 			executeWebform(webform, function(ctx) {
 				var endTime = new Date().getTime();
-				assert.equal(d, endTime - startTime < globalTimeout);
-				assert.equal(true, ctx.vars['result']);
+				assert.equal(endTime - startTime < globalTimeout, d);
+				assert.equal(ctx.vars['result'], true);
 				done();
 			});
 		});
@@ -653,7 +653,7 @@ describe('modFlow', function() {
 			}
 		};
 		executeWebform(webform, function(ctx) {
-			assert.equal(false, ctx.vars['result']);
+			assert.equal(ctx.vars['result'],false);
 			done();
 		});
     });
@@ -690,7 +690,7 @@ describe('modFlow', function() {
 		var startTime = new Date().getTime();
 		executeWebform(webform, function(ctx) {
 			var endTime = new Date().getTime();
-			assert.equal(true, endTime - startTime < globalTimeout);
+			assert.equal(endTime - startTime < globalTimeout, true);
 			done();
 		});
     });

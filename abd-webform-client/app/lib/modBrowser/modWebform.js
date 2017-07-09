@@ -16,6 +16,8 @@ var clipboard = require('../../utils/nativeClipboard.js');
 var modStep = require('./modStep.js');
 var modFlow = require('./modFlow.js');
 var modWidget = require('./modWidget.js');
+var modHTMLRenderer = require('./modHTMLRenderer.js');
+
 var showItemWebform = function(item, opts) {
     
     var page = new pagesModule.Page();
@@ -29,92 +31,13 @@ var showItemWebform = function(item, opts) {
 	if(item.submitBtnName) submitBtnName = item.submitBtnName;
     
     var paramField = {};
-    var html = '';
+    
     var wv = new webViewModule.WebView();
     gridLayout.addChild(wv);
-
-    for(var i = 0; i < params.length; i++) {
-    	var param = params[i];
-    	if(typeof param == 'object') {
-    		// search available widget
-			html += modWidget.renderWidget(param);
-    	}
-    	else {
-    		html += '<input type="text" id="' + param + '" value="" placeholder="' + param + '" />';
-    	}
-    	html += '<br />';
-    }
-
-    html = '<meta name = "viewport" content = "width = 320,initial-scale = 1.0, user-scalable = no"/>'
-    + '<meta name = "viewport" content = "width = device-width"/>'
-    + '<meta name = "viewport" content = "initial-scale = 1.0"/>'
-    + '<meta name = "viewport" content = "initial-scale = 1.0, user-scalable = no"/>' + html;
-
-    html = '<style type="text/css">'
-    + 'input[type=text]{width:360px;height:35px;font-size:16px;}'
-    + 'textarea{width:360px;font-size:16px;height:500px;}'
-    + 'select{height:30px;font-size:16px;width:360px;}'
-    + 'input,textarea,select{margin:5 0 0 5;}'
-    + '</style>' + html;
-
-    html += `<script>var _createIFrame = function (src) {
-    var rootElm = document.documentElement;
-    var newFrameElm = document.createElement("IFRAME");
-    newFrameElm.setAttribute("src", src);
-    rootElm.appendChild(newFrameElm);
-    return newFrameElm;
-};
-var _emitDataToIos = function (data) {
-    var url = "js2ios:" + data;
-    var iFrame = _createIFrame(url);
-    iFrame.parentNode.removeChild(iFrame);
-};
-
-var handleClick = function(widgetName) {
-    return function(e) {
-        _emitDataToIos("evt:" + widgetName + "_onclick");
-    }
-};
-
-var handleChange = function(widgetName) {
-    return function(e) {
-		// check selectone
-		var oldVal = '';
-		var newVal = '';
-		if(document.getElementById(widgetName).selectedOptions && document.getElementById(widgetName).selectedOptions.length) {
-			oldVal = document.getElementById(widgetName).oldvalue;
-			newVal = document.getElementById(widgetName).selectedOptions[0].value;
-		}
-		else {
-			oldVal = document.getElementById(widgetName).oldvalue;
-			newVal = document.getElementById(widgetName).value;
-		}
-		_emitDataToIos("evt:" + widgetName + "_onchange;from=" + oldVal + "&to=" + newVal);
-    }
-};
-</script>`;
-
-	var events = item.events;
-    var _js = '';
-    if(typeof events != 'undefined') {
-        for(var _evt in events) {
-            var _arr = _evt.split('_');
-            if(_arr.length != 2) continue;
-            var widgetName = _arr[0];
-            var eventName = _arr[1];
-            if(eventName == 'onclick') {
-                _js += 'document.getElementById("' + widgetName + '").addEventListener("click", handleClick("' + widgetName + '"));\n\n';
-            	
-            }
-			else if(eventName == 'onchange') {
-                _js += 'document.getElementById("' + widgetName + '").addEventListener("change", handleChange("' + widgetName + '"));\n\n';
-            	
-            }
-        }
-    }
-
-    html += '<script>window.onload = function() { ' + _js + ' }</script>';
-    
+	
+	var htmlRenderer = new modHTMLRenderer.HTMLRenderer();
+	htmlRenderer.init({params:item.params,events:item.events});
+	var html = htmlRenderer.renderHTML();
     wv.src = html;
     var submitBtnCallback = function() {
     	for(var i = 0; i < params.length; i++) {
@@ -199,8 +122,7 @@ var handleChange = function(widgetName) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		console.log('FLOW engine canceled')
 	})
-
-        
+  
     var _interceptCallsFromWebview = function (args) {
         var request = args.url;
         var reqMsgProtocol = 'js2ios:';
@@ -229,6 +151,7 @@ var handleChange = function(widgetName) {
     }
     var handleEventResponse = function(data, evtParams) {
         console.log('handleEventResponse ' + data + ' ' + JSON.stringify(evtParams));
+		var events = item.events;
         for(var _evt in events) {
             if(_evt == data) {
                 var e = events[_evt];
@@ -252,8 +175,38 @@ var handleChange = function(widgetName) {
 				}
             }
         }
+		if(data == 'ready') {
+			console.log('web ready');
+			wv.webready = true;
+		}
     }
-
+	wv.webready = false;
+	wv.runJS = function(js, next) {
+		function _run() {
+			if(!wv.webready) {
+				setTimeout(_run, 100)
+			}
+			else {
+				var value = wv.ios.stringByEvaluatingJavaScriptFromString(js);
+				if(next) {
+					setTimeout(function() {
+						if(next.length == 1) {
+							next(value);
+						}
+						else {
+							next();
+						}
+					}, 1);
+				}
+			}
+		}
+		_run();
+	}
+	wv.runJSSync = function(js) {
+		while(!wv.webready) {}
+		var value = wv.ios.stringByEvaluatingJavaScriptFromString(js);
+		return value;		
+	}
     wv.on('loadStarted', _interceptCallsFromWebview)
 	
 	var ctx = {}; // context object
@@ -273,7 +226,6 @@ var handleChange = function(widgetName) {
 					return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
 				}
 			}
-			return flowObject;
 		}
 		// return dummy function for silent execution
 		return {
