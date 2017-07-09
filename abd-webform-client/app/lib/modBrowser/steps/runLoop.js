@@ -1,3 +1,4 @@
+var util = require('../../../utils/MyUtil');
 module.exports = {
 	
 	process : function(ctx, step, next) {
@@ -22,7 +23,8 @@ var processLoop = function(ctx, step, next) {
 	var i = start; // for start
 	var checkNext = function() {
 		if(i < end) { // for end condition
-			ctx.createFlowEngine(step.flow).execute(function() {
+			var vstep = filterStep(step);
+			ctx.createFlowEngine(step.flow).setInputVars(vstep).execute(function() {
 				i += _step; // for step
 				setTimeout(checkNext, 1);
 			});
@@ -42,7 +44,8 @@ var processArray = function(ctx, step, next) {
 		var checkNext = function() {
 			if(i < array.length) {
 				ctx.vars[itemName] = array[i];
-				ctx.createFlowEngine(step.flow).execute(function(outputVars) {
+				var vstep = filterStep(step);
+				ctx.createFlowEngine(step.flow).setInputVars(vstep).execute(function(outputVars) {
 					i++;
 					setTimeout(checkNext, 1);
 				});
@@ -56,4 +59,14 @@ var processArray = function(ctx, step, next) {
 	else {
 		setTimeout(next, 1);
 	}
+}
+
+var filterStep = function(step) {
+	var s = util.clone(step);
+	delete s.start;
+	delete s.end;
+	delete s.step;
+	delete s.array;
+	delete s.flow;
+	return s;
 }

@@ -1,6 +1,4 @@
 // IMPORT
-var fs = require("file-system");
-
 module.exports = {
 	
 	processStep : function(ctx, step, next) {
