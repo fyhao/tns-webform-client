@@ -144,8 +144,23 @@ describe('#modHTMLRenderer', function() {
 		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
 		HTMLRenderer.init(webform);
 		var html = HTMLRenderer.renderHTML();
-		console.log(html)
 		assert.equal(html.indexOf('<div><input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/><input type="button" id="ResetBtn" value="CLICK TO RESET" style="visibility:visible"/></div>') > -1, true);
+		done();
+    });
+  });
+  
+  describe('#imgshow', function() {
+	it('should able to render imgshow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [
+				{type:'imgshow', id:'box',query:'q:name=youtube,k=test'}
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		assert.equal(html.indexOf('<div id="box" style="visibility:visible"></div>') > -1, true);
 		done();
     });
   });
