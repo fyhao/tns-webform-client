@@ -708,6 +708,7 @@ describe('modFlow', function() {
 					{type:'setVar',name:'boy',value:'b'},
 					{type:'evaljs',var:'result',code:'vars["apple"] + vars["boy"]'},
 					{type:'evaljs',var:'result2',code:'return vars["apple"] + vars["boy"] + "c"'},
+					{type:'evaljs',code:'vars["car"] = "3"'},
 				]
 			}
 		};
@@ -715,6 +716,7 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["result"], "ab");
 			assert.equal(ctx.vars["result2"], "abc");
+			assert.equal(ctx.vars["car"], "3");
 			done();
 		});
     });
