@@ -697,4 +697,26 @@ describe('modFlow', function() {
 	
 	
   });
+  describe('#evaljs', function() {
+	it('should able to evaljs', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'setVar',name:'boy',value:'b'},
+					{type:'evaljs',var:'result',code:'vars["apple"] + vars["boy"]'},
+					{type:'evaljs',var:'result2',code:'return vars["apple"] + vars["boy"] + "c"'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], "ab");
+			assert.equal(ctx.vars["result2"], "abc");
+			done();
+		});
+    });
+  });
 });
