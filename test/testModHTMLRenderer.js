@@ -164,4 +164,20 @@ describe('#modHTMLRenderer', function() {
 		done();
     });
   });
+  
+  describe('#qrcode', function() {
+	it('should able to render qrcode', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [
+				{type:'qrcode', id:'box',query:'test'}
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		assert.equal(html.indexOf('<div id="box" style="visibility:visible"></div>') > -1, true);
+		done();
+    });
+  });
 });
