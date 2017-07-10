@@ -180,4 +180,33 @@ describe('#modHTMLRenderer', function() {
 		done();
     });
   });
+  
+  describe('#selectone', function() {
+	it('should able to render selectone with key value', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [
+				{type:'selectone', name:'country', options:[{key:'Malaysia',value:'my'},{key:'Singapore',value:'sg'}], value:'sg'}
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		assert.equal(html.indexOf('<select id="country" style="visibility:visible" onfocus="this.oldvalue = this.selectedOptions[0].value"><option value="my" >Malaysia</option><option value="sg" selected>Singapore</option></select>') > -1, true);
+		done();
+    });
+	it('should able to render selectone with array', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [
+				{type:'selectone', name:'country', options:['my','sg'], value:'sg'}
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		assert.equal(html.indexOf('<select id="country" style="visibility:visible" onfocus="this.oldvalue = this.selectedOptions[0].value"><option value="my" >my</option><option value="sg" selected>sg</option></select>') > -1, true);
+		done();
+    });
+  });
 });
