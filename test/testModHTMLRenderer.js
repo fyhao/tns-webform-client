@@ -33,6 +33,17 @@ describe('#modHTMLRenderer modWidget', function() {
 		assert.equal(_testRanCodes.length, 1);
 		assert.equal(_testRanCodes[0], code);
 	}
+	// test visibility
+	if(webform.params[0].type == 'button' && webform.params[0].buttons) {
+		webform.params[0].buttons[0].visibility = false;
+		webform.params[0].buttons[1].visibility = false;
+	}
+	else {
+		webform.params[0].visibility = false;
+	}
+	content = content.replace('visible', 'hidden');
+	content = content.replace('visible', 'hidden');
+	assert.equal(modWidget.renderWidget(webform.params[0]), content)
 	done();
   }
   describe('#textbox', function() {
