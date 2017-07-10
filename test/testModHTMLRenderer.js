@@ -121,7 +121,7 @@ describe('#modHTMLRenderer', function() {
   });
   
   describe('#button', function() {
-	it('should able to render button', function(done) {
+	it('should able to render single button', function(done) {
 		var webform = {
 			heading:'test form',
 			params: [
@@ -132,6 +132,20 @@ describe('#modHTMLRenderer', function() {
 		HTMLRenderer.init(webform);
 		var html = HTMLRenderer.renderHTML();
 		assert.equal(html.indexOf('<input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/>') > -1, true);
+		done();
+    });
+	it('should able to render multiple buttons', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [
+				{type:'button', buttons:[{name:'SendBtn',title:'CLICK TO SEND'},{name:'ResetBtn',title:'CLICK TO RESET'}]}
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		console.log(html)
+		assert.equal(html.indexOf('<div><input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/><input type="button" id="ResetBtn" value="CLICK TO RESET" style="visibility:visible"/></div>') > -1, true);
 		done();
     });
   });
