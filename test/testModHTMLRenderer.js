@@ -119,4 +119,20 @@ describe('#modHTMLRenderer', function() {
 		done();
     });
   });
+  
+  describe('#button', function() {
+	it('should able to render button', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [
+				{type:'button', name:'SendBtn',title:'CLICK TO SEND'}
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		assert.equal(html.indexOf('<input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/>') > -1, true);
+		done();
+    });
+  });
 });
