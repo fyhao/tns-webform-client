@@ -214,6 +214,7 @@ var showItemWebform = function(item, opts) {
 	ctx.wv = wv;
 	ctx.flows = {};
 	ctx.vars = {};
+	ctx.blobVars = {};
 	ctx.createFlowEngine = function(flow) {
 		if(typeof flow != 'undefined') {
 			if(typeof flow == 'object') {

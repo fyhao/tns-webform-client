@@ -12,7 +12,7 @@ module.exports = {
 			else {
 				var image = new imageModule.Image();
 				image.src = imageAsset;
-				
+				ctx.blobVars[step.result] = image;
 				// test display image
 				var page = new pagesModule.Page();
 				page.content = image;
