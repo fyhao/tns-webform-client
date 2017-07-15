@@ -5,7 +5,7 @@ module.exports = {
 	
 	process : function(ctx, step, next) {
 		var image = new imageModule.Image();
-		image.src = step.blob;
+		image.src = ctx.blobVars[step.blob];
 		var page = new pagesModule.Page();
 		page.content = image;
 		helpers.navigate(function(){return page;});
