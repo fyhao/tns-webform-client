@@ -3,7 +3,7 @@ module.exports = {
 	
 	process : function(ctx, step, next) {
 		if(typeof step.blob != 'undefined') {
-			sharer.shareImage(step.blob, next);
+			sharer.shareImage(ctx.blobVars[step.blob], next);
 		}
 		else {
 			sharer.shareText(step.content, next);
