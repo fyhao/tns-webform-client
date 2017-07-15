@@ -15,7 +15,7 @@ module.exports = {
 				
 				// test display image
 				var page = new pagesModule.Page();
-				page.content = imageModule;
+				page.content = image;
 				helpers.navigate(function(){return page;});
 				setTimeout(next, 1);
 			}
