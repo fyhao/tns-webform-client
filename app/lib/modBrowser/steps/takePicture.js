@@ -1,4 +1,5 @@
 var camera = require('../../../utils/nativeCamera');
+var imageModule = require("ui/image");
 module.exports = {
 	
 	process : function(ctx, step, next) {

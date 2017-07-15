@@ -1,5 +1,4 @@
 var pagesModule = require("ui/page");
-var imageModule = require("ui/image");
 var helpers = require('../../../utils/widgets/helper');
 module.exports = {
 	
