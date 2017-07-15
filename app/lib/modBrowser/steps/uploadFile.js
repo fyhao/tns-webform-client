@@ -22,7 +22,7 @@ module.exports = {
 				description: description
 			};
 			var params = [
-				{ name: step.param, filename: file, mimeType: step.filetype }
+				{ name: step.param, filename: path, mimeType: step.filetype }
 			];
 			task = session.multipartUpload(params, request);
 
