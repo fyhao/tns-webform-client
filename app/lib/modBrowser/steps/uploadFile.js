@@ -19,7 +19,7 @@ module.exports = {
 					"Content-Type": "application/octet-stream",
 					"File-Name": step.filename
 				},
-				description: description
+				description: 'uploading file ' + step.filename
 			};
 			var params = [
 				{ name: step.param, filename: path, mimeType: step.filetype }
