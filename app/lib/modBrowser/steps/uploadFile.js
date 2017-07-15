@@ -3,7 +3,7 @@ module.exports = {
 	process : function(ctx, step, next) {
 		var fs = require("file-system");
 		var folder = fs.knownFolders.documents();
-		var path = fs.path.join(folder.path, "Test.png");
+		var path = fs.path.join(folder.path, step.filename);
 		var imageSource = require("image-source");
 		var source = new imageSource.ImageSource();
 		source.fromAsset(ctx.blobVars[step.blob]).then(function(source) {
