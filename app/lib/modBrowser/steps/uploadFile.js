@@ -13,16 +13,18 @@ module.exports = {
 			var session = bghttp.session("image-upload");
 
 			var request = {
-				url: step.url,
+				url: url,
 				method: "POST",
 				headers: {
-					"Content-Type": "application/octet-stream"
+					"Content-Type": "application/octet-stream",
+					"File-Name": step.filename
 				},
-				description: "{ 'uploading': '" + step.filename + "' }"
+				description: description
 			};
-			request.headers[step.param] = step.filename;
-
-			var task = session.uploadFile(path, request);
+			var params = [
+				{ name: step.param, filename: file, mimeType: step.filetype }
+			];
+			task = session.multipartUpload(params, request);
 
 			task.on("progress", logEvent);
 			task.on("error", logEvent);
