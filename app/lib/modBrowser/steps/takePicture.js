@@ -9,13 +9,7 @@ module.exports = {
 				setTimeout(next, 1);
 			}
 			else {
-				ctx.blobVars[step.result] = imageAsset;
-				// test display image
-				var image = new imageModule.Image();
-				image.src = imageAsset;
-				var page = new pagesModule.Page();
-				page.content = image;
-				helpers.navigate(function(){return page;});
+				ctx.blobVars[step.blob] = imageAsset;
 				setTimeout(next, 1);
 			}
 		});
