@@ -7,7 +7,9 @@ module.exports = {
 				setTimeout(next, 1);
 			}
 			else {
-				ctx.blobVars[step.blob] = imageAsset;
+				var image = new imageModule.Image();
+				image.src = imageAsset;
+				ctx.blobVars[step.blob] = image;
 				setTimeout(next, 1);
 			}
 		});
