@@ -2,6 +2,11 @@ var sharer = require('../../../utils/nativeSharer');
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		sharer.shareText(step.content, next);
+		if(typeof step.blob != 'undefined') {
+			sharer.shareImage(step.blob, next);
+		}
+		else {
+			sharer.shareText(step.content, next);
+		}
 	}
 }
