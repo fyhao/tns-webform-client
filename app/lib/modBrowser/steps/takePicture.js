@@ -1,6 +1,4 @@
 var camera = require('../../../utils/nativeCamera');
-var helpers = require('../../../utils/widgets/helper');
-var pagesModule = require("ui/page");
 var imageModule = require("ui/image");
 module.exports = {
 	
@@ -12,11 +10,7 @@ module.exports = {
 			else {
 				var image = new imageModule.Image();
 				image.src = imageAsset;
-				
-				// test display image
-				var page = new pagesModule.Page();
-				page.content = image;
-				helpers.navigate(function(){return page;});
+				ctx.blobVars[step.blob] = imageAsset;
 				setTimeout(next, 1);
 			}
 		});
