@@ -1,6 +1,7 @@
 module.exports = {
 	
 	process : function(ctx, step, next) {
+		var fs = require("file-system");
 		var folder = fs.knownFolders.documents();
 		var path = fs.path.join(folder.path, "Test.png");
 		var imageSource = require("image-source");
