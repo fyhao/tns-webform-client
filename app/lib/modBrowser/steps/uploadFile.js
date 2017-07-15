@@ -9,11 +9,11 @@ module.exports = {
 			url: step.url,
 			method: "POST",
 			headers: {
-				"Content-Type": "application/octet-stream",
-				step.param: step.filename
+				"Content-Type": "application/octet-stream"
 			},
 			description: "{ 'uploading': '" + step.filename + "' }"
 		};
+		request.headers[step.param] = step.filename;
 
 		var task = session.uploadFile(ctx.blobVars[step.blob], request);
 
