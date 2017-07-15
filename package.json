@@ -10,6 +10,7 @@
     }
   },
   "dependencies": {
+    "nativescript-background-http": "^3.0.0",
     "nativescript-barcodescanner": "^2.5.4",
     "nativescript-camera": "^3.0.0",
     "nativescript-geolocation": "0.0.11",

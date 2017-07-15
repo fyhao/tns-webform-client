@@ -1,4 +1,5 @@
 var camera = require('../../../utils/nativeCamera');
+var imageModule = require("ui/image");
 module.exports = {
 	
 	process : function(ctx, step, next) {
@@ -7,9 +8,9 @@ module.exports = {
 				setTimeout(next, 1);
 			}
 			else {
-				var imageModule = require("ui/image");
 				var image = new imageModule.Image();
 				image.src = imageAsset;
+				ctx.blobVars[step.blob] = imageAsset;
 				setTimeout(next, 1);
 			}
 		});
