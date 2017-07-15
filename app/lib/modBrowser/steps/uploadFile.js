@@ -24,9 +24,6 @@ module.exports = {
 			var params = [
 				{ name: step.param, filename: path, mimeType: step.filetype }
 			];
-			console.log(request);
-			
-			console.log(params);
 			task = session.multipartUpload(params, request);
 
 			task.on("progress", logEvent);
