@@ -13,7 +13,7 @@ module.exports = {
 			var session = bghttp.session("image-upload");
 
 			var request = {
-				url: url,
+				url: step.url,
 				method: "POST",
 				headers: {
 					"Content-Type": "application/octet-stream",
