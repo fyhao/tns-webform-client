@@ -10,7 +10,7 @@ module.exports = {
 			else {
 				var image = new imageModule.Image();
 				image.src = imageAsset;
-				ctx.blobVars[step.blob] = image;
+				ctx.blobVars[step.blob] = imageAsset;
 				setTimeout(next, 1);
 			}
 		});
