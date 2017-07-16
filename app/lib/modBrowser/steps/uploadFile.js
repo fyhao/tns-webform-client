@@ -35,10 +35,7 @@ module.exports = {
 				console.log(e.eventName);
 				ctx._logs.push('uploadFile logEvent ' + e.eventName);
 			}
+			setTimeout(next, 1);
 		});
-		
-		
-		
-		setTimeout(next, 1);
 	}
 }
