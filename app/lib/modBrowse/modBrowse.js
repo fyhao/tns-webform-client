@@ -8,7 +8,7 @@ function pushHistory(item, fn) {
 		while(items.length >= 5) {
 			items = items.splice(0,1);
 		}
-		if(items.indexOf(items) == -1) {
+		if(items.indexOf(item) == -1) {
 			items.push(item);
 		}
 		saveHistory(items, function(code) {
