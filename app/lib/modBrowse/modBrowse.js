@@ -5,7 +5,7 @@ var HISTORY_SETTING_NAME = "history";
 
 function pushHistory(item, fn) {
 	getHistory(function(items) {
-		while(items.length >= 5) {
+		while(items.length > 5) {
 			items = items.splice(0,1);
 		}
 		if(items.indexOf(item) == -1) {
