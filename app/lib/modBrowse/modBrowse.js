@@ -1,26 +1,46 @@
 var modBrowser = require('../modBrowser/modBrowser.js');
+var setting = require('../../utils/nativeSetting');
+//CONSTANT
+var HISTORY_SETTING_NAME = "history";
+
 function pushHistory(item, fn) {
-    if(items.length >= 5 && items.indexOf(item) == -1) {
-        items.splice(0,1);
-        items.push(item);
-        fn(0);
-    }
-    else {
-        fn(1);
-    }
+	getHistory(function(items) {
+		if(items.length >= 5 && items.indexOf(item) == -1) {
+			items.splice(0,1);
+			items.push(item);
+			saveHistory(items, function(code) {
+				fn(code);
+			});
+		}
+		else {
+			fn(1);
+		}
+	});
+    
 }
-exports.getHistory = function(fn) {
+
+function clearHistory(fn) {
+	// db
+    items = [];
+	saveHistory(items, function(code) {
+		fn(code);
+	});
+}
+
+function getHistory(fn) {
+	// db
+	var str = setting.getString(HISTORY_SETTING_NAME, '[]');
+	var items = JSON.parse(str);
     fn(items.slice().reverse());
 }
 
-exports.pushHistory = pushHistory;
-
-exports.clearHistory = function(fn) {
-    items = [];
-    fn(0);
+function saveHistory(items, fn) {
+	// db
+	setting.setString(HISTORY_SETTING_NAME, JSON.stringify(items));
+	fn(0);
 }
 
-exports.browseURL = function(url) {
+function browseURL(url) {
 	// Check URL
 	if(!url.startsWith("http")) {
 		alert('Invalid URL format: ' + url);
@@ -32,10 +52,21 @@ exports.browseURL = function(url) {
 		browser.open(url);
 	});
 }
-var items = [
-    'http://url1',
-    'http://url2',
-    'http://url3',
-    'http://url4',
-    'http://url5'
-];
+
+exports.getHistory = getHistory;
+
+exports.pushHistory = pushHistory;
+
+exports.clearHistory = clearHistory;
+
+exports.browseURL = browseURL;
+
+
+// for unit test mocking
+exports.setSettingController = function(s) {
+	setting = s;
+}
+exports.getSettingController = function() {
+	return setting;
+}
+
