@@ -6,10 +6,11 @@ var HISTORY_SETTING_NAME = "history";
 function pushHistory(item, fn) {
 	getHistory(function(items) {
 		if(items.length >= 5 && items.indexOf(item) == -1) {
-			items.splice(0,1);
-			
+			items = items.splice(0,1);
 		}
-		items.push(item);
+		if(items.indexOf(items) == -1) {
+			items.push(item);
+		}
 		saveHistory(items, function(code) {
 			fn(code);
 		});
