@@ -6,12 +6,13 @@ module.exports = {
 		var path = fs.path.join(folder.path, step.filename);
 		var imageSource = require("image-source");
 		var source = new imageSource.ImageSource();
+		ctx._logs.push('entered uploadFile');
 		source.fromAsset(ctx.blobVars[step.blob]).then(function(source) {
 			var saved = source.saveToFile(path, "png");
 			var bghttp = require("nativescript-background-http");
-
+			ctx._logs.push('bghttp pre session');
 			var session = bghttp.session("image-upload");
-
+			ctx._logs.push('bghttp post session');
 			var request = {
 				url: step.url,
 				method: "POST",
