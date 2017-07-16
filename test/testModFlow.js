@@ -13,6 +13,7 @@ describe('modFlow', function() {
 		ctx.flows = {};
 		ctx.vars = {};
 		ctx.blobVars = {};
+		ctx._logs = [];
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
 				if(typeof flow == 'object') {
