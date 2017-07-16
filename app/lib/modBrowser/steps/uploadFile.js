@@ -32,6 +32,7 @@ module.exports = {
 
 			function logEvent(e) {
 				console.log(e.eventName);
+				ctx._logs.push('uploadFile logEvent ' + e.eventName);
 			}
 		});
 		
