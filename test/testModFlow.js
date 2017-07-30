@@ -722,5 +722,20 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to evaljs 2', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'evaljs',var:'result',code:'b=1;c=3;return b+c'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
   });
 });
