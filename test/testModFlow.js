@@ -738,4 +738,48 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#crypto', function() {
+	it('should able to encrypt and decrypt', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'1QW@#$%^&*(_+{}|:">?<MNBVXZ,./;;[]\=-09865lskfhkre hk'},
+					{type:'crypto', action:'encrypt', plaintext:'apple',ciphered:'c'},
+					{type:'crypto', action:'decrypt', ciphertext:'c', deciphered:'d'}
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars['d'], '1QW@#$%^&*(_+{}|:">?<MNBVXZ,./;;[]\=-09865lskfhkre hk');
+			done();
+		});
+    }); // end it
+	it('should able to encrypt and decrypt with custom password', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'myPassword',value:'1l231l23l1k23j1l2k3'},
+					{type:'setVar',name:'apple',value:'1QW@#$%^&*(_+{}|:">?<MNBVXZ,./;;[]\=-09865lskfhkre hk'},
+					{type:'crypto', action:'encrypt', plaintext:'apple',ciphered:'c',password:'myPassword'},
+					{type:'crypto', action:'decrypt', ciphertext:'c', deciphered:'d',password:'myPassword'},
+					{type:'crypto', action:'encrypt', plaintext:'apple',ciphered:'e'},
+					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'f'},
+					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'g',password:'myPassword'}
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars['d'], '1QW@#$%^&*(_+{}|:">?<MNBVXZ,./;;[]\=-09865lskfhkre hk');
+			assert.equal(ctx.vars['f'], '1QW@#$%^&*(_+{}|:">?<MNBVXZ,./;;[]\=-09865lskfhkre hk');
+			assert.notEqual(ctx.vars['g'], '1QW@#$%^&*(_+{}|:">?<MNBVXZ,./;;[]\=-09865lskfhkre hk');
+			done();
+		});
+    }); // end it
+  });
 });
