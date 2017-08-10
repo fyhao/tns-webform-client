@@ -9,15 +9,15 @@ PROVISIONING_TYPE="${e[2]}"
 
 if test "$TRAVIS_BRANCH" = 'staging'; then
 	if test "$PROVISIONING_TYPE" = '0'; then
-		nativescript-cli/bin/tns build ios --emulator
+		tns build ios --emulator
 	fi
 
 	if test "$PROVISIONING_TYPE" = '1'; then
-		nativescript-cli/bin/tns build ios --release --for-device --provision "$PROVISIONING_PROFILE" --teamId "$DEVELOPMENT_TEAM"
+		tns build ios --release --for-device --provision "$PROVISIONING_PROFILE" --teamId "$DEVELOPMENT_TEAM"
 	fi
 
 	if test "$PROVISIONING_TYPE" = '2'; then
-		nativescript-cli/bin/tns build ios --release --for-device --provision "$PROVISIONING_PROFILE" --teamId "$DEVELOPMENT_TEAM"
+		tns build ios --release --for-device --provision "$PROVISIONING_PROFILE" --teamId "$DEVELOPMENT_TEAM"
 	fi
 
 fi

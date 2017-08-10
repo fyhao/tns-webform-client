@@ -34,19 +34,10 @@ fi
 npm install -g npm@$NPM_VERSION
 
 if test "$TRAVIS_BRANCH" = 'staging'; then
-	if test "$PROVISIONING_TYPE" = '10'; then
+	
 		npm install -g nativescript@$TNS_VERSION
 		tns usage-reporting disable
-	else
-		npm install grunt-cli -g
-		git clone https://github.com/fyhao/nativescript-cli
-		cd nativescript-cli
-		git submodule update --init
-		npm install
-		grunt
-		cd ../
-		nativescript-cli/bin/tns usage-reporting disable
-	fi
+	
 fi
 npm install
 if test "$TRAVIS_BRANCH" = 'staging'; then
@@ -59,7 +50,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 	  # Show environment invo
 	node --version
 	npm --version
-	nativescript-cli/bin/tns --version
+	tns --version
 	xcpretty --version
 	xcodebuild -version
 	xcodebuild -showsdks
