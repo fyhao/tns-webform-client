@@ -18,6 +18,7 @@
     "nativescript-theme-core": "~1.0.2",
     "nativescript-urlhandler": "1.1.0",
 	"nativescript-apiclient" : "3.0.0",
+	"nativescript-enumerable" : "3.5.2",
     "tns-core-modules": "2.5.2"
   },
   "devDependencies": {
