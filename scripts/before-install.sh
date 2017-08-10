@@ -50,7 +50,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 	  # Show environment invo
 	node --version
 	npm --version
-	nativescript-cli/bin/tns --version
+	tns --version
 	xcpretty --version
 	xcodebuild -version
 	xcodebuild -showsdks
