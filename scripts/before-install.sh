@@ -57,7 +57,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 	pod --version
 	pod setup --silent
 	pod repo update --silent
-	  # Show environment invo
+	  # Show environment info
 	node --version
 	npm --version
 	nativescript-cli/bin/tns --version
