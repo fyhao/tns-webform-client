@@ -41,6 +41,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 		npm install grunt-cli -g
 		git clone https://github.com/fyhao/nativescript-cli
 		cd nativescript-cli
+		git checkout fyhao-stable-master-1
 		git submodule update --init
 		npm install
 		grunt
