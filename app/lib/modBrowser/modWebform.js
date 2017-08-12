@@ -263,6 +263,13 @@ var showItemWebform = function(item, opts) {
 	var flow = item.flow;
 	// #47 FlowEngine webform level
 	ctx.createFlowEngine(flow).execute(function() {});
+	
+	// Put in external vars from showItemWebform opts
+	if(opts.vars) {
+		for(var i in opts.vars) {
+			ctx.vars[i] = opts.vars[i];
+		}
+	}
 }
 
 module.exports.showItemWebform = showItemWebform;
