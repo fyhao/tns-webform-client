@@ -20,7 +20,7 @@
     "nativescript-urlhandler": "1.1.0",
 	"nativescript-apiclient" : "3.0.0",
 	"nativescript-enumerable" : "3.5.2",
-    "tns-core-modules": "3.0.0"
+    "tns-core-modules": "3.1.0"
   },
   "devDependencies": {
     "coveralls": "^2.13.0",
