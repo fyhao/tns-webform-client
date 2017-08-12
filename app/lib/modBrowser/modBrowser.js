@@ -124,7 +124,8 @@ function showItem(item) {
     }
 	else if(item.type == 'option') {
 		item.onSelected();
-		helpers.back();
+		
+		//helpers.back();
 	}
 }
 function showItemVideo(item) {
