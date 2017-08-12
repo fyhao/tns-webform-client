@@ -34,6 +34,8 @@ var Switch = (function (_super) {
         _this._handler = SwitchChangeHandlerImpl.initWithOwner(new WeakRef(_this));
         nativeView.addTargetActionForControlEvents(_this._handler, "valueChanged", 4096);
         _this.nativeView = nativeView;
+        _this.width = 51;
+        _this.height = 31;
         return _this;
     }
     Object.defineProperty(Switch.prototype, "ios", {

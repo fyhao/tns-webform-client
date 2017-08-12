@@ -15,10 +15,6 @@ var TextField = (function (_super) {
         editText.setMaxLines(1);
         editText.setHorizontallyScrolling(true);
     };
-    TextField.prototype.initNativeView = function () {
-        _super.prototype.initNativeView.call(this);
-        this.nativeView.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_NORMAL | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-    };
     TextField.prototype._onReturnPress = function () {
         this.notify({ eventName: TextField.returnPressEvent, object: this });
     };
@@ -48,7 +44,7 @@ var TextField = (function (_super) {
                 newInputType = currentClass | currentFlags | android.text.InputType.TYPE_NUMBER_VARIATION_NORMAL;
             }
         }
-        nativeView.setInputType(newInputType);
+        this._setInputType(newInputType);
     };
     TextField.prototype[text_field_common_1.whiteSpaceProperty.getDefault] = function () {
         return "nowrap";

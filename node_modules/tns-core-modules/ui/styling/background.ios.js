@@ -213,6 +213,7 @@ function getDrawParams(image, background, width, height) {
 function uiColorFromImage(img, view, callback, flip) {
     if (!img) {
         callback(null);
+        return;
     }
     var nativeView = view.nativeView;
     var background = view.style.backgroundInternal;

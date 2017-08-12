@@ -14,6 +14,7 @@ var Responder = (function (_super) {
     }
     return Responder;
 }(UIResponder));
+var displayedOnce = false;
 var Window = (function (_super) {
     __extends(Window, _super);
     function Window() {
@@ -132,7 +133,13 @@ var IOSApplication = (function () {
         this._window.makeKeyAndVisible();
     };
     IOSApplication.prototype.didBecomeActive = function (notification) {
-        application_common_1.notify({ eventName: application_common_1.resumeEvent, object: this, ios: utils.ios.getter(UIApplication, UIApplication.sharedApplication) });
+        var ios = utils.ios.getter(UIApplication, UIApplication.sharedApplication);
+        var object = this;
+        application_common_1.notify({ eventName: application_common_1.resumeEvent, object: object, ios: ios });
+        if (!displayedOnce) {
+            application_common_1.notify({ eventName: application_common_1.displayedEvent, object: object, ios: ios });
+            displayedOnce = true;
+        }
     };
     IOSApplication.prototype.didEnterBackground = function (notification) {
         application_common_1.notify({ eventName: application_common_1.suspendEvent, object: this, ios: utils.ios.getter(UIApplication, UIApplication.sharedApplication) });

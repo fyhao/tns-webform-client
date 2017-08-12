@@ -7,6 +7,7 @@ var file_system_1 = require("../../file-system");
 __export(require("./image-common"));
 var FILE_PREFIX = "file:///";
 var ASYNC = "async";
+var AndroidImageView;
 var ImageLoadedListener;
 function initializeImageLoadedListener() {
     if (ImageLoadedListener) {
@@ -42,8 +43,11 @@ var Image = (function (_super) {
         return _this;
     }
     Image.prototype.createNativeView = function () {
+        if (!AndroidImageView) {
+            AndroidImageView = org.nativescript.widgets.ImageView;
+        }
         initializeImageLoadedListener();
-        var imageView = new org.nativescript.widgets.ImageView(this._context);
+        var imageView = new AndroidImageView(this._context);
         var listener = new ImageLoadedListener(this);
         imageView.setImageLoadedListener(listener);
         imageView.listener = listener;
@@ -59,13 +63,14 @@ var Image = (function (_super) {
     };
     Image.prototype._createImageSourceFromSrc = function () {
         var imageView = this.nativeView;
-        if (imageView) {
-            imageView.setUri(null, 0, 0, false, true);
-        }
-        if (!imageView || !this.src) {
+        if (!imageView) {
             return;
         }
         var value = this.src;
+        if (!value) {
+            imageView.setUri(null, 0, 0, false, true);
+            return;
+        }
         var async = this.loadMode === ASYNC;
         if (typeof value === "string" || value instanceof String) {
             value = value.trim();
@@ -80,7 +85,7 @@ var Image = (function (_super) {
                 else {
                     var fileName = value;
                     if (fileName.indexOf("~/") === 0) {
-                        fileName = file_system_1.path.join(file_system_1.knownFolders.currentApp().path, fileName.replace("~/", ""));
+                        fileName = file_system_1.knownFolders.currentApp().path + "/" + fileName.replace("~/", "");
                     }
                     imageView.setUri(FILE_PREFIX + fileName, this.decodeWidth, this.decodeHeight, this.useCache, async);
                 }
