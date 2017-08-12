@@ -217,41 +217,35 @@ var DropBoxClient = (function () {
                 });
             }
         };
-        if (!TypeUtils.isNullOrUndefined(readError)) {
-            code = -2;
-            error = readError;
-            finish();
-        }
-        else {
-            var client = ApiClient.newClient({
-                authorizer: new ApiClient.BearerAuth(this.accessToken),
-                baseUrl: 'https://content.dropboxapi.com/2/files/upload',
-            });
-            client.succeededRequest(function () {
-                code = 0;
-            }).clientOrServerError(function (ulResult) {
-                code = -2;
-                error = 'Server returned code: ' + ulResult.code + ' => ' + ulResult.getString();
-            }).error(function (ulCtx) {
-                code = -1;
-                error = ulCtx.error;
-            }).complete(function () {
-                finish();
-            });
-            var args = {
-                path: targetPath,
-                mode: "overwrite",
-                autorename: true,
-                mute: false
-            };
-            client.post({
-                content: dataToUpload,
-                type: ApiClient.HttpRequestType.Binary,
-                headers: {
-                    'Dropbox-API-Arg': JSON.stringify(args),
-                }
-            });
-        }
+		var client = ApiClient.newClient({
+			authorizer: new ApiClient.BearerAuth(this.accessToken),
+			baseUrl: 'https://content.dropboxapi.com/2/files/upload',
+		});
+		client.succeededRequest(function () {
+			code = 0;
+		}).clientOrServerError(function (ulResult) {
+			code = -2;
+			error = 'Server returned code: ' + ulResult.code + ' => ' + ulResult.getString();
+		}).error(function (ulCtx) {
+			code = -1;
+			error = ulCtx.error;
+		}).complete(function () {
+			finish();
+		});
+		var args = {
+			path: targetPath,
+			mode: "overwrite",
+			autorename: true,
+			mute: false
+		};
+		client.post({
+			content: dataToUpload,
+			type: ApiClient.HttpRequestType.Binary,
+			headers: {
+				'Dropbox-API-Arg': JSON.stringify(args),
+			}
+		});
+        
     };
     return DropBoxClient;
 }());
