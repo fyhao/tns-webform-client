@@ -2,7 +2,7 @@ var util = require('../../utils/MyUtil');
 var modStep = require('./modStep.js');
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
-	FLOW_ENGINE_CANCELED = false;
+	var _FLOW_ENGINE_CANCELED = false;
 	var vars = {};
 	var wv = null;
 	this.setWv = function(v) {
@@ -15,6 +15,10 @@ var FlowEngine = function(flow) {
 		return this;
 	}
 	var ctx = {};
+	
+	function enable_FLOW_ENGINE_CANCELLED() {
+		_FLOW_ENGINE_CANCELED = true;
+	}
 	this.setContext = function(v) {
 		ctx = v;
 		wv = ctx.wv;
@@ -29,9 +33,6 @@ var FlowEngine = function(flow) {
 			vars[i] = v[i];
 		}
 		return this;
-	}
-	function enable_FLOW_ENGINE_CANCELLED() {
-		FLOW_ENGINE_CANCELED = true;
 	}
 	this.flow = util.clone(flow);
 	this.canceled = false;
@@ -90,7 +91,7 @@ var FlowEngine = function(flow) {
 		//console.log('processStep ' + FLOW_ENGINE_CANCELED);
 		//console.log(JSON.stringify(step)); 
 		//console.log(JSON.stringify(ctx._vars));
-		if(FLOW_ENGINE_CANCELED) {
+		if(_FLOW_ENGINE_CANCELED) {
 			return;
 		}
 		step = replaceVarsStep(step);
