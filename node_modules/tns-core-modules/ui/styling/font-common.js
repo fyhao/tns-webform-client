@@ -1,92 +1,28 @@
-var enums = require("ui/enums");
-var converters = require("./converters");
-var Font = (function () {
-    function Font(family, size, style, weight) {
-        this._fontFamily = family;
-        this._fontSize = size;
-        this._fontStyle = style;
-        this._fontWeight = weight;
+Object.defineProperty(exports, "__esModule", { value: true });
+var properties_1 = require("../core/properties");
+var FontBase = (function () {
+    function FontBase(fontFamily, fontSize, fontStyle, fontWeight) {
+        this.fontFamily = fontFamily;
+        this.fontSize = fontSize;
+        this.fontStyle = fontStyle;
+        this.fontWeight = fontWeight;
     }
-    Object.defineProperty(Font.prototype, "fontFamily", {
+    Object.defineProperty(FontBase.prototype, "isItalic", {
         get: function () {
-            return this._fontFamily;
-        },
-        set: function (value) {
-            throw new Error("fontFamily is read-only");
+            return this.fontStyle === FontStyle.ITALIC;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Font.prototype, "fontStyle", {
+    Object.defineProperty(FontBase.prototype, "isBold", {
         get: function () {
-            return this._fontStyle;
-        },
-        set: function (value) {
-            throw new Error("fontStyle is read-only");
+            return this.fontWeight === FontWeight.BOLD
+                || this.fontWeight === "700";
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Font.prototype, "fontWeight", {
-        get: function () {
-            return this._fontWeight;
-        },
-        set: function (value) {
-            throw new Error("fontWeight is read-only");
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Font.prototype, "fontSize", {
-        get: function () {
-            return this._fontSize;
-        },
-        set: function (value) {
-            throw new Error("fontSize is read-only");
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Font.prototype, "isBold", {
-        get: function () {
-            return this._fontWeight.toLowerCase() === enums.FontWeight.bold
-                || this._fontWeight.toLowerCase() === "700";
-        },
-        set: function (value) {
-            throw new Error("isBold is read-only");
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Font.prototype, "isItalic", {
-        get: function () {
-            return this._fontStyle.toLowerCase() === enums.FontStyle.italic;
-        },
-        set: function (value) {
-            throw new Error("isItalic is read-only");
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Font.prototype.getAndroidTypeface = function () {
-        return undefined;
-    };
-    Font.prototype.getUIFont = function (defaultFont) {
-        return undefined;
-    };
-    Font.prototype.withFontFamily = function (family) {
-        throw new Error("This should be called on the derived class");
-    };
-    Font.prototype.withFontStyle = function (style) {
-        throw new Error("This should be called on the derived class");
-    };
-    Font.prototype.withFontWeight = function (weight) {
-        throw new Error("This should be called on the derived class");
-    };
-    Font.prototype.withFontSize = function (size) {
-        throw new Error("This should be called on the derived class");
-    };
-    Font.equals = function (value1, value2) {
+    FontBase.equals = function (value1, value2) {
         if (!value1 && !value2) {
             return true;
         }
@@ -98,16 +34,31 @@ var Font = (function () {
             value1.fontStyle === value2.fontStyle &&
             value1.fontWeight === value2.fontWeight;
     };
-    Font.parse = function (cssValue) {
-        var parsed = parseFont(cssValue);
-        var size = converters.fontSizeConverter(parsed.fontSize);
-        size = !!size ? size : undefined;
-        return new Font(parsed.fontFamily, size, parsed.fontStyle, parsed.fontWeight);
-    };
-    Font.default = undefined;
-    return Font;
+    return FontBase;
 }());
-exports.Font = Font;
+FontBase.default = undefined;
+exports.FontBase = FontBase;
+var FontStyle;
+(function (FontStyle) {
+    FontStyle.NORMAL = "normal";
+    FontStyle.ITALIC = "italic";
+    FontStyle.isValid = properties_1.makeValidator(FontStyle.NORMAL, FontStyle.ITALIC);
+    FontStyle.parse = properties_1.makeParser(FontStyle.isValid);
+})(FontStyle = exports.FontStyle || (exports.FontStyle = {}));
+var FontWeight;
+(function (FontWeight) {
+    FontWeight.THIN = "100";
+    FontWeight.EXTRA_LIGHT = "200";
+    FontWeight.LIGHT = "300";
+    FontWeight.NORMAL = "normal";
+    FontWeight.MEDIUM = "500";
+    FontWeight.SEMI_BOLD = "600";
+    FontWeight.BOLD = "bold";
+    FontWeight.EXTRA_BOLD = "800";
+    FontWeight.BLACK = "900";
+    FontWeight.isValid = properties_1.makeValidator(FontWeight.THIN, FontWeight.EXTRA_LIGHT, FontWeight.LIGHT, FontWeight.NORMAL, "400", FontWeight.MEDIUM, FontWeight.SEMI_BOLD, FontWeight.BOLD, "700", FontWeight.EXTRA_BOLD, FontWeight.BLACK);
+    FontWeight.parse = properties_1.makeParser(FontWeight.isValid);
+})(FontWeight = exports.FontWeight || (exports.FontWeight = {}));
 function parseFontFamily(value) {
     var result = new Array();
     if (!value) {
@@ -131,14 +82,29 @@ var genericFontFamilies;
     genericFontFamilies.system = "system";
 })(genericFontFamilies = exports.genericFontFamilies || (exports.genericFontFamilies = {}));
 var styles = new Set();
-["italic", "oblique"].forEach(function (val, i, a) { return styles.add(val); });
+[
+    FontStyle.NORMAL,
+    FontStyle.ITALIC
+].forEach(function (val, i, a) { return styles.add(val); });
 var weights = new Set();
-["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"].forEach(function (val, i, a) { return weights.add(val); });
+[
+    FontWeight.THIN,
+    FontWeight.EXTRA_LIGHT,
+    FontWeight.LIGHT,
+    FontWeight.NORMAL,
+    "400",
+    FontWeight.MEDIUM,
+    FontWeight.SEMI_BOLD,
+    FontWeight.BOLD,
+    "700",
+    FontWeight.EXTRA_BOLD,
+    FontWeight.BLACK
+].forEach(function (val, i, a) { return weights.add(val); });
 function parseFont(fontValue) {
     var result = {
         fontStyle: "normal",
         fontVariant: "normal",
-        fontWeight: "normal",
+        fontWeight: "normal"
     };
     var parts = fontValue.split(/\s+/);
     var part;
@@ -169,4 +135,5 @@ function parseFont(fontValue) {
     }
     return result;
 }
+exports.parseFont = parseFont;
 //# sourceMappingURL=font-common.js.map

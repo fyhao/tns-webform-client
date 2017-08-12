@@ -1,4 +1,5 @@
-var file_system_1 = require("file-system");
+Object.defineProperty(exports, "__esModule", { value: true });
+var file_system_1 = require("../file-system");
 exports.debug = true;
 var applicationRootPath;
 function ensureAppRootPath() {
@@ -43,8 +44,8 @@ var Source = (function () {
     Source.set = function (object, src) {
         object[Source._source] = src;
     };
-    Source._source = Symbol("source");
     return Source;
 }());
+Source._source = Symbol("source");
 exports.Source = Source;
 //# sourceMappingURL=debug-common.js.map

@@ -1,89 +1,51 @@
-var dependencyObservable = require("ui/core/dependency-observable");
-var proxy = require("ui/core/proxy");
-var view = require("ui/core/view");
-var types = require("utils/types");
-var trace = require("trace");
-exports.traceCategory = "ListPicker";
-var ListPicker = (function (_super) {
-    __extends(ListPicker, _super);
-    function ListPicker() {
-        _super.apply(this, arguments);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
+var ListPickerBase = (function (_super) {
+    __extends(ListPickerBase, _super);
+    function ListPickerBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(ListPicker.prototype, "selectedIndex", {
-        get: function () {
-            return this._getValue(ListPicker.selectedIndexProperty);
-        },
-        set: function (value) {
-            this._setValue(ListPicker.selectedIndexProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ListPicker.prototype, "items", {
-        get: function () {
-            return this._getValue(ListPicker.itemsProperty);
-        },
-        set: function (value) {
-            this._setValue(ListPicker.itemsProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ListPicker.prototype._getItemAsString = function (index) {
-        if (!this.items || !this.items.length) {
+    ListPickerBase.prototype._getItemAsString = function (index) {
+        var items = this.items;
+        if (!items) {
             return " ";
         }
-        if (types.isDefined(this.items)) {
-            var item = this.items.getItem ? this.items.getItem(index) : this.items[index];
-            return types.isString(item) ? item : (types.isDefined(item) ? item.toString() : index.toString());
-        }
-        return index.toString();
+        var item = this.isItemsSource ? this.items.getItem(index) : this.items[index];
+        return (item === undefined || item === null) ? index + "" : item + "";
     };
-    ListPicker.prototype._onSelectedIndexPropertyChanged = function (data) {
-        if (trace.enabled) {
-            trace.write("ListPicker._onSelectedIndexPropertyChanged(" + data.oldValue + " => " + data.newValue + ");", exports.traceCategory);
-        }
-        var index = this.selectedIndex;
-        if (types.isUndefined(index)) {
-            return;
-        }
-        if (types.isDefined(this.items)) {
-            if (index < 0 || index >= this.items.length) {
-                this.selectedIndex = undefined;
-                throw new Error("selectedIndex should be between [0, items.length - 1]");
+    return ListPickerBase;
+}(view_1.View));
+exports.ListPickerBase = ListPickerBase;
+exports.selectedIndexProperty = new view_1.CoercibleProperty({
+    name: "selectedIndex", defaultValue: -1,
+    valueConverter: function (v) { return parseInt(v); },
+    coerceValue: function (target, value) {
+        var items = target.items;
+        if (items) {
+            var max = items.length - 1;
+            if (value < 0) {
+                value = 0;
+            }
+            if (value > max) {
+                value = max;
             }
         }
-    };
-    ListPicker.prototype._onItemsPropertyChanged = function (data) {
-    };
-    ListPicker.prototype._updateSelectedIndexOnItemsPropertyChanged = function (newItems) {
-        if (trace.enabled) {
-            trace.write("ListPicker._updateSelectedIndexOnItemsPropertyChanged(" + newItems + ");", exports.traceCategory);
+        else {
+            value = -1;
         }
-        var newItemsCount = 0;
-        if (newItems && newItems.length) {
-            newItemsCount = newItems.length;
-        }
-        if (newItemsCount === 0) {
-            this.selectedIndex = undefined;
-        }
-        else if (types.isUndefined(this.selectedIndex) || this.selectedIndex >= newItemsCount) {
-            this.selectedIndex = 0;
-        }
-    };
-    ListPicker.selectedIndexProperty = new dependencyObservable.Property("selectedIndex", "ListPicker", new proxy.PropertyMetadata(undefined));
-    ListPicker.itemsProperty = new dependencyObservable.Property("items", "ListPicker", new proxy.PropertyMetadata(undefined));
-    return ListPicker;
-}(view.View));
-exports.ListPicker = ListPicker;
-function onSelectedIndexPropertyChanged(data) {
-    var picker = data.object;
-    picker._onSelectedIndexPropertyChanged(data);
-}
-function onItemsPropertyChanged(data) {
-    var picker = data.object;
-    picker._onItemsPropertyChanged(data);
-}
-ListPicker.selectedIndexProperty.metadata.onSetNativeValue = onSelectedIndexPropertyChanged;
-ListPicker.itemsProperty.metadata.onSetNativeValue = onItemsPropertyChanged;
+        return value;
+    }
+});
+exports.selectedIndexProperty.register(ListPickerBase);
+exports.itemsProperty = new view_1.Property({
+    name: "items", valueChanged: function (target, oldValue, newValue) {
+        var getItem = newValue && newValue.getItem;
+        target.isItemsSource = typeof getItem === "function";
+    }
+});
+exports.itemsProperty.register(ListPickerBase);
 //# sourceMappingURL=list-picker-common.js.map

@@ -1,5 +1,6 @@
-var http = require("http");
-var types = require("utils/types");
+Object.defineProperty(exports, "__esModule", { value: true });
+var http = require("../http");
+var types = require("../utils/types");
 var XMLHttpRequestResponseType;
 (function (XMLHttpRequestResponseType) {
     XMLHttpRequestResponseType.empty = "";

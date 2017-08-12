@@ -1,54 +1,28 @@
-var platform = require("platform");
-var layout_base_1 = require("ui/layouts/layout-base");
-var enums_1 = require("ui/enums");
-var proxy_1 = require("ui/core/proxy");
-var dependency_observable_1 = require("ui/core/dependency-observable");
-var AffectsLayout = platform.device.os === platform.platformNames.android ? dependency_observable_1.PropertyMetadataSettings.None : dependency_observable_1.PropertyMetadataSettings.AffectsLayout;
-function isWidthHeightValid(value) {
-    return (value >= 0.0 && value !== Number.POSITIVE_INFINITY);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-function isValidOrientation(value) {
-    return value === enums_1.Orientation.vertical || value === enums_1.Orientation.horizontal;
-}
-var WrapLayout = (function (_super) {
-    __extends(WrapLayout, _super);
-    function WrapLayout() {
-        _super.apply(this, arguments);
+Object.defineProperty(exports, "__esModule", { value: true });
+var layout_base_1 = require("../layout-base");
+__export(require("../layout-base"));
+var WrapLayoutBase = (function (_super) {
+    __extends(WrapLayoutBase, _super);
+    function WrapLayoutBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(WrapLayout.prototype, "orientation", {
-        get: function () {
-            return this._getValue(WrapLayout.orientationProperty);
-        },
-        set: function (value) {
-            this._setValue(WrapLayout.orientationProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(WrapLayout.prototype, "itemWidth", {
-        get: function () {
-            return this._getValue(WrapLayout.itemWidthProperty);
-        },
-        set: function (value) {
-            this._setValue(WrapLayout.itemWidthProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(WrapLayout.prototype, "itemHeight", {
-        get: function () {
-            return this._getValue(WrapLayout.itemHeightProperty);
-        },
-        set: function (value) {
-            this._setValue(WrapLayout.itemHeightProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    WrapLayout.orientationProperty = new dependency_observable_1.Property("orientation", "WrapLayout", new proxy_1.PropertyMetadata(enums_1.Orientation.horizontal, AffectsLayout, undefined, isValidOrientation));
-    WrapLayout.itemWidthProperty = new dependency_observable_1.Property("itemWidth", "WrapLayout", new proxy_1.PropertyMetadata(0, AffectsLayout, undefined, isWidthHeightValid));
-    WrapLayout.itemHeightProperty = new dependency_observable_1.Property("itemHeight", "WrapLayout", new proxy_1.PropertyMetadata(0, AffectsLayout, undefined, isWidthHeightValid));
-    return WrapLayout;
+    return WrapLayoutBase;
 }(layout_base_1.LayoutBase));
-exports.WrapLayout = WrapLayout;
+exports.WrapLayoutBase = WrapLayoutBase;
+exports.itemWidthProperty = new layout_base_1.Property({
+    name: "itemWidth", defaultValue: "auto", affectsLayout: layout_base_1.isIOS, valueConverter: function (v) { return layout_base_1.Length.parse(v); },
+    valueChanged: function (target, oldValue, newValue) { return target.effectiveItemWidth = layout_base_1.Length.toDevicePixels(newValue, -1); }
+});
+exports.itemWidthProperty.register(WrapLayoutBase);
+exports.itemHeightProperty = new layout_base_1.Property({
+    name: "itemHeight", defaultValue: "auto", affectsLayout: layout_base_1.isIOS, valueConverter: function (v) { return layout_base_1.Length.parse(v); },
+    valueChanged: function (target, oldValue, newValue) { return target.effectiveItemHeight = layout_base_1.Length.toDevicePixels(newValue, -1); }
+});
+exports.itemHeightProperty.register(WrapLayoutBase);
+var converter = layout_base_1.makeParser(layout_base_1.makeValidator("horizontal", "vertical"));
+exports.orientationProperty = new layout_base_1.Property({ name: "orientation", defaultValue: "horizontal", affectsLayout: layout_base_1.isIOS, valueConverter: converter });
+exports.orientationProperty.register(WrapLayoutBase);
 //# sourceMappingURL=wrap-layout-common.js.map

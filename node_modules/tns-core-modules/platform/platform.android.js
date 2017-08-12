@@ -1,4 +1,5 @@
-var utils = require("utils/utils");
+Object.defineProperty(exports, "__esModule", { value: true });
+var appModule = require("../application");
 var MIN_TABLET_PIXELS = 600;
 var platformNames;
 (function (platformNames) {
@@ -59,12 +60,11 @@ var Device = (function () {
         get: function () {
             if (!this._deviceType) {
                 var dips = Math.min(screen.mainScreen.widthPixels, screen.mainScreen.heightPixels) / screen.mainScreen.scale;
-                var enums = require("ui/enums");
                 if (dips >= MIN_TABLET_PIXELS) {
-                    this._deviceType = enums.DeviceType.Tablet;
+                    this._deviceType = "Tablet";
                 }
                 else {
-                    this._deviceType = enums.DeviceType.Phone;
+                    this._deviceType = "Phone";
                 }
             }
             return this._deviceType;
@@ -75,7 +75,8 @@ var Device = (function () {
     Object.defineProperty(Device.prototype, "uuid", {
         get: function () {
             if (!this._uuid) {
-                this._uuid = android.provider.Settings.Secure.getString(utils.ad.getApplicationContext().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+                var nativeApp = appModule.android.nativeApp;
+                this._uuid = android.provider.Settings.Secure.getString(nativeApp.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
             }
             return this._uuid;
         },
@@ -107,14 +108,22 @@ var Device = (function () {
 var MainScreen = (function () {
     function MainScreen() {
     }
-    MainScreen.prototype._invalidate = function () {
-        this._metrics = null;
+    MainScreen.prototype.cssChanged = function (args) {
+        if (!this._metrics) {
+            this._metrics = new android.util.DisplayMetrics();
+        }
+        this.initMetrics();
+    };
+    MainScreen.prototype.initMetrics = function () {
+        var nativeApp = appModule.getNativeApplication();
+        nativeApp.getSystemService(android.content.Context.WINDOW_SERVICE).getDefaultDisplay().getRealMetrics(this._metrics);
     };
     Object.defineProperty(MainScreen.prototype, "metrics", {
         get: function () {
             if (!this._metrics) {
+                appModule.on("cssChanged", this.cssChanged, this);
                 this._metrics = new android.util.DisplayMetrics();
-                utils.ad.getApplicationContext().getSystemService(android.content.Context.WINDOW_SERVICE).getDefaultDisplay().getRealMetrics(this._metrics);
+                this.initMetrics();
             }
             return this._metrics;
         },

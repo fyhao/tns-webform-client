@@ -1,40 +1,42 @@
-var observable = require("data/observable");
-var types = require("utils/types");
+Object.defineProperty(exports, "__esModule", { value: true });
+var observable = require("../observable");
+var types = require("../../utils/types");
 var ChangeType = (function () {
     function ChangeType() {
     }
-    ChangeType.Add = "add";
-    ChangeType.Delete = "delete";
-    ChangeType.Update = "update";
-    ChangeType.Splice = "splice";
     return ChangeType;
 }());
+ChangeType.Add = "add";
+ChangeType.Delete = "delete";
+ChangeType.Update = "update";
+ChangeType.Splice = "splice";
 exports.ChangeType = ChangeType;
 var CHANGE = "change";
 var ObservableArray = (function (_super) {
     __extends(ObservableArray, _super);
     function ObservableArray() {
-        _super.call(this);
+        var _this = _super.call(this) || this;
         if (arguments.length === 1 && Array.isArray(arguments[0])) {
-            this._array = arguments[0].slice();
+            _this._array = arguments[0].slice();
         }
         else {
-            this._array = Array.apply(null, arguments);
+            _this._array = Array.apply(null, arguments);
         }
-        this._addArgs = {
-            eventName: CHANGE, object: this,
+        _this._addArgs = {
+            eventName: CHANGE, object: _this,
             action: ChangeType.Add,
             index: null,
             removed: new Array(),
             addedCount: 1
         };
-        this._deleteArgs = {
-            eventName: CHANGE, object: this,
+        _this._deleteArgs = {
+            eventName: CHANGE, object: _this,
             action: ChangeType.Delete,
             index: null,
             removed: null,
             addedCount: 0
         };
+        return _this;
     }
     ObservableArray.prototype.getItem = function (index) {
         return this._array[index];
@@ -184,8 +186,8 @@ var ObservableArray = (function (_super) {
     ObservableArray.prototype.reduceRight = function (callbackfn, initialValue) {
         return this._array.reduceRight(callbackfn, initialValue);
     };
-    ObservableArray.changeEvent = CHANGE;
     return ObservableArray;
 }(observable.Observable));
+ObservableArray.changeEvent = CHANGE;
 exports.ObservableArray = ObservableArray;
 //# sourceMappingURL=observable-array.js.map

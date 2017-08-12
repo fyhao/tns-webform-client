@@ -1,12 +1,10 @@
-var definition = require("ui/animation");
-var colorModule = require("color");
-var types = require("utils/types");
-var trace;
-function ensureTrace() {
-    if (!trace) {
-        trace = require("trace");
-    }
-}
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = require("../../color");
+exports.Color = color_1.Color;
+var trace_1 = require("../../trace");
+exports.traceEnabled = trace_1.isEnabled;
+exports.traceWrite = trace_1.write;
+exports.traceCategories = trace_1.categories;
 var Properties;
 (function (Properties) {
     Properties.opacity = "opacity";
@@ -25,40 +23,30 @@ var CubicBezierAnimationCurve = (function () {
     return CubicBezierAnimationCurve;
 }());
 exports.CubicBezierAnimationCurve = CubicBezierAnimationCurve;
-var AnimationPromise = (function () {
-    function AnimationPromise() {
-    }
-    AnimationPromise.prototype.cancel = function () { };
-    AnimationPromise.prototype.then = function (onFulfilled, onRejected) { return new AnimationPromise(); };
-    AnimationPromise.prototype.catch = function (onRejected) { return new AnimationPromise(); };
-    return AnimationPromise;
-}());
-exports.AnimationPromise = AnimationPromise;
-var Animation = (function () {
-    function Animation(animationDefinitions, playSequentially) {
+var AnimationBase = (function () {
+    function AnimationBase(animationDefinitions, playSequentially) {
         if (!animationDefinitions || animationDefinitions.length === 0) {
             throw new Error("No animation definitions specified");
         }
-        ensureTrace();
-        if (trace.enabled) {
-            trace.write("Analyzing " + animationDefinitions.length + " animation definitions...", trace.categories.Animation);
+        if (trace_1.isEnabled()) {
+            trace_1.write("Analyzing " + animationDefinitions.length + " animation definitions...", trace_1.categories.Animation);
         }
         this._propertyAnimations = new Array();
-        var i = 0;
-        var length = animationDefinitions.length;
-        for (; i < length; i++) {
-            animationDefinitions[i].curve = definition._resolveAnimationCurve(animationDefinitions[i].curve);
-            this._propertyAnimations = this._propertyAnimations.concat(Animation._createPropertyAnimations(animationDefinitions[i]));
+        for (var i = 0, length_1 = animationDefinitions.length; i < length_1; i++) {
+            if (animationDefinitions[i].curve) {
+                animationDefinitions[i].curve = this._resolveAnimationCurve(animationDefinitions[i].curve);
+            }
+            this._propertyAnimations = this._propertyAnimations.concat(AnimationBase._createPropertyAnimations(animationDefinitions[i]));
         }
         if (this._propertyAnimations.length === 0) {
             throw new Error("Nothing to animate.");
         }
-        if (trace.enabled) {
-            trace.write("Created " + this._propertyAnimations.length + " individual property animations.", trace.categories.Animation);
+        if (trace_1.isEnabled()) {
+            trace_1.write("Created " + this._propertyAnimations.length + " individual property animations.", trace_1.categories.Animation);
         }
         this._playSequentially = playSequentially;
     }
-    Animation.prototype.play = function () {
+    AnimationBase.prototype.play = function () {
         var _this = this;
         if (this.isPlaying) {
             throw new Error("Animation is already playing.");
@@ -71,7 +59,7 @@ var Animation = (function () {
         this._isPlaying = true;
         return animationFinishedPromise;
     };
-    Animation.prototype.fixupAnimationPromise = function (promise) {
+    AnimationBase.prototype.fixupAnimationPromise = function (promise) {
         var _this = this;
         promise.cancel = function () {
             _this.cancel();
@@ -89,48 +77,46 @@ var Animation = (function () {
             return r;
         };
     };
-    Animation.prototype.cancel = function () {
+    AnimationBase.prototype.cancel = function () {
         if (!this.isPlaying) {
             throw new Error("Animation is not currently playing.");
         }
     };
-    Object.defineProperty(Animation.prototype, "isPlaying", {
+    Object.defineProperty(AnimationBase.prototype, "isPlaying", {
         get: function () {
             return this._isPlaying;
         },
         enumerable: true,
         configurable: true
     });
-    Animation.prototype._resolveAnimationFinishedPromise = function () {
+    AnimationBase.prototype._resolveAnimationFinishedPromise = function () {
         this._isPlaying = false;
         this._resolve();
     };
-    Animation.prototype._rejectAnimationFinishedPromise = function () {
+    AnimationBase.prototype._rejectAnimationFinishedPromise = function () {
         this._isPlaying = false;
         this._reject(new Error("Animation cancelled."));
     };
-    Animation._createPropertyAnimations = function (animationDefinition) {
+    AnimationBase._createPropertyAnimations = function (animationDefinition) {
         if (!animationDefinition.target) {
             throw new Error("No animation target specified.");
         }
         for (var item in animationDefinition) {
-            if (!types.isDefined(animationDefinition[item])) {
+            if (animationDefinition[item] === undefined) {
                 continue;
             }
             if ((item === Properties.opacity ||
                 item === Properties.rotate ||
                 item === "duration" ||
                 item === "delay" ||
-                item === "iterations") && !types.isNumber(animationDefinition[item])) {
+                item === "iterations") && typeof animationDefinition[item] !== "number") {
                 throw new Error("Property " + item + " must be valid number. Value: " + animationDefinition[item]);
             }
-            else if ((item === Properties.scale ||
-                item === Properties.translate) &&
-                (!types.isNumber(animationDefinition[item].x) ||
-                    !types.isNumber(animationDefinition[item].y))) {
+            else if ((item === Properties.scale || item === Properties.translate) &&
+                (typeof animationDefinition[item].x !== "number" || typeof animationDefinition[item].y !== "number")) {
                 throw new Error("Property " + item + " must be valid Pair. Value: " + animationDefinition[item]);
             }
-            else if (item === Properties.backgroundColor && !colorModule.Color.isValid(animationDefinition.backgroundColor)) {
+            else if (item === Properties.backgroundColor && !color_1.Color.isValid(animationDefinition.backgroundColor)) {
                 throw new Error("Property " + item + " must be valid color. Value: " + animationDefinition[item]);
             }
         }
@@ -150,8 +136,8 @@ var Animation = (function () {
             propertyAnimations.push({
                 target: animationDefinition.target,
                 property: Properties.backgroundColor,
-                value: types.isString(animationDefinition.backgroundColor) ?
-                    new colorModule.Color(animationDefinition.backgroundColor) : animationDefinition.backgroundColor,
+                value: typeof animationDefinition.backgroundColor === "string" ?
+                    new color_1.Color(animationDefinition.backgroundColor) : animationDefinition.backgroundColor,
                 duration: animationDefinition.duration,
                 delay: animationDefinition.delay,
                 iterations: animationDefinition.iterations,
@@ -196,7 +182,7 @@ var Animation = (function () {
         }
         return propertyAnimations;
     };
-    Animation._getAnimationInfo = function (animation) {
+    AnimationBase._getAnimationInfo = function (animation) {
         return JSON.stringify({
             target: animation.target.id,
             property: animation.property,
@@ -207,7 +193,7 @@ var Animation = (function () {
             curve: animation.curve
         });
     };
-    return Animation;
+    return AnimationBase;
 }());
-exports.Animation = Animation;
+exports.AnimationBase = AnimationBase;
 //# sourceMappingURL=animation-common.js.map

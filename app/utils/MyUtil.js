@@ -149,6 +149,7 @@ var util = {
 					if(option.func) option.func();
 				}
 			}
+			if(opts.done) opts.done();
 		});
 	}
 	,
@@ -156,6 +157,7 @@ var util = {
 		var enums = require("ui/enums");
 		var items = page.actionBar.actionItems.getItems();
 		for(var i = 0; i < items.length; i++) {
+			var item = items[i];
 			page.actionBar.actionItems.removeItem(item);
 		}
 		btn.ios.position = enums.IOSActionItemPosition.right;

@@ -1,4 +1,5 @@
 var util = require('../../../utils/MyUtil');
+var activityIndicator = require('../../../utils/nativeActivityIndicator');
 module.exports = {
 	process : function(ctx, step, checkNext) {
 		if(typeof step.method === 'undefined') step.method = 'GET';
@@ -18,19 +19,23 @@ module.exports = {
 		if(typeof step.varJson !== 'undefined') {
 			frequestObj.callbackJSON = function(json) {
 				ctx.vars[step.varJson] = json;
+				activityIndicator.disableActivityIndicator();
 				setTimeout(checkNext, 1);
 			}
 		}
 		else if(typeof step.var !== 'undefined') {
 			frequestObj.callback = function(body) {
 				ctx.vars[step.var] = body;
+				activityIndicator.disableActivityIndicator();
 				setTimeout(checkNext, 1);
 			}
 		}
 		else {
+			activityIndicator.disableActivityIndicator();
 			setTimeout(checkNext, 1);
 			return;
 		}
+		activityIndicator.enableActivityIndicator();
 		util.frequest(frequestObj);
 	}
 }
@@ -39,6 +44,7 @@ module.exports = {
 var callErrorFlow = function(flow, err) {
 	ctx.vars['http_error'] = err;
 	ctx.createFlowEngine(flow).execute(function() {
+		activityIndicator.disableActivityIndicator();
 		setTimeout(next, 1);
 	});
 }
