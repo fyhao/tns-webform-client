@@ -33,6 +33,9 @@ var Label = (function (_super) {
             return this.style.whiteSpace === "normal";
         },
         set: function (value) {
+            if (typeof value === "string") {
+                value = text_base_1.booleanConverter(value);
+            }
             this.style.whiteSpace = value ? "normal" : "nowrap";
         },
         enumerable: true,
@@ -82,10 +85,7 @@ var Label = (function (_super) {
                 break;
         }
     };
-    Label.prototype[text_base_1.backgroundInternalProperty.getDefault] = function () {
-        return this.nativeView.layer.backgroundColor;
-    };
-    Label.prototype[text_base_1.backgroundInternalProperty.setNative] = function (value) {
+    Label.prototype._redrawNativeBackground = function (value) {
         var _this = this;
         if (value instanceof background_1.Background) {
             background_2.ios.createBackgroundUIColor(this, function (color) {

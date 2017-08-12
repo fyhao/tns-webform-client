@@ -158,6 +158,9 @@ var ObservableFromObject = (function (_super) {
         _this._map = {};
         return _this;
     }
+    ObservableFromObject.prototype.get = function (name) {
+        return this._map[name];
+    };
     ObservableFromObject.prototype.set = function (name, value) {
         var currentValue = this._map[name];
         if (currentValue === value) {

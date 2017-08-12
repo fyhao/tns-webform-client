@@ -13,10 +13,6 @@ var TextView = (function (_super) {
         editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_NORMAL | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         editText.setGravity(android.view.Gravity.TOP | android.view.Gravity.LEFT);
     };
-    TextView.prototype.initNativeView = function () {
-        _super.prototype.initNativeView.call(this);
-        this.nativeView.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_NORMAL | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-    };
     return TextView;
 }(editable_text_base_1.EditableTextBase));
 exports.TextView = TextView;

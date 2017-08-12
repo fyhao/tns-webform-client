@@ -15,6 +15,7 @@ function hasLaunched() {
 exports.hasLaunched = hasLaunched;
 exports.launchEvent = "launch";
 exports.suspendEvent = "suspend";
+exports.displayedEvent = "displayed";
 exports.resumeEvent = "resume";
 exports.exitEvent = "exit";
 exports.lowMemoryEvent = "lowMemory";
@@ -35,6 +36,7 @@ exports.ios = undefined;
 exports.on = events.on.bind(events);
 exports.off = events.off.bind(events);
 exports.notify = events.notify.bind(events);
+exports.hasListeners = events.hasListeners.bind(events);
 var app;
 function setApplication(instance) {
     app = instance;

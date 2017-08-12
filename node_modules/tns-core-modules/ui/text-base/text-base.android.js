@@ -271,7 +271,8 @@ function setSpanModifiers(ssb, span, start, end) {
     var fontFamily = span.fontFamily;
     if (fontFamily) {
         var font = new font_1.Font(fontFamily, 0, (italic) ? "italic" : "normal", (bold) ? "bold" : "normal");
-        var typefaceSpan = new org.nativescript.widgets.CustomTypefaceSpan(fontFamily, font.getAndroidTypeface());
+        var typeface = font.getAndroidTypeface() || android.graphics.Typeface.create(fontFamily, 0);
+        var typefaceSpan = new org.nativescript.widgets.CustomTypefaceSpan(fontFamily, typeface);
         ssb.setSpan(typefaceSpan, start, end, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
     var realFontSize = span.fontSize;
