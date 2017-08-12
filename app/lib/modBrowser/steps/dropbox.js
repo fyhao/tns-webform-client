@@ -42,6 +42,26 @@ module.exports = {
 				setTimeout(next, 1);
 			}
 		}
+		else if(action == 'showFileChooserTest') {
+			var result = ctx.vars[step.result];
+			// iterate and show the category view
+			if(result.entries && result.entries.length) {
+				var options = [];
+				for(var i = 0; i < result.entries.length; i++) {
+					var entry = result.entries[i];
+					var opt = {};
+					opt.key = entry;
+					opt.value = entry.name;
+					options.push(opt);
+				}
+				ctx.showListChooser(options, function(selectedKey) {
+					ctx.vars[step.selected] = selectedKey;
+				});
+			}
+			else {
+				setTimeout(next, 1);
+			}
+		}
 		else if(action == 'downloadAsText') {
 			var entry = ctx.vars[step.entry];
 			entry.download(function(res) {
