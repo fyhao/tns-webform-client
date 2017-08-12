@@ -34,8 +34,8 @@ function showListChooser(options, callback) {
 		var opt = options[i];
 		var item = {};
 		item.type = 'option';
-		item.title = item.value;
-		item.key = item.key;
+		item.title = opt.value;
+		item.key = opt.key;
 		item.onSelected = onSelected;
 		cat.list.push(item);
 	}
