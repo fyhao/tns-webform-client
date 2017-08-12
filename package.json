@@ -1,7 +1,7 @@
 {
   "description": "NativeScript Application",
   "license": "MIT",
-  "readme": "NativeScript Application",
+  "readme": "NativeScript Application!",
   "repository": "https://github.com/fyhao/tns-webform-client",
   "nativescript": {
     "id": "org.nativescript.tnswebformclient",
