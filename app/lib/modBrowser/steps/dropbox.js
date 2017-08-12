@@ -56,6 +56,7 @@ module.exports = {
 				}
 				ctx.showListChooser(options, function(selectedKey) {
 					ctx.vars[step.selected] = selectedKey;
+					setTimeout(next, 1);
 				});
 			}
 			else {
