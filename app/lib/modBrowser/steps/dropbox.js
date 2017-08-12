@@ -10,7 +10,7 @@ module.exports = {
 			console.log('dropbox listFolder path: ' + path);
 			client.listFolder(path, function (result) {
 				console.log('dropbox listFolder result: ');
-				console.log(result);
+				console.dir(result);
 			});
 		}
 		setTimeout(next, 1);
