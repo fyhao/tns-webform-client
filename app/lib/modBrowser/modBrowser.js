@@ -141,7 +141,7 @@ function showWebView(url) {
     var gridLayout = new GridLayout();
     page.content = gridLayout;
     var webView = new webViewModule.WebView();
-    webView.url = url;
+    webView.src = url;
     gridLayout.addChild(webView);
     helpers.navigate(function(){return page;});
 }
