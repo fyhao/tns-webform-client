@@ -17,6 +17,7 @@ module.exports = {
 					}
 				}
 				ctx.vars[step.result] = result;
+				setTimeout(next, 1);
 			});
 		}
 		else if(action == 'showFileChooser') {
@@ -25,7 +26,11 @@ module.exports = {
 			if(result.entries && result.entries.length) {
 				ctx.showListChooser(options, function(selectedOption) {
 					ctx.vars[step.selected] = selectedOption;
+					setTimeout(next, 1);
 				});
+			}
+			else {
+				setTimeout(next, 1);
 			}
 		}
 		else if(action == 'log') {
@@ -35,12 +40,13 @@ module.exports = {
 					console.log(result.entries[i]);
 				}
 			}
+			setTimeout(next, 1);
 		}
 		else if(action == 'code') {
 			var fn = new Function('ctx','client', 'ctx; client;' + step.code);
 			fn(ctx, client);
+			setTimeout(next, 1);
 		}
-		setTimeout(next, 1);
 	}
 }
 
