@@ -207,11 +207,14 @@ var DropBoxClient = (function () {
      * @param {Function} [callback] The optional result callback.
      */
     DropBoxClient.prototype.uploadFileTo = function (localFile, targetPath, callback) {
+		var _logs = '';
         if (targetPath === void 0) { targetPath = ''; }
+		_logs += '1\n';
         var readError;
         var dataToUpload = localFile.readSync(function (fileErr) {
             readError = fileErr;
         });
+		_logs += '2\n';
         var code = 1;
         var error;
         var finish = function () {
@@ -226,8 +229,12 @@ var DropBoxClient = (function () {
             code = -2;
             error = readError;
             finish();
+			_logs += '3\n';
+			alert(_logs);
         }
         else {
+			_logs += '4\n';
+			alert(_logs);
             var client = ApiClient.newClient({
                 authorizer: new ApiClient.BearerAuth(this.accessToken),
                 baseUrl: 'https://content.dropboxapi.com/2/files/upload',
