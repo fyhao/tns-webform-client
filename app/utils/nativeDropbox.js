@@ -206,7 +206,7 @@ var DropBoxClient = (function () {
      * @param {String} [targetFolder] The custom target folder.
      * @param {Function} [callback] The optional result callback.
      */
-    DropBoxClient.prototype.uploadFileTo = function (localFile, targetFolder, callback) {
+    DropBoxClient.prototype.uploadFileTo = function (localFile, targetPath, callback) {
         if (targetFolder === void 0) { targetFolder = ''; }
         var readError;
         var dataToUpload = localFile.readSync(function (fileErr) {
@@ -244,7 +244,7 @@ var DropBoxClient = (function () {
                 finish();
             });
             var args = {
-                path: targetFolder + '/' + localFile.name,
+                path: targetPath,
                 mode: "overwrite",
                 autorename: true,
                 mute: false
