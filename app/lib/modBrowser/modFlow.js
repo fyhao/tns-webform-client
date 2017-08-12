@@ -18,6 +18,7 @@ var FlowEngine = function(flow) {
 	
 	function enable_FLOW_ENGINE_CANCELLED() {
 		_FLOW_ENGINE_CANCELED = true;
+		console.log('enable_FLOW_ENGINE_CANCELLED called');
 	}
 	this.setContext = function(v) {
 		ctx = v;
@@ -88,7 +89,7 @@ var FlowEngine = function(flow) {
 		return step;
 	}
 	var processStep = function(step, next) {
-		//console.log('processStep ' + FLOW_ENGINE_CANCELED);
+		console.log('processStep _FLOW_ENGINE_CANCELED ' + _FLOW_ENGINE_CANCELED);
 		//console.log(JSON.stringify(step)); 
 		//console.log(JSON.stringify(ctx._vars));
 		if(_FLOW_ENGINE_CANCELED) {
