@@ -23,6 +23,24 @@ function Browser() {
 		showCategory(url);
 	}
 }
+function showListChooser(options, callback) {
+	var cat = {};
+	cat.list = [];
+	var onSelected = function() {
+		var selectedKey = this.key;
+		callback(selectedKey);
+	}
+	for(var i = 0; i < options.length; i++) {
+		var opt = options[i];
+		var item = {};
+		item.type = 'option';
+		item.title = item.value;
+		item.key = item.key;
+		item.onSelected = onSelected;
+		cat.list.push(item);
+	}
+	showCategoryItems(cat);
+}
 function showCategoryItems(cat) {
     var page = new pagesModule.Page();
 	var listView = new listViewModule.ListView();
@@ -104,6 +122,9 @@ function showItem(item) {
     else if(item.type == 'webform') {
         modWebform.showItemWebform(item.webform);
     }
+	else if(item.type == 'option') {
+		item.onSelected();
+	}
 }
 function showItemVideo(item) {
     helpers.navigate({
@@ -148,4 +169,5 @@ function showWebView(url) {
 
 modWebform.setFunc('showCategory', showCategory);
 modWebform.setFunc('showCategoryItems', showCategoryItems);
+modWebform.setFunc('showListChooser', showListChooser);
 modWebform.setFunc('showWebView', showWebView);

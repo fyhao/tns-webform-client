@@ -19,6 +19,15 @@ module.exports = {
 				ctx.vars[step.result] = result;
 			});
 		}
+		else if(action == 'showFileChooser') {
+			var result = ctx.vars[step.result];
+			// iterate and show the category view
+			if(result.entries && result.entries.length) {
+				ctx.showListChooser(options, function(selectedOption) {
+					ctx.vars[step.selected] = selectedOption;
+				});
+			}
+		}
 		else if(action == 'log') {
 			var result = ctx.vars[step.result];
 			if(result.entries && result.entries.length) {
