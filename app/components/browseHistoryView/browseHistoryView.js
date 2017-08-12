@@ -32,7 +32,7 @@ function loadHistory() {
             menuItems.push({
                 "title": "[" + item + "]",
                 "url" : item,
-                "icon": "\ue0dd"
+                "icon": "\ue903"
             },);
         }
         viewModel.set('menuItems', menuItems);
