@@ -1,13 +1,15 @@
-var observable = require("data/observable");
+Object.defineProperty(exports, "__esModule", { value: true });
+var observable = require("../../data/observable");
 var Cache = (function (_super) {
     __extends(Cache, _super);
     function Cache() {
-        _super.apply(this, arguments);
-        this.maxRequests = 5;
-        this._enabled = true;
-        this._pendingDownloads = {};
-        this._queue = [];
-        this._currentDownloads = 0;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.maxRequests = 5;
+        _this._enabled = true;
+        _this._pendingDownloads = {};
+        _this._queue = [];
+        _this._currentDownloads = 0;
+        return _this;
     }
     Cache.prototype.enableDownload = function () {
         if (this._enabled) {
@@ -134,8 +136,8 @@ var Cache = (function (_super) {
         var request = this._queue.pop();
         this._download(request);
     };
-    Cache.downloadedEvent = "downloaded";
     return Cache;
 }(observable.Observable));
+Cache.downloadedEvent = "downloaded";
 exports.Cache = Cache;
 //# sourceMappingURL=image-cache-common.js.map

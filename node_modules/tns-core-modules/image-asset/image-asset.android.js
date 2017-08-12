@@ -1,11 +1,13 @@
-var platform = require("platform");
+Object.defineProperty(exports, "__esModule", { value: true });
+var platform = require("../platform");
 var common = require("./image-asset-common");
 global.moduleMerge(common, exports);
 var ImageAsset = (function (_super) {
     __extends(ImageAsset, _super);
     function ImageAsset(asset) {
-        _super.call(this);
-        this.android = asset;
+        var _this = _super.call(this) || this;
+        _this.android = asset;
+        return _this;
     }
     ImageAsset.prototype.getImageAsync = function (callback) {
         var bitmapOptions = new android.graphics.BitmapFactory.Options();
