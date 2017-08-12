@@ -24,6 +24,9 @@ function Browser() {
 	}
 }
 function showCategoryItems(cat) {
+    var page = new pagesModule.Page();
+	var listView = new listViewModule.ListView();
+    page.content = listView;
 	listView.items = cat.list;
 	listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
 		if (!args1.view) {
@@ -72,13 +75,11 @@ function showCategoryItems(cat) {
 		util.showOptionDialog(options);
 	})
 	util.setRightNavButton(page, navButton);
+	
+	helpers.navigate(function(){return page;});
 }
 function showCategory(url) {
-    var page = new pagesModule.Page();
     var loadData = function() {
-        var listView = new listViewModule.ListView();
-        page.content = listView;
-    
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
@@ -86,9 +87,7 @@ function showCategory(url) {
             }
         });
     }
-    
     loadData();
-    helpers.navigate(function(){return page;});
 }
 function showItem(item) {
     if(item.type == 'url') {
