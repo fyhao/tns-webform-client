@@ -29,8 +29,8 @@ module.exports = {
 				for(var i = 0; i < result.entries.length; i++) {
 					var entry = result.entries[i];
 					var opt = {};
-					opt.text = entry.value;
-					opt.key = entry.key;
+					opt.text = entry.name;
+					opt.key = entry;
 					opt.func = function() {
 						ctx.vars[step.selected] = this.key;
 					}
