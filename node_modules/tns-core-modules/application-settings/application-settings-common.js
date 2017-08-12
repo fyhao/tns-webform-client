@@ -1,10 +1,11 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkKey = function (key) {
-    if ("string" !== typeof key) {
+    if (typeof key !== "string") {
         throw new Error("key: '" + key + "' must be a string");
     }
 };
 exports.ensureValidValue = function (value, valueType) {
-    if (valueType !== typeof value) {
+    if (typeof value !== valueType) {
         throw new Error("value: '" + value + "' must be a " + valueType);
     }
 };

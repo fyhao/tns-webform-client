@@ -1,8 +1,8 @@
-var enums = require("ui/enums");
-var color = require("color");
-var types = require("utils/types");
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = require("../../color");
+var animation_1 = require("../animation");
 function colorConverter(value) {
-    return new color.Color(value);
+    return new color_1.Color(value);
 }
 exports.colorConverter = colorConverter;
 function floatConverter(value) {
@@ -14,60 +14,7 @@ function fontSizeConverter(value) {
     return floatConverter(value);
 }
 exports.fontSizeConverter = fontSizeConverter;
-function textAlignConverter(value) {
-    switch (value) {
-        case enums.TextAlignment.left:
-        case enums.TextAlignment.center:
-        case enums.TextAlignment.right:
-            return value;
-        default:
-            throw new Error("CSS text-align \"" + value + "\" is not supported.");
-    }
-}
-exports.textAlignConverter = textAlignConverter;
-function textDecorationConverter(value) {
-    var values = (value + "").split(" ");
-    if (values.indexOf(enums.TextDecoration.none) !== -1 || values.indexOf(enums.TextDecoration.underline) !== -1 || values.indexOf(enums.TextDecoration.lineThrough) !== -1) {
-        return value;
-    }
-    else {
-        throw new Error("CSS text-decoration \"" + value + "\" is not supported.");
-    }
-}
-exports.textDecorationConverter = textDecorationConverter;
-function whiteSpaceConverter(value) {
-    switch (value) {
-        case enums.WhiteSpace.normal:
-        case enums.WhiteSpace.nowrap:
-            return value;
-        default:
-            throw new Error("CSS white-space \"" + value + "\" is not supported.");
-    }
-}
-exports.whiteSpaceConverter = whiteSpaceConverter;
-function textTransformConverter(value) {
-    switch (value) {
-        case enums.TextTransform.none:
-        case enums.TextTransform.uppercase:
-        case enums.TextTransform.lowercase:
-        case enums.TextTransform.capitalize:
-            return value;
-        default:
-            throw new Error("CSS text-transform \"" + value + "\" is not supported.");
-    }
-}
-exports.textTransformConverter = textTransformConverter;
 exports.numberConverter = parseFloat;
-function visibilityConverter(value) {
-    if (value.toLowerCase() === enums.Visibility.collapsed) {
-        return enums.Visibility.collapsed;
-    }
-    else if (value.toLowerCase() === enums.Visibility.collapse) {
-        return enums.Visibility.collapse;
-    }
-    return enums.Visibility.visible;
-}
-exports.visibilityConverter = visibilityConverter;
 function opacityConverter(value) {
     var result = parseFloat(value);
     result = Math.max(0.0, result);
@@ -80,8 +27,7 @@ function timeConverter(value) {
     if (value.indexOf("ms") === -1) {
         result = result * 1000;
     }
-    result = Math.max(0.0, result);
-    return result;
+    return Math.max(0.0, result);
 }
 exports.timeConverter = timeConverter;
 function bezieArgumentConverter(value) {
@@ -92,25 +38,25 @@ function bezieArgumentConverter(value) {
 }
 exports.bezieArgumentConverter = bezieArgumentConverter;
 function animationTimingFunctionConverter(value) {
-    var result = enums.AnimationCurve.ease;
+    var result = "ease";
     switch (value) {
         case "ease":
-            result = enums.AnimationCurve.ease;
+            result = "ease";
             break;
         case "linear":
-            result = enums.AnimationCurve.linear;
+            result = "linear";
             break;
         case "ease-in":
-            result = enums.AnimationCurve.easeIn;
+            result = "easeIn";
             break;
         case "ease-out":
-            result = enums.AnimationCurve.easeOut;
+            result = "easeOut";
             break;
         case "ease-in-out":
-            result = enums.AnimationCurve.easeInOut;
+            result = "easeInOut";
             break;
         case "spring":
-            result = enums.AnimationCurve.spring;
+            result = "spring";
             break;
         default:
             if (value.indexOf("cubic-bezier(") === 0) {
@@ -118,7 +64,7 @@ function animationTimingFunctionConverter(value) {
                 if (bezierArr.length !== 4) {
                     throw new Error("Invalid value for animation: " + value);
                 }
-                result = enums.AnimationCurve.cubicBezier(bezieArgumentConverter(bezierArr[0]), bezieArgumentConverter(bezierArr[1]), bezieArgumentConverter(bezierArr[2]), bezieArgumentConverter(bezierArr[3]));
+                result = new animation_1.CubicBezierAnimationCurve(bezieArgumentConverter(bezierArr[0]), bezieArgumentConverter(bezierArr[1]), bezieArgumentConverter(bezierArr[2]), bezieArgumentConverter(bezierArr[3]));
             }
             else {
                 throw new Error("Invalid value for animation: " + value);
@@ -134,7 +80,7 @@ function transformConverter(value) {
         operations[value] = value;
         return operations;
     }
-    else if (types.isString(value)) {
+    else if (typeof value === "string") {
         var operations = {};
         var operator = "";
         var pos = 0;

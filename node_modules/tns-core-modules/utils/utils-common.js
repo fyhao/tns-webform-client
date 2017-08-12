@@ -1,29 +1,7 @@
-var types = require("utils/types");
+Object.defineProperty(exports, "__esModule", { value: true });
+var types = require("./types");
 exports.RESOURCE_PREFIX = "res://";
-function copyFrom(source, target) {
-    if (types.isDefined(source) && types.isDefined(target)) {
-        var i;
-        var key;
-        var value;
-        var keys = Object.keys(source);
-        for (i = 0; i < keys.length; i++) {
-            key = keys[i];
-            value = source[key];
-            if (types.isDefined(value)) {
-                target[key] = value;
-            }
-        }
-    }
-}
-exports.copyFrom = copyFrom;
-function parseJSON(source) {
-    var src = source.trim();
-    if (src.lastIndexOf(")") === src.length - 1) {
-        return JSON.parse(src.substring(src.indexOf("(") + 1, src.lastIndexOf(")")));
-    }
-    return JSON.parse(src);
-}
-exports.parseJSON = parseJSON;
+exports.FILE_PREFIX = "file:///";
 function escapeRegexSymbols(source) {
     var escapeRegex = /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g;
     return source.replace(escapeRegex, "\\$&");
@@ -102,6 +80,20 @@ var layout;
         return text;
     }
     layout.measureSpecToString = measureSpecToString;
+    function round(value) {
+        var res = Math.floor(value + 0.5);
+        if (res !== 0) {
+            return res;
+        }
+        else if (value === 0) {
+            return 0;
+        }
+        else if (value > 0) {
+            return 1;
+        }
+        return -1;
+    }
+    layout.round = round;
 })(layout = exports.layout || (exports.layout = {}));
 function isFileOrResourcePath(path) {
     if (!types.isString(path)) {

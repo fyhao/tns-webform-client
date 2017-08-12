@@ -15,6 +15,7 @@ if (global.TNS_WEBPACK) {
     global.registerModule("ui/layouts/dock-layout", function () { return require("ui/layouts/dock-layout"); });
     global.registerModule("ui/layouts/grid-layout", function () { return require("ui/layouts/grid-layout"); });
     global.registerModule("ui/layouts/stack-layout", function () { return require("ui/layouts/stack-layout"); });
+    global.registerModule("ui/layouts/flexbox-layout", function () { return require("ui/layouts/flexbox-layout"); });
     global.registerModule("ui/list-picker", function () { return require("ui/list-picker"); });
     global.registerModule("ui/page", function () { return require("ui/page"); });
     global.registerModule("ui/placeholder", function () { return require("ui/placeholder"); });

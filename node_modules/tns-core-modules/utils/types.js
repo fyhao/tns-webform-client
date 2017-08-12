@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 function isString(value) {
     return typeof value === "string" || value instanceof String;
 }
@@ -25,7 +26,7 @@ function isObject(value) {
 }
 exports.isObject = isObject;
 function isUndefined(value) {
-    return typeof value === "undefined";
+    return value === undefined;
 }
 exports.isUndefined = isUndefined;
 function isDefined(value) {
@@ -33,7 +34,7 @@ function isDefined(value) {
 }
 exports.isDefined = isDefined;
 function isNullOrUndefined(value) {
-    return (typeof value === "undefined") || (value === null);
+    return value === undefined || value === null;
 }
 exports.isNullOrUndefined = isNullOrUndefined;
 function verifyCallback(value) {

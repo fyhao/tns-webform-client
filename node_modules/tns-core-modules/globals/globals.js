@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 require("./decorators");
 global.__extends = global.__extends || function (d, b) {
     for (var p in b) {
@@ -93,14 +94,9 @@ else {
     registerOnGlobalContext("FormData", "xhr");
     registerOnGlobalContext("fetch", "fetch");
 }
-var platform = require("platform");
-var consoleModule = require("console");
-var c = new consoleModule.Console();
-if (platform.device.os === platform.platformNames.android) {
-    global.console = c;
-}
-else if (platform.device.os === platform.platformNames.ios) {
-    global.console.dump = function (args) { c.dump(args); };
+if (global.android || global.__snapshot) {
+    var consoleModule = require("console");
+    global.console = new consoleModule.Console();
 }
 function Deprecated(target, key, descriptor) {
     if (descriptor) {
@@ -108,7 +104,7 @@ function Deprecated(target, key, descriptor) {
         descriptor.value = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             console.log(key + " is deprecated");
             return originalMethod.apply(this, args);
@@ -128,7 +124,7 @@ function Experimental(target, key, descriptor) {
         descriptor.value = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             console.log(key + " is experimental");
             return originalMethod.apply(this, args);

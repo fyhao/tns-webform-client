@@ -1,22 +1,19 @@
-var common = require("./utils-common");
-var enums = require("ui/enums");
-global.moduleMerge(common, exports);
-var trace;
-function ensureTrace() {
-    if (!trace) {
-        trace = require("trace");
-    }
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+var trace_1 = require("../trace");
+__export(require("./utils-common"));
+var application_1 = require("../application");
 var layout;
 (function (layout) {
-    var density = -1;
-    var metrics;
+    var density;
     var MODE_SHIFT = 30;
     var MODE_MASK = 0x3 << MODE_SHIFT;
-    var sdkVersion = -1;
+    var sdkVersion;
     var useOldMeasureSpec = false;
     function makeMeasureSpec(size, mode) {
-        if (sdkVersion === -1) {
+        if (sdkVersion === undefined) {
             sdkVersion = ad.getApplicationContext().getApplicationInfo().targetSdkVersion;
             useOldMeasureSpec = sdkVersion <= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
         }
@@ -26,16 +23,9 @@ var layout;
         return (size & ~MODE_MASK) | (mode & MODE_MASK);
     }
     layout.makeMeasureSpec = makeMeasureSpec;
-    function getDisplayMetrics() {
-        if (!metrics) {
-            metrics = ad.getApplicationContext().getResources().getDisplayMetrics();
-        }
-        return metrics;
-    }
-    layout.getDisplayMetrics = getDisplayMetrics;
     function getDisplayDensity() {
-        if (density === -1) {
-            density = getDisplayMetrics().density;
+        if (density === undefined) {
+            density = ad.getResources().getDisplayMetrics().density;
         }
         return density;
     }
@@ -48,116 +38,49 @@ var layout;
         return value / getDisplayDensity();
     }
     layout.toDeviceIndependentPixels = toDeviceIndependentPixels;
+    function measureNativeView(nativeView, width, widthMode, height, heightMode) {
+        var view = nativeView;
+        view.measure(makeMeasureSpec(width, widthMode), makeMeasureSpec(height, heightMode));
+        return {
+            width: view.getMeasuredWidth(),
+            height: view.getMeasuredHeight()
+        };
+    }
+    layout.measureNativeView = measureNativeView;
 })(layout = exports.layout || (exports.layout = {}));
 var ad;
 (function (ad) {
-    function setTextDecoration(view, value) {
-        var flags = 0;
-        var values = (value + "").split(" ");
-        if (values.indexOf(enums.TextDecoration.underline) !== -1) {
-            flags = flags | android.graphics.Paint.UNDERLINE_TEXT_FLAG;
-        }
-        if (values.indexOf(enums.TextDecoration.lineThrough) !== -1) {
-            flags = flags | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG;
-        }
-        if (values.indexOf(enums.TextDecoration.none) === -1) {
-            view.setPaintFlags(flags);
-        }
-        else {
-            view.setPaintFlags(0);
-        }
-    }
-    ad.setTextDecoration = setTextDecoration;
-    function setTextTransform(v, value) {
-        var view = v._nativeView;
-        var str = view.getText() + "";
-        var result = getTransformedString(value, view, str);
-        if (v.formattedText) {
-            for (var i = 0; i < v.formattedText.spans.length; i++) {
-                var span = v.formattedText.spans.getItem(i);
-                span.text = getTransformedString(value, view, span.text);
-            }
-        }
-        else {
-            view.setText(result);
-        }
-    }
-    ad.setTextTransform = setTextTransform;
-    function getTransformedString(textTransform, view, stringToTransform) {
-        var result;
-        switch (textTransform) {
-            case enums.TextTransform.none:
-            default:
-                result = view["originalString"] || stringToTransform;
-                if (view["transformationMethod"]) {
-                    view.setTransformationMethod(view["transformationMethod"]);
-                }
-                break;
-            case enums.TextTransform.uppercase:
-                view.setTransformationMethod(null);
-                result = stringToTransform.toUpperCase();
-                break;
-            case enums.TextTransform.lowercase:
-                view.setTransformationMethod(null);
-                result = stringToTransform.toLowerCase();
-                break;
-            case enums.TextTransform.capitalize:
-                view.setTransformationMethod(null);
-                result = getCapitalizedString(stringToTransform);
-                break;
-        }
-        if (!view["originalString"]) {
-            view["originalString"] = stringToTransform;
-            view["transformationMethod"] = view.getTransformationMethod();
-        }
-        return result;
-    }
-    ad.getTransformedString = getTransformedString;
-    function getCapitalizedString(str) {
-        var words = str.split(" ");
-        var newWords = [];
-        for (var i = 0; i < words.length; i++) {
-            var word = words[i].toLowerCase();
-            newWords.push(word.substr(0, 1).toUpperCase() + word.substring(1));
-        }
-        return newWords.join(" ");
-    }
-    function setWhiteSpace(view, value) {
-        view.setSingleLine(value === enums.WhiteSpace.nowrap);
-        view.setEllipsize(value === enums.WhiteSpace.nowrap ? android.text.TextUtils.TruncateAt.END : null);
-    }
-    ad.setWhiteSpace = setWhiteSpace;
-    var nativeApp;
-    function getApplication() {
-        if (!nativeApp) {
-            if (com.tns.NativeScriptApplication) {
-                nativeApp = com.tns.NativeScriptApplication.getInstance();
-            }
-            if (!nativeApp) {
-                var application = require("application");
-                nativeApp = application.android.nativeApp;
-                if (!nativeApp) {
-                    var clazz = java.lang.Class.forName("android.app.ActivityThread");
-                    if (clazz) {
-                        var method = clazz.getMethod("currentApplication", null);
-                        if (method) {
-                            nativeApp = method.invoke(null, null);
-                        }
-                    }
-                }
-            }
-            if (!nativeApp) {
-                throw new Error("Failed to retrieve native Android Application object. If you have a custom android.app.Application type implemented make sure that you've called the '<application-module>.android.init' method.");
-            }
-        }
-        return nativeApp;
-    }
-    ad.getApplication = getApplication;
+    var application;
+    var applicationContext;
+    var contextResources;
+    var packageName;
     function getApplicationContext() {
-        var app = getApplication();
-        return app.getApplicationContext();
+        if (!applicationContext) {
+            applicationContext = getApplication().getApplicationContext();
+        }
+        return applicationContext;
     }
     ad.getApplicationContext = getApplicationContext;
+    function getApplication() {
+        if (!application) {
+            application = application_1.getNativeApplication();
+        }
+        return application;
+    }
+    ad.getApplication = getApplication;
+    function getResources() {
+        if (!contextResources) {
+            contextResources = getApplication().getResources();
+        }
+        return contextResources;
+    }
+    ad.getResources = getResources;
+    function getPackageName() {
+        if (!packageName) {
+            packageName = getApplicationContext().getPackageName();
+        }
+        return packageName;
+    }
     var inputMethodManager;
     function getInputMethodManager() {
         if (!inputMethodManager) {
@@ -167,16 +90,24 @@ var ad;
     }
     ad.getInputMethodManager = getInputMethodManager;
     function showSoftInput(nativeView) {
-        var imm = getInputMethodManager();
-        if (imm && nativeView instanceof android.view.View) {
-            imm.showSoftInput(nativeView, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+        var inputManager = getInputMethodManager();
+        if (inputManager && nativeView instanceof android.view.View) {
+            inputManager.showSoftInput(nativeView, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
         }
     }
     ad.showSoftInput = showSoftInput;
     function dismissSoftInput(nativeView) {
-        var imm = getInputMethodManager();
-        if (imm && nativeView instanceof android.view.View) {
-            imm.hideSoftInputFromWindow(nativeView.getWindowToken(), 0);
+        var inputManager = getInputMethodManager();
+        var windowToken;
+        if (nativeView instanceof android.view.View) {
+            windowToken = nativeView.getWindowToken();
+        }
+        else if (application_1.android.foregroundActivity instanceof android.app.Activity) {
+            var decorView = application_1.android.foregroundActivity.getWindow().getDecorView();
+            windowToken = decorView ? decorView.getWindowToken() : null;
+        }
+        if (inputManager && windowToken) {
+            inputManager.hideSoftInputFromWindow(windowToken, 0);
         }
     }
     ad.dismissSoftInput = dismissSoftInput;
@@ -184,7 +115,7 @@ var ad;
     (function (collections) {
         function stringArrayToStringSet(str) {
             var hashSet = new java.util.HashSet();
-            if ("undefined" !== typeof str) {
+            if (str !== undefined) {
                 for (var element in str) {
                     hashSet.add('' + str[element]);
                 }
@@ -194,7 +125,7 @@ var ad;
         collections.stringArrayToStringSet = stringArrayToStringSet;
         function stringSetToStringArray(stringSet) {
             var arr = [];
-            if ("undefined" !== typeof stringSet) {
+            if (stringSet !== undefined) {
                 var it = stringSet.iterator();
                 while (it.hasNext()) {
                     var element = '' + it.next();
@@ -218,8 +149,8 @@ var ad;
         }
         resources_1.getStringId = getStringId;
         function getId(name) {
-            var resources = getApplicationContext().getResources();
-            var packageName = getApplicationContext().getPackageName();
+            var resources = getResources();
+            var packageName = getPackageName();
             var uri = packageName + name;
             return resources.getIdentifier(uri, null, null);
         }
@@ -245,8 +176,7 @@ var ad;
                 }
             }
             catch (ex) {
-                ensureTrace();
-                trace.write("Cannot get pallete color: " + name, trace.categories.Error, trace.messageType.error);
+                trace_1.write("Cannot get pallete color: " + name, trace_1.categories.Error, trace_1.messageType.error);
             }
             attrCache.set(name, result);
             return result;
@@ -266,8 +196,7 @@ function openUrl(location) {
         context.startActivity(intent);
     }
     catch (e) {
-        ensureTrace();
-        trace.write("Error in OpenURL", trace.categories.Error, trace.messageType.error);
+        trace_1.write("Error in OpenURL", trace_1.categories.Error, trace_1.messageType.error);
         return false;
     }
     return true;
