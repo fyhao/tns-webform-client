@@ -92,7 +92,7 @@ var showItemWebform = function(item, opts) {
 					_funcs['showCategory'](json.redirectUrl);
 				}
 				if(json.closewin) {
-					topmost.goBack();
+					helper.goBack();
 				}
 				
 				//#47 submit callback level
