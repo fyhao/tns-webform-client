@@ -1,8 +1,8 @@
 "use strict";
 var ApiClient = require('nativescript-apiclient');
 var Enumerable = require('nativescript-enumerable');
-/**
 var TypeUtils = require('utils/types');
+/**
  * List of entry types.
  */
 (function (EntryType) {
