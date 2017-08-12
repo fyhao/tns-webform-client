@@ -89,7 +89,7 @@ var FlowEngine = function(flow) {
 		return step;
 	}
 	var processStep = function(step, next) {
-		console.log('processStep _FLOW_ENGINE_CANCELED ' + _FLOW_ENGINE_CANCELED);
+		//console.log('processStep _FLOW_ENGINE_CANCELED ' + _FLOW_ENGINE_CANCELED);
 		//console.log(JSON.stringify(step)); 
 		//console.log(JSON.stringify(ctx._vars));
 		if(_FLOW_ENGINE_CANCELED) {
