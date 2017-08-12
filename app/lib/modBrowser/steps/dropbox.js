@@ -24,6 +24,12 @@ module.exports = {
 			var result = ctx.vars[step.result];
 			// iterate and show the category view
 			if(result.entries && result.entries.length) {
+				var options = [];
+				for(var i = 0; i < result.entries.length; i++) {
+					var entry = result.entries[i];
+					var opt = {key:entry,value:entry.name};
+					options.push(opt);
+				}
 				ctx.showListChooser(options, function(selectedOption) {
 					ctx.vars[step.selected] = selectedOption;
 					setTimeout(next, 1);
