@@ -8,9 +8,10 @@ module.exports = {
 			opt.text = step.options[i];
 			opt.func = function() {
 				ctx.vars[step.result] = this.text;
+				setTimeout(next, 1);
 			}
 			options.push(opt);
 		}
-		util.showOptionDialog(options, {done:next});
+		util.showOptionDialog(options);
 	}
 }

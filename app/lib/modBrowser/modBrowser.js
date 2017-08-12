@@ -23,89 +23,71 @@ function Browser() {
 		showCategory(url);
 	}
 }
-function showListChooser(options, callback) {
-	var cat = {};
-	cat.list = [];
-	var onSelected = function() {
-		var selectedKey = this.key;
-		callback(selectedKey);
-	}
-	for(var i = 0; i < options.length; i++) {
-		var opt = options[i];
-		var item = {};
-		item.type = 'option';
-		item.title = opt.value;
-		item.key = opt.key;
-		item.onSelected = onSelected;
-		cat.list.push(item);
-	}
-	showCategoryItems(cat);
-}
-function showCategoryItems(cat) {
-    var page = new pagesModule.Page();
-	var listView = new listViewModule.ListView();
-    page.content = listView;
-	listView.items = cat.list;
-	listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
-		if (!args1.view) {
-			// Create label if it is not already created.
-			args1.view = new labelModule.Label();
-			args1.view.height = 44;
-		}
-		args1.view.cat = cat.list[args1.index];
-		args1.view.text = cat.list[args1.index].title;
 
-	});
-	listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
-		var tappedItemIndex = args2.index;
-		var tappedItemView = args2.view;
-		var item = tappedItemView.cat;
-		showItem(item);
-	});
-	var customMenus = cat.customMenus;
-	var options = [];
-	if(customMenus && customMenus.length) {
-		for(var i = customMenus.length - 1; i >= 0; i--) {
-			var menu = customMenus[i];
-			var option = {
-				'id' : 'menu_' + i,
-				'text' : menu.title,
-				'menu' : menu,
-				'func' : function() {
-					if(this.menu.url) {
-						showWebView(this.menu.url);
-					}
-					if(this.menu.requesturl) {
-						showCategory(this.menu.requesturl);
-					}
-					if(this.menu.webform) {
-						modWebform.showItemWebform(this.menu.webform);
-					}
-				}
-			};
-			options.splice(0,0,option);
-		}
-	}
-	var navButton = new actionBarModule.NavigationButton();
-	navButton.text = '[ ]'
-	navButton.height = 44;
-	navButton.on(buttonModule.Button.tapEvent, function() {
-		util.showOptionDialog(options);
-	})
-	util.setRightNavButton(page, navButton);
-	
-	helpers.navigate(function(){return page;});
-}
 function showCategory(url) {
+    var page = new pagesModule.Page();
     var loadData = function() {
+        var listView = new listViewModule.ListView();
+        page.content = listView;
+    
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
-                showCategoryItems(cat);
+                
+                listView.items = cat.list;
+                listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
+                    if (!args1.view) {
+                        // Create label if it is not already created.
+                        args1.view = new labelModule.Label();
+                        args1.view.height = 44;
+                    }
+                    args1.view.cat = cat.list[args1.index];
+                    args1.view.text = cat.list[args1.index].title;
+
+                });
+                listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
+                    var tappedItemIndex = args2.index;
+                    var tappedItemView = args2.view;
+                    var item = tappedItemView.cat;
+                    showItem(item);
+                });
+				var customMenus = cat.customMenus;
+				var options = [];
+                if(customMenus && customMenus.length) {
+                    for(var i = customMenus.length - 1; i >= 0; i--) {
+                        var menu = customMenus[i];
+                        var option = {
+                            'id' : 'menu_' + i,
+                            'text' : menu.title,
+                            'menu' : menu,
+                            'func' : function() {
+                                if(this.menu.url) {
+                                    showWebView(this.menu.url);
+                                }
+                                if(this.menu.requesturl) {
+                                    showCategory(this.menu.requesturl);
+                                }
+                                if(this.menu.webform) {
+                                    modWebform.showItemWebform(this.menu.webform);
+                                }
+                            }
+                        };
+                        options.splice(0,0,option);
+                    }
+                }
+                var navButton = new actionBarModule.NavigationButton();
+                navButton.text = '[ ]'
+                navButton.height = 44;
+                navButton.on(buttonModule.Button.tapEvent, function() {
+                    util.showOptionDialog(options);
+                })
+                util.setRightNavButton(page, navButton);
             }
         });
     }
+    
     loadData();
+    helpers.navigate(function(){return page;});
 }
 function showItem(item) {
     if(item.type == 'url') {
@@ -122,11 +104,6 @@ function showItem(item) {
     else if(item.type == 'webform') {
         modWebform.showItemWebform(item.webform);
     }
-	else if(item.type == 'option') {
-		item.onSelected();
-		var frame = require('ui/frame');
-		frame.topmost().goBack();
-	}
 }
 function showItemVideo(item) {
     helpers.navigate({
@@ -170,6 +147,4 @@ function showWebView(url) {
 }
 
 modWebform.setFunc('showCategory', showCategory);
-modWebform.setFunc('showCategoryItems', showCategoryItems);
-modWebform.setFunc('showListChooser', showListChooser);
 modWebform.setFunc('showWebView', showWebView);

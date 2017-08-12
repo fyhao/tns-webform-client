@@ -149,7 +149,6 @@ var util = {
 					if(option.func) option.func();
 				}
 			}
-			if(opts.done) opts.done();
 		});
 	}
 	,

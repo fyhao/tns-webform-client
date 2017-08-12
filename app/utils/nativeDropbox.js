@@ -1,8 +1,8 @@
 "use strict";
 var ApiClient = require('nativescript-apiclient');
 var Enumerable = require('nativescript-enumerable');
-var TypeUtils = require('utils/types');
 /**
+var TypeUtils = require('utils/types');
  * List of entry types.
  */
 (function (EntryType) {
@@ -206,7 +206,12 @@ var DropBoxClient = (function () {
      * @param {String} [targetFolder] The custom target folder.
      * @param {Function} [callback] The optional result callback.
      */
-    DropBoxClient.prototype.uploadFileTo = function (dataToUpload, targetPath, callback) {
+    DropBoxClient.prototype.uploadFileTo = function (localFile, targetFolder, callback) {
+        if (targetFolder === void 0) { targetFolder = ''; }
+        var readError;
+        var dataToUpload = localFile.readSync(function (fileErr) {
+            readError = fileErr;
+        });
         var code = 1;
         var error;
         var finish = function () {
@@ -217,35 +222,41 @@ var DropBoxClient = (function () {
                 });
             }
         };
-		var client = ApiClient.newClient({
-			authorizer: new ApiClient.BearerAuth(this.accessToken),
-			baseUrl: 'https://content.dropboxapi.com/2/files/upload',
-		});
-		client.succeededRequest(function () {
-			code = 0;
-		}).clientOrServerError(function (ulResult) {
-			code = -2;
-			error = 'Server returned code: ' + ulResult.code + ' => ' + ulResult.getString();
-		}).error(function (ulCtx) {
-			code = -1;
-			error = ulCtx.error;
-		}).complete(function () {
-			finish();
-		});
-		var args = {
-			path: targetPath,
-			mode: "overwrite",
-			autorename: true,
-			mute: false
-		};
-		client.post({
-			content: dataToUpload,
-			type: ApiClient.HttpRequestType.Binary,
-			headers: {
-				'Dropbox-API-Arg': JSON.stringify(args),
-			}
-		});
-        
+        if (!TypeUtils.isNullOrUndefined(readError)) {
+            code = -2;
+            error = readError;
+            finish();
+        }
+        else {
+            var client = ApiClient.newClient({
+                authorizer: new ApiClient.BearerAuth(this.accessToken),
+                baseUrl: 'https://content.dropboxapi.com/2/files/upload',
+            });
+            client.succeededRequest(function () {
+                code = 0;
+            }).clientOrServerError(function (ulResult) {
+                code = -2;
+                error = 'Server returned code: ' + ulResult.code + ' => ' + ulResult.getString();
+            }).error(function (ulCtx) {
+                code = -1;
+                error = ulCtx.error;
+            }).complete(function () {
+                finish();
+            });
+            var args = {
+                path: targetFolder + '/' + localFile.name,
+                mode: "add",
+                autorename: true,
+                mute: false
+            };
+            client.post({
+                content: dataToUpload,
+                type: ApiClient.HttpRequestType.Binary,
+                headers: {
+                    'Dropbox-API-Arg': JSON.stringify(args),
+                }
+            });
+        }
     };
     return DropBoxClient;
 }());
