@@ -23,7 +23,56 @@ function Browser() {
 		showCategory(url);
 	}
 }
+function showCategoryItems(cat) {
+	listView.items = cat.list;
+	listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
+		if (!args1.view) {
+			// Create label if it is not already created.
+			args1.view = new labelModule.Label();
+			args1.view.height = 44;
+		}
+		args1.view.cat = cat.list[args1.index];
+		args1.view.text = cat.list[args1.index].title;
 
+	});
+	listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
+		var tappedItemIndex = args2.index;
+		var tappedItemView = args2.view;
+		var item = tappedItemView.cat;
+		showItem(item);
+	});
+	var customMenus = cat.customMenus;
+	var options = [];
+	if(customMenus && customMenus.length) {
+		for(var i = customMenus.length - 1; i >= 0; i--) {
+			var menu = customMenus[i];
+			var option = {
+				'id' : 'menu_' + i,
+				'text' : menu.title,
+				'menu' : menu,
+				'func' : function() {
+					if(this.menu.url) {
+						showWebView(this.menu.url);
+					}
+					if(this.menu.requesturl) {
+						showCategory(this.menu.requesturl);
+					}
+					if(this.menu.webform) {
+						modWebform.showItemWebform(this.menu.webform);
+					}
+				}
+			};
+			options.splice(0,0,option);
+		}
+	}
+	var navButton = new actionBarModule.NavigationButton();
+	navButton.text = '[ ]'
+	navButton.height = 44;
+	navButton.on(buttonModule.Button.tapEvent, function() {
+		util.showOptionDialog(options);
+	})
+	util.setRightNavButton(page, navButton);
+}
 function showCategory(url) {
     var page = new pagesModule.Page();
     var loadData = function() {
@@ -33,55 +82,7 @@ function showCategory(url) {
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
-                
-                listView.items = cat.list;
-                listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
-                    if (!args1.view) {
-                        // Create label if it is not already created.
-                        args1.view = new labelModule.Label();
-                        args1.view.height = 44;
-                    }
-                    args1.view.cat = cat.list[args1.index];
-                    args1.view.text = cat.list[args1.index].title;
-
-                });
-                listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
-                    var tappedItemIndex = args2.index;
-                    var tappedItemView = args2.view;
-                    var item = tappedItemView.cat;
-                    showItem(item);
-                });
-				var customMenus = cat.customMenus;
-				var options = [];
-                if(customMenus && customMenus.length) {
-                    for(var i = customMenus.length - 1; i >= 0; i--) {
-                        var menu = customMenus[i];
-                        var option = {
-                            'id' : 'menu_' + i,
-                            'text' : menu.title,
-                            'menu' : menu,
-                            'func' : function() {
-                                if(this.menu.url) {
-                                    showWebView(this.menu.url);
-                                }
-                                if(this.menu.requesturl) {
-                                    showCategory(this.menu.requesturl);
-                                }
-                                if(this.menu.webform) {
-                                    modWebform.showItemWebform(this.menu.webform);
-                                }
-                            }
-                        };
-                        options.splice(0,0,option);
-                    }
-                }
-                var navButton = new actionBarModule.NavigationButton();
-                navButton.text = '[ ]'
-                navButton.height = 44;
-                navButton.on(buttonModule.Button.tapEvent, function() {
-                    util.showOptionDialog(options);
-                })
-                util.setRightNavButton(page, navButton);
+                showCategoryItems(cat);
             }
         });
     }
@@ -147,4 +148,5 @@ function showWebView(url) {
 }
 
 modWebform.setFunc('showCategory', showCategory);
+modWebform.setFunc('showCategoryItems', showCategoryItems);
 modWebform.setFunc('showWebView', showWebView);
