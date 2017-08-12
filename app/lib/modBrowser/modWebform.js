@@ -118,11 +118,6 @@ var showItemWebform = function(item, opts) {
     	modWidget.init(param, {wv:wv});
 	}
 	
-	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
-		modFlow.FLOW_ENGINE_CANCELED = true;
-		console.log('FLOW engine canceled')
-	})
-  
     var _interceptCallsFromWebview = function (args) {
         var request = args.url;
         var reqMsgProtocol = 'js2ios:';
@@ -270,6 +265,13 @@ var showItemWebform = function(item, opts) {
 			ctx.vars[i] = opts.vars[i];
 		}
 	}
+	
+	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
+		modFlow.FLOW_ENGINE_CANCELED = true;
+		ctx.enable_FLOW_ENGINE_CANCELLED();
+		console.log('FLOW engine canceled')
+	})
+  
 }
 
 module.exports.showItemWebform = showItemWebform;

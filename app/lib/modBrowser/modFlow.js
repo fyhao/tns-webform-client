@@ -19,6 +19,7 @@ var FlowEngine = function(flow) {
 		ctx = v;
 		wv = ctx.wv;
 		item = ctx.item;
+		ctx.enable_FLOW_ENGINE_CANCELLED = enable_FLOW_ENGINE_CANCELLED;
 		return this;
 	}
 	this.setInputVars = function(_vars) {
@@ -28,6 +29,9 @@ var FlowEngine = function(flow) {
 			vars[i] = v[i];
 		}
 		return this;
+	}
+	function enable_FLOW_ENGINE_CANCELLED() {
+		FLOW_ENGINE_CANCELED = true;
 	}
 	this.flow = util.clone(flow);
 	this.canceled = false;
