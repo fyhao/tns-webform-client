@@ -12,7 +12,6 @@
   "dependencies": {
    "nativescript-apiclient": "^1.12.9",
 	"nativescript-enumerable": "^3.4.0",
-	"nativescript-dev-typescript": "^0.5.0",
     "nativescript-background-http": "3.0.0",
     "nativescript-barcodescanner": "^2.5.4",
     "nativescript-camera": "^3.0.0",
