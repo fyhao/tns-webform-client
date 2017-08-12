@@ -34,3 +34,44 @@ module.exports = {
 		setTimeout(next, 1);
 	}
 }
+
+/*
+var path = '/xxx/';
+client.listFolder(path, function (result) {
+	var logs = '';
+	console.log('dropbox listFolder result: ');
+	console.dir(result);
+	if(result.entries && result.entries.length) {
+		for(var i = 0; i < result.entries.length; i++) {
+			console.log(result.entries[i]);
+			var entry = result.entries[i];
+			//logs += entry.name + '\n';
+		}
+	}
+	//alert(logs);
+	var entry = findEntryByName(result.entries, "xxx.txt");
+	entry.download(function(res) {
+		var localFile = res.localFile;
+		localFile.readText().then(function(content) {
+			var newContent = content + '\nWritten by nativescript:' + new Date().toString() + '\n';
+			localFile.writeText(newContent).then(function() {
+				client.uploadFileTo(newContent, '/xxx/xxx.txt', function(writeRes) {
+					alert(JSON.stringify(writeRes));
+				});
+			});
+		});
+	});
+});
+
+var findEntryByName = function(entries, name) {
+	if(entries && entries.length) {
+		for(var i = 0; i < entries.length; i++) {
+			var entry = entries[i];
+			if(entry.name == name) {
+				return entry;
+			}
+		}
+	}
+	return null;
+}
+*/
