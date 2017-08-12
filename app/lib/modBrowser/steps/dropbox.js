@@ -33,11 +33,10 @@ module.exports = {
 					opt.key = entry.key;
 					opt.func = function() {
 						ctx.vars[step.selected] = this.key;
-						setTimeout(next, 1);
 					}
 					options.push(opt);
 				}
-				util.showOptionDialog(options);
+				util.showOptionDialog(options, {done:next});
 			}
 			else {
 				setTimeout(next, 1);
