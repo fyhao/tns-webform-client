@@ -234,13 +234,15 @@ var DropBoxClient = (function () {
         }
         else {
 			_logs += '4\n';
-			alert(_logs);
             var client = ApiClient.newClient({
                 authorizer: new ApiClient.BearerAuth(this.accessToken),
                 baseUrl: 'https://content.dropboxapi.com/2/files/upload',
             });
+			_logs += '5\n';
             client.succeededRequest(function () {
                 code = 0;
+				_logs += '7\n';
+				alert(_logs);
             }).clientOrServerError(function (ulResult) {
                 code = -2;
                 error = 'Server returned code: ' + ulResult.code + ' => ' + ulResult.getString();
@@ -263,6 +265,7 @@ var DropBoxClient = (function () {
                     'Dropbox-API-Arg': JSON.stringify(args),
                 }
             });
+			_logs += '6\n';
         }
     };
     return DropBoxClient;
