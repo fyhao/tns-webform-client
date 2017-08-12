@@ -27,13 +27,16 @@ module.exports = {
 				var options = [];
 				for(var i = 0; i < result.entries.length; i++) {
 					var entry = result.entries[i];
-					var opt = {key:entry,value:entry.name};
+					var opt = {};
+					opt.text = entry.value;
+					opt.key = entry.key;
+					opt.func = function() {
+						ctx.vars[step.selected] = this.key;
+						setTimeout(next, 1);
+					}
 					options.push(opt);
 				}
-				ctx.showListChooser(options, function(selectedOption) {
-					ctx.vars[step.selected] = selectedOption;
-					setTimeout(next, 1);
-				});
+				util.showOptionDialog(options);
 			}
 			else {
 				setTimeout(next, 1);
