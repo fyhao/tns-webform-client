@@ -1,6 +1,7 @@
-var types = require("utils/types");
-var knownColors = require("color/known-colors");
-var AMP = "#";
+Object.defineProperty(exports, "__esModule", { value: true });
+var types = require("../utils/types");
+var knownColors = require("./known-colors");
+var SHARP = "#";
 var HEX_REGEX = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)|(^#[0-9A-F]{8}$)/i;
 var Color = (function () {
     function Color() {
@@ -11,63 +12,52 @@ var Color = (function () {
                     this._argb = argbFromRgbOrRgba(arg);
                 }
                 else if (knownColors.isKnownName(arg)) {
-                    this._hex = knownColors.getKnownColor(arg);
+                    var hex = knownColors.getKnownColor(arg);
                     this._name = arg;
-                    this._argb = this._argbFromString(this._hex);
+                    this._argb = this._argbFromString(hex);
+                }
+                else if (HEX_REGEX.test(arg)) {
+                    var hex = this._normalizeHex(arg);
+                    this._argb = this._argbFromString(hex);
                 }
                 else {
-                    this._hex = this._normalizeHex(arg);
-                    this._argb = this._argbFromString(this._hex);
+                    throw new Error("Invalid color: " + arg);
                 }
             }
             else if (types.isNumber(arg)) {
-                this._argb = arg;
+                this._argb = arg >>> 0;
             }
             else {
                 throw new Error("Expected 1 or 4 constructor parameters.");
             }
-            this._parseComponents();
-            if (!this._hex) {
-                this._hex = this._buildHex();
-            }
         }
         else if (arguments.length === 4) {
-            this._a = arguments[0];
-            this._r = arguments[1];
-            this._g = arguments[2];
-            this._b = arguments[3];
-            this._buildArgb();
-            this._hex = this._buildHex();
+            this._argb = (arguments[0] & 0xFF) * 0x01000000
+                + (arguments[1] & 0xFF) * 0x00010000
+                + (arguments[2] & 0xFF) * 0x00000100
+                + (arguments[3] & 0xFF) * 0x00000001;
         }
         else {
             throw new Error("Expected 1 or 4 constructor parameters.");
         }
     }
     Object.defineProperty(Color.prototype, "a", {
-        get: function () {
-            return this._a;
-        },
+        get: function () { return (this._argb / 0x01000000) & 0xFF; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Color.prototype, "r", {
-        get: function () {
-            return this._r;
-        },
+        get: function () { return (this._argb / 0x00010000) & 0xFF; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Color.prototype, "g", {
-        get: function () {
-            return this._g;
-        },
+        get: function () { return (this._argb / 0x00000100) & 0xFF; },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Color.prototype, "b", {
-        get: function () {
-            return this._b;
-        },
+        get: function () { return (this._argb / 0x00000001) & 0xFF; },
         enumerable: true,
         configurable: true
     });
@@ -80,7 +70,12 @@ var Color = (function () {
     });
     Object.defineProperty(Color.prototype, "hex", {
         get: function () {
-            return this._hex;
+            if (this.a === 0xFF) {
+                return ("#" + this._componentToHex(this.r) + this._componentToHex(this.g) + this._componentToHex(this.b)).toUpperCase();
+            }
+            else {
+                return ("#" + this._componentToHex(this.a) + this._componentToHex(this.r) + this._componentToHex(this.g) + this._componentToHex(this.b)).toUpperCase();
+            }
         },
         enumerable: true,
         configurable: true
@@ -107,10 +102,23 @@ var Color = (function () {
         configurable: true
     });
     Color.prototype._argbFromString = function (hex) {
-        return undefined;
+        if (hex.charAt(0) === "#") {
+            hex = hex.substr(1);
+        }
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        else if (hex.length === 4) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+        }
+        var intVal = parseInt(hex, 16);
+        if (hex.length === 6) {
+            intVal = (intVal & 0x00FFFFFF) + 0xFF000000;
+        }
+        return intVal;
     };
     Color.prototype.equals = function (value) {
-        return this.argb === value.argb;
+        return value && this.argb === value.argb;
     };
     Color.equals = function (value1, value2) {
         if (!value1 && !value2) {
@@ -133,9 +141,6 @@ var Color = (function () {
         }
         return HEX_REGEX.test(value) || isRgbOrRgba(value);
     };
-    Color.prototype._buildHex = function () {
-        return AMP + this._componentToHex(this._a) + this._componentToHex(this._r) + this._componentToHex(this._g) + this._componentToHex(this._b);
-    };
     Color.prototype._componentToHex = function (component) {
         var hex = component.toString(16);
         if (hex.length === 1) {
@@ -143,20 +148,8 @@ var Color = (function () {
         }
         return hex;
     };
-    Color.prototype._parseComponents = function () {
-        if (types.isUndefined(this._argb)) {
-            throw new Error("Missing the ARGB numeric value");
-        }
-        this._a = (this._argb >> 24) & 255;
-        this._r = (this._argb >> 16) & 255;
-        this._g = (this._argb >> 8) & 255;
-        this._b = this._argb & 255;
-    };
-    Color.prototype._buildArgb = function () {
-        this._argb = (this._a << 24) | (this._r << 16) | (this._g << 8) | this._b;
-    };
     Color.prototype._normalizeHex = function (hexStr) {
-        if (hexStr.charAt(0) === AMP && hexStr.length === 4) {
+        if (hexStr.charAt(0) === SHARP && hexStr.length === 4) {
             hexStr = hexStr.charAt(0)
                 + hexStr.charAt(1) + hexStr.charAt(1)
                 + hexStr.charAt(2) + hexStr.charAt(2)
@@ -177,7 +170,10 @@ function isRgbOrRgba(value) {
 function argbFromRgbOrRgba(value) {
     var toLower = value.toLowerCase();
     var parts = toLower.replace("rgba(", "").replace("rgb(", "").replace(")", "").trim().split(",");
-    var r = 255, g = 255, b = 255, a = 255;
+    var r = 255;
+    var g = 255;
+    var b = 255;
+    var a = 255;
     if (parts[0]) {
         r = parseInt(parts[0].trim());
     }
@@ -190,6 +186,9 @@ function argbFromRgbOrRgba(value) {
     if (parts[3]) {
         a = Math.round(parseFloat(parts[3].trim()) * 255);
     }
-    return (a << 24) | (r << 16) | (g << 8) | b;
+    return (a & 0xFF) * 0x01000000
+        + (r & 0xFF) * 0x00010000
+        + (g & 0xFF) * 0x00000100
+        + (b & 0xFF) * 0x00000001;
 }
 //# sourceMappingURL=color-common.js.map

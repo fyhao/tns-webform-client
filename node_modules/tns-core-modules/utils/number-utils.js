@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 var epsilon = 1E-05;
 function areClose(value1, value2) {
     return (Math.abs(value1 - value2) < epsilon);

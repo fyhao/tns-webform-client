@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Transparent = "#00000000";
 exports.AliceBlue = "#F0F8FF";
 exports.AntiqueWhite = "#FAEBD7";

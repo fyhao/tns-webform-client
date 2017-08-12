@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 var KeyboardType;
 (function (KeyboardType) {
     KeyboardType.datetime = "datetime";
@@ -59,7 +60,6 @@ var HorizontalAlignment;
 var VerticalAlignment;
 (function (VerticalAlignment) {
     VerticalAlignment.top = "top";
-    VerticalAlignment.center = "center";
     VerticalAlignment.middle = "middle";
     VerticalAlignment.bottom = "bottom";
     VerticalAlignment.stretch = "stretch";
@@ -110,7 +110,7 @@ var AutocapitalizationType;
     AutocapitalizationType.none = "none";
     AutocapitalizationType.words = "words";
     AutocapitalizationType.sentences = "sentences";
-    AutocapitalizationType.allCharacters = "allCharacters";
+    AutocapitalizationType.allCharacters = "allcharacters";
 })(AutocapitalizationType = exports.AutocapitalizationType || (exports.AutocapitalizationType = {}));
 var NavigationBarVisibility;
 (function (NavigationBarVisibility) {

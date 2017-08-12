@@ -1,45 +1,28 @@
-var layout_base_1 = require("ui/layouts/layout-base");
-var proxy_1 = require("ui/core/proxy");
-var dependency_observable_1 = require("ui/core/dependency-observable");
-var special_properties_1 = require("ui/builder/special-properties");
-var platform_1 = require("platform");
-var types_1 = require("utils/types");
-var styleProperty = require("ui/styling/style-property");
-var style = require("ui/styling/style");
-var flexbox = require("ui/layouts/flexbox-layout");
-var ORDER_DEFAULT = 1;
-var FLEX_GROW_DEFAULT = 0.0;
-var FLEX_SHRINK_DEFAULT = 1.0;
-function makeValidator() {
-    var values = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        values[_i - 0] = arguments[_i];
-    }
-    var set = new Set(values);
-    return function (value) { return set.has(value); };
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-function makeParser(isValid, def) {
-    return function (value) {
-        var lower = value && value.toLowerCase();
-        return isValid(lower) ? lower : def;
-    };
-}
+Object.defineProperty(exports, "__esModule", { value: true });
+var layout_base_1 = require("../layout-base");
+__export(require("../layout-base"));
+exports.ORDER_DEFAULT = 1;
+exports.FLEX_GROW_DEFAULT = 0.0;
+exports.FLEX_SHRINK_DEFAULT = 1.0;
 var FlexDirection;
 (function (FlexDirection) {
     FlexDirection.ROW = "row";
     FlexDirection.ROW_REVERSE = "row-reverse";
     FlexDirection.COLUMN = "column";
     FlexDirection.COLUMN_REVERSE = "column-reverse";
-    FlexDirection.isValid = makeValidator(FlexDirection.ROW, FlexDirection.ROW_REVERSE, FlexDirection.COLUMN, FlexDirection.COLUMN_REVERSE);
-    FlexDirection.parse = makeParser(FlexDirection.isValid, FlexDirection.ROW);
+    FlexDirection.isValid = layout_base_1.makeValidator(FlexDirection.ROW, FlexDirection.ROW_REVERSE, FlexDirection.COLUMN, FlexDirection.COLUMN_REVERSE);
+    FlexDirection.parse = layout_base_1.makeParser(FlexDirection.isValid);
 })(FlexDirection = exports.FlexDirection || (exports.FlexDirection = {}));
 var FlexWrap;
 (function (FlexWrap) {
     FlexWrap.NOWRAP = "nowrap";
     FlexWrap.WRAP = "wrap";
     FlexWrap.WRAP_REVERSE = "wrap-reverse";
-    FlexWrap.isValid = makeValidator(FlexWrap.NOWRAP, FlexWrap.WRAP, FlexWrap.WRAP_REVERSE);
-    FlexWrap.parse = makeParser(FlexWrap.isValid, FlexWrap.NOWRAP);
+    FlexWrap.isValid = layout_base_1.makeValidator(FlexWrap.NOWRAP, FlexWrap.WRAP, FlexWrap.WRAP_REVERSE);
+    FlexWrap.parse = layout_base_1.makeParser(FlexWrap.isValid);
 })(FlexWrap = exports.FlexWrap || (exports.FlexWrap = {}));
 var JustifyContent;
 (function (JustifyContent) {
@@ -48,8 +31,8 @@ var JustifyContent;
     JustifyContent.CENTER = "center";
     JustifyContent.SPACE_BETWEEN = "space-between";
     JustifyContent.SPACE_AROUND = "space-around";
-    JustifyContent.isValid = makeValidator(JustifyContent.FLEX_START, JustifyContent.FLEX_END, JustifyContent.CENTER, JustifyContent.SPACE_BETWEEN, JustifyContent.SPACE_AROUND);
-    JustifyContent.parse = makeParser(JustifyContent.isValid, JustifyContent.FLEX_START);
+    JustifyContent.isValid = layout_base_1.makeValidator(JustifyContent.FLEX_START, JustifyContent.FLEX_END, JustifyContent.CENTER, JustifyContent.SPACE_BETWEEN, JustifyContent.SPACE_AROUND);
+    JustifyContent.parse = layout_base_1.makeParser(JustifyContent.isValid);
 })(JustifyContent = exports.JustifyContent || (exports.JustifyContent = {}));
 var FlexBasisPercent;
 (function (FlexBasisPercent) {
@@ -62,8 +45,8 @@ var AlignItems;
     AlignItems.CENTER = "center";
     AlignItems.BASELINE = "baseline";
     AlignItems.STRETCH = "stretch";
-    AlignItems.isValid = makeValidator(AlignItems.FLEX_START, AlignItems.FLEX_END, AlignItems.CENTER, AlignItems.BASELINE, AlignItems.STRETCH);
-    AlignItems.parse = makeParser(AlignItems.isValid, AlignItems.FLEX_START);
+    AlignItems.isValid = layout_base_1.makeValidator(AlignItems.FLEX_START, AlignItems.FLEX_END, AlignItems.CENTER, AlignItems.BASELINE, AlignItems.STRETCH);
+    AlignItems.parse = layout_base_1.makeParser(AlignItems.isValid);
 })(AlignItems = exports.AlignItems || (exports.AlignItems = {}));
 var AlignContent;
 (function (AlignContent) {
@@ -73,8 +56,8 @@ var AlignContent;
     AlignContent.SPACE_BETWEEN = "space-between";
     AlignContent.SPACE_AROUND = "space-around";
     AlignContent.STRETCH = "stretch";
-    AlignContent.isValid = makeValidator(AlignContent.FLEX_START, AlignContent.FLEX_END, AlignContent.CENTER, AlignContent.SPACE_BETWEEN, AlignContent.SPACE_AROUND, AlignContent.STRETCH);
-    AlignContent.parse = makeParser(AlignContent.isValid, AlignContent.FLEX_START);
+    AlignContent.isValid = layout_base_1.makeValidator(AlignContent.FLEX_START, AlignContent.FLEX_END, AlignContent.CENTER, AlignContent.SPACE_BETWEEN, AlignContent.SPACE_AROUND, AlignContent.STRETCH);
+    AlignContent.parse = layout_base_1.makeParser(AlignContent.isValid);
 })(AlignContent = exports.AlignContent || (exports.AlignContent = {}));
 var Order;
 (function (Order) {
@@ -105,10 +88,10 @@ var FlexShrink;
 var FlexWrapBefore;
 (function (FlexWrapBefore) {
     function isValid(value) {
-        if (types_1.isBoolean(value)) {
+        if (typeof value === "boolean") {
             return true;
         }
-        if (types_1.isString(value)) {
+        if (typeof value === "string") {
             var str = value.trim().toLowerCase();
             return str === "true" || str === "false";
         }
@@ -128,8 +111,8 @@ var AlignSelf;
     AlignSelf.CENTER = "center";
     AlignSelf.BASELINE = "baseline";
     AlignSelf.STRETCH = "stretch";
-    AlignSelf.isValid = makeValidator(AlignSelf.AUTO, AlignSelf.FLEX_START, AlignSelf.FLEX_END, AlignSelf.CENTER, AlignSelf.BASELINE, AlignSelf.STRETCH);
-    AlignSelf.parse = makeParser(AlignSelf.isValid, AlignSelf.AUTO);
+    AlignSelf.isValid = layout_base_1.makeValidator(AlignSelf.AUTO, AlignSelf.FLEX_START, AlignSelf.FLEX_END, AlignSelf.CENTER, AlignSelf.BASELINE, AlignSelf.STRETCH);
+    AlignSelf.parse = layout_base_1.makeParser(AlignSelf.isValid);
 })(AlignSelf = exports.AlignSelf || (exports.AlignSelf = {}));
 function validateArgs(element) {
     if (!element) {
@@ -140,175 +123,234 @@ function validateArgs(element) {
 var FlexboxLayoutBase = (function (_super) {
     __extends(FlexboxLayoutBase, _super);
     function FlexboxLayoutBase() {
-        _super.call(this);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     Object.defineProperty(FlexboxLayoutBase.prototype, "flexDirection", {
         get: function () {
-            return this.style._getValue(exports.flexDirectionProperty);
+            return this.style.flexDirection;
         },
         set: function (value) {
-            this.style._setValue(exports.flexDirectionProperty, value);
+            this.style.flexDirection = value;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(FlexboxLayoutBase.prototype, "flexWrap", {
         get: function () {
-            return this.style._getValue(exports.flexWrapProperty);
+            return this.style.flexWrap;
         },
         set: function (value) {
-            this.style._setValue(exports.flexWrapProperty, value);
+            this.style.flexWrap = value;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(FlexboxLayoutBase.prototype, "justifyContent", {
         get: function () {
-            return this.style._getValue(exports.justifyContentProperty);
+            return this.style.justifyContent;
         },
         set: function (value) {
-            this.style._setValue(exports.justifyContentProperty, value);
+            this.style.justifyContent = value;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(FlexboxLayoutBase.prototype, "alignItems", {
         get: function () {
-            return this.style._getValue(exports.alignItemsProperty);
+            return this.style.alignItems;
         },
         set: function (value) {
-            this.style._setValue(exports.alignItemsProperty, value);
+            this.style.alignItems = value;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(FlexboxLayoutBase.prototype, "alignContent", {
         get: function () {
-            return this.style._getValue(exports.alignContentProperty);
+            return this.style.alignContent;
         },
         set: function (value) {
-            this.style._setValue(exports.alignContentProperty, value);
+            this.style.alignContent = value;
         },
         enumerable: true,
         configurable: true
     });
     FlexboxLayoutBase.setOrder = function (view, order) {
-        validateArgs(view).style._setValue(exports.orderProperty, order);
+        validateArgs(view).style.order = order;
     };
     FlexboxLayoutBase.getOrder = function (view) {
-        return validateArgs(view).style._getValue(exports.orderProperty);
+        return validateArgs(view).style.order;
     };
     FlexboxLayoutBase.setFlexGrow = function (view, grow) {
-        validateArgs(view).style._setValue(exports.flexGrowProperty, grow);
+        validateArgs(view).style.flexGrow = grow;
     };
     FlexboxLayoutBase.getFlexGrow = function (view) {
-        return validateArgs(view).style._getValue(exports.flexGrowProperty);
+        return validateArgs(view).style.flexGrow;
     };
     FlexboxLayoutBase.setFlexShrink = function (view, shrink) {
-        validateArgs(view).style._setValue(exports.flexShrinkProperty, shrink);
+        validateArgs(view).style.flexShrink = shrink;
     };
     FlexboxLayoutBase.getFlexShrink = function (view) {
-        return validateArgs(view).style._getValue(exports.flexShrinkProperty);
+        return validateArgs(view).style.flexShrink;
     };
     FlexboxLayoutBase.setAlignSelf = function (view, align) {
-        validateArgs(view).style._setValue(exports.alignSelfProperty, align);
+        validateArgs(view).style.alignSelf = align;
     };
     FlexboxLayoutBase.getAlignSelf = function (view) {
-        return validateArgs(view).style._getValue(exports.alignSelfProperty);
+        return validateArgs(view).style.alignSelf;
     };
     FlexboxLayoutBase.setFlexWrapBefore = function (view, wrap) {
-        validateArgs(view).style._setValue(exports.flexWrapBeforeProperty, wrap);
+        validateArgs(view).style.flexWrapBefore = wrap;
     };
     FlexboxLayoutBase.getFlexWrapBefore = function (view) {
-        return validateArgs(view).style._getValue(exports.flexWrapBeforeProperty);
+        return validateArgs(view).style.flexWrapBefore;
     };
     return FlexboxLayoutBase;
 }(layout_base_1.LayoutBase));
 exports.FlexboxLayoutBase = FlexboxLayoutBase;
-var flexboxAffectsLayout = platform_1.isAndroid ? dependency_observable_1.PropertyMetadataSettings.None : dependency_observable_1.PropertyMetadataSettings.AffectsLayout;
-exports.flexDirectionProperty = new styleProperty.Property("flexDirection", "flex-direction", new proxy_1.PropertyMetadata(FlexDirection.ROW, flexboxAffectsLayout, undefined, FlexDirection.isValid), FlexDirection.parse);
-exports.flexWrapProperty = new styleProperty.Property("flexWrap", "flex-wrap", new proxy_1.PropertyMetadata(FlexWrap.NOWRAP, flexboxAffectsLayout, undefined, FlexWrap.isValid), FlexWrap.parse);
-exports.justifyContentProperty = new styleProperty.Property("justifyContent", "justify-content", new proxy_1.PropertyMetadata(JustifyContent.FLEX_START, flexboxAffectsLayout, undefined, JustifyContent.isValid), JustifyContent.parse);
-exports.alignItemsProperty = new styleProperty.Property("alignItems", "align-items", new proxy_1.PropertyMetadata(AlignItems.STRETCH, flexboxAffectsLayout, undefined, AlignItems.isValid), AlignItems.parse);
-exports.alignContentProperty = new styleProperty.Property("alignContent", "align-content", new proxy_1.PropertyMetadata(AlignContent.STRETCH, flexboxAffectsLayout, undefined, AlignContent.isValid), AlignContent.parse);
-exports.orderProperty = new styleProperty.Property("order", "order", new proxy_1.PropertyMetadata(ORDER_DEFAULT, dependency_observable_1.PropertyMetadataSettings.None, undefined, Order.isValid), Order.parse);
-exports.flexGrowProperty = new styleProperty.Property("flexGrow", "flex-grow", new proxy_1.PropertyMetadata(FLEX_GROW_DEFAULT, dependency_observable_1.PropertyMetadataSettings.None, undefined, FlexGrow.isValid), FlexGrow.parse);
-exports.flexShrinkProperty = new styleProperty.Property("flexShrink", "flex-shrink", new proxy_1.PropertyMetadata(FLEX_SHRINK_DEFAULT, dependency_observable_1.PropertyMetadataSettings.None, undefined, FlexShrink.isValid), FlexShrink.parse);
-exports.flexWrapBeforeProperty = new styleProperty.Property("flexWrapBefore", "flex-wrap-before", new proxy_1.PropertyMetadata(false, dependency_observable_1.PropertyMetadataSettings.None, undefined, FlexWrapBefore.isValid), FlexWrapBefore.parse);
-exports.alignSelfProperty = new styleProperty.Property("alignSelf", "align-self", new proxy_1.PropertyMetadata(AlignSelf.AUTO, dependency_observable_1.PropertyMetadataSettings.None, undefined, AlignSelf.isValid), AlignSelf.parse);
-special_properties_1.registerSpecialProperty("order", function (instance, propertyValue) {
-    FlexboxLayoutBase.setOrder(instance, !isNaN(+propertyValue) && +propertyValue);
+exports.flexDirectionProperty = new layout_base_1.CssProperty({ name: "flexDirection", cssName: "flex-direction", defaultValue: FlexDirection.ROW, affectsLayout: layout_base_1.isIOS, valueConverter: FlexDirection.parse });
+exports.flexDirectionProperty.register(layout_base_1.Style);
+exports.flexWrapProperty = new layout_base_1.CssProperty({ name: "flexWrap", cssName: "flex-wrap", defaultValue: "nowrap", affectsLayout: layout_base_1.isIOS, valueConverter: FlexWrap.parse });
+exports.flexWrapProperty.register(layout_base_1.Style);
+exports.justifyContentProperty = new layout_base_1.CssProperty({ name: "justifyContent", cssName: "justify-content", defaultValue: JustifyContent.FLEX_START, affectsLayout: layout_base_1.isIOS, valueConverter: JustifyContent.parse });
+exports.justifyContentProperty.register(layout_base_1.Style);
+exports.alignItemsProperty = new layout_base_1.CssProperty({ name: "alignItems", cssName: "align-items", defaultValue: AlignItems.STRETCH, affectsLayout: layout_base_1.isIOS, valueConverter: AlignItems.parse });
+exports.alignItemsProperty.register(layout_base_1.Style);
+exports.alignContentProperty = new layout_base_1.CssProperty({ name: "alignContent", cssName: "align-content", defaultValue: AlignContent.STRETCH, affectsLayout: layout_base_1.isIOS, valueConverter: AlignContent.parse });
+exports.alignContentProperty.register(layout_base_1.Style);
+exports.orderProperty = new layout_base_1.CssProperty({ name: "order", cssName: "order", defaultValue: exports.ORDER_DEFAULT, valueConverter: Order.parse });
+exports.orderProperty.register(layout_base_1.Style);
+Object.defineProperty(layout_base_1.View.prototype, "order", {
+    get: function () {
+        return this.style.order;
+    },
+    set: function (value) {
+        this.style.order = value;
+    },
+    enumerable: true,
+    configurable: true
 });
-special_properties_1.registerSpecialProperty("flexGrow", function (instance, propertyValue) {
-    FlexboxLayoutBase.setFlexGrow(instance, !isNaN(+propertyValue) && +propertyValue);
+exports.flexGrowProperty = new layout_base_1.CssProperty({ name: "flexGrow", cssName: "flex-grow", defaultValue: exports.FLEX_GROW_DEFAULT, valueConverter: FlexGrow.parse });
+exports.flexGrowProperty.register(layout_base_1.Style);
+Object.defineProperty(layout_base_1.View.prototype, "flexGrow", {
+    get: function () {
+        return this.style.flexGrow;
+    },
+    set: function (value) {
+        this.style.flexGrow = value;
+    },
+    enumerable: true,
+    configurable: true
 });
-special_properties_1.registerSpecialProperty("flexShrink", function (instance, propertyValue) {
-    FlexboxLayoutBase.setFlexShrink(instance, !isNaN(+propertyValue) && +propertyValue);
+exports.flexShrinkProperty = new layout_base_1.CssProperty({ name: "flexShrink", cssName: "flex-shrink", defaultValue: exports.FLEX_SHRINK_DEFAULT, valueConverter: FlexShrink.parse });
+exports.flexShrinkProperty.register(layout_base_1.Style);
+Object.defineProperty(layout_base_1.View.prototype, "flexShrink", {
+    get: function () {
+        return this.style.flexShrink;
+    },
+    set: function (value) {
+        this.style.flexShrink = value;
+    },
+    enumerable: true,
+    configurable: true
 });
-special_properties_1.registerSpecialProperty("alignSelf", function (instance, propertyValue) {
-    FlexboxLayoutBase.setAlignSelf(instance, propertyValue);
+exports.flexWrapBeforeProperty = new layout_base_1.CssProperty({ name: "flexWrapBefore", cssName: "flex-wrap-before", defaultValue: false, valueConverter: FlexWrapBefore.parse });
+exports.flexWrapBeforeProperty.register(layout_base_1.Style);
+Object.defineProperty(layout_base_1.View.prototype, "flexWrapBefore", {
+    get: function () {
+        return this.style.flexWrapBefore;
+    },
+    set: function (value) {
+        this.style.flexWrapBefore = value;
+    },
+    enumerable: true,
+    configurable: true
 });
-special_properties_1.registerSpecialProperty("flexWrapBefore", function (instance, propertyValue) {
-    FlexboxLayoutBase.setFlexWrapBefore(instance, types_1.isString(propertyValue) ? FlexWrapBefore.parse(propertyValue) : propertyValue);
+exports.alignSelfProperty = new layout_base_1.CssProperty({ name: "alignSelf", cssName: "align-self", defaultValue: AlignSelf.AUTO, valueConverter: AlignSelf.parse });
+exports.alignSelfProperty.register(layout_base_1.Style);
+Object.defineProperty(layout_base_1.View.prototype, "alignSelf", {
+    get: function () {
+        return this.style.alignSelf;
+    },
+    set: function (value) {
+        this.style.alignSelf = value;
+    },
+    enumerable: true,
+    configurable: true
 });
-var flexboxGuard = function (handler) { return function (view, newValue) { return view instanceof FlexboxLayoutBase ? handler(view, newValue) : void 0; }; };
-style.registerHandler(exports.flexDirectionProperty, new style.StylePropertyChangedHandler(flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeFlexDirection(newValue); }), flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeFlexDirection(FlexDirection.ROW); })), "FlexboxLayout");
-style.registerHandler(exports.flexWrapProperty, new style.StylePropertyChangedHandler(flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeFlexWrap(newValue); }), flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeFlexWrap(FlexWrap.NOWRAP); })), "FlexboxLayout");
-style.registerHandler(exports.justifyContentProperty, new style.StylePropertyChangedHandler(flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeJustifyContent(newValue); }), flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeJustifyContent(JustifyContent.FLEX_START); })), "FlexboxLayout");
-style.registerHandler(exports.alignItemsProperty, new style.StylePropertyChangedHandler(flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeAlignItems(newValue); }), flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeAlignItems(AlignItems.STRETCH); })), "FlexboxLayout");
-style.registerHandler(exports.alignContentProperty, new style.StylePropertyChangedHandler(flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeAlignContent(newValue); }), flexboxGuard(function (flexbox, newValue) { return flexbox._setNativeAlignContent(AlignContent.STRETCH); })), "FlexboxLayout");
-style.registerHandler(exports.orderProperty, new style.StylePropertyChangedHandler(function (view, value) { return flexbox._onNativeOrderPropertyChanged(view, value); }, function (view, value) { return flexbox._onNativeOrderPropertyChanged(view, 1); }), "View");
-style.registerHandler(exports.flexGrowProperty, new style.StylePropertyChangedHandler(function (view, value) { return flexbox._onNativeFlexGrowPropertyChanged(view, value); }, function (view, value) { return flexbox._onNativeFlexGrowPropertyChanged(view, 0); }), "View");
-style.registerHandler(exports.flexShrinkProperty, new style.StylePropertyChangedHandler(function (view, value) { return flexbox._onNativeFlexShrinkPropertyChanged(view, value); }, function (view, value) { return flexbox._onNativeFlexShrinkPropertyChanged(view, 1); }), "View");
-style.registerHandler(exports.flexWrapBeforeProperty, new style.StylePropertyChangedHandler(function (view, value) { return flexbox._onNativeFlexWrapBeforePropertyChanged(view, value); }, function (view, value) { return flexbox._onNativeFlexWrapBeforePropertyChanged(view, false); }), "View");
-style.registerHandler(exports.alignSelfProperty, new style.StylePropertyChangedHandler(function (view, value) { return flexbox._onNativeAlignSelfPropertyChanged(view, value); }, function (view, value) { return flexbox._onNativeAlignSelfPropertyChanged(view, AlignSelf.AUTO); }), "View");
-styleProperty.registerShorthandCallback("flex-flow", function (value) {
-    var properties = [];
-    var trimmed = value && value.trim();
-    if (trimmed) {
-        var values = trimmed.split(/\s+/);
-        if (values.length >= 1 && FlexDirection.isValid(values[0])) {
-            properties.push({ property: exports.flexDirectionProperty, value: FlexDirection.parse(values[0]) });
+var flexFlowProperty = new layout_base_1.ShorthandProperty({
+    name: "flex-flow", cssName: "flex-flow",
+    getter: function () {
+        return this.flexDirection + " " + this.flexWrap;
+    },
+    converter: function (value) {
+        var properties = [];
+        if (value === layout_base_1.unsetValue) {
+            properties.push([exports.flexDirectionProperty, value]);
+            properties.push([exports.flexWrapProperty, value]);
         }
-        if (value.length >= 2 && FlexWrap.isValid(values[1])) {
-            properties.push({ property: exports.flexWrapProperty, value: FlexWrap.parse(values[1]) });
+        else {
+            var trimmed = value && value.trim();
+            if (trimmed) {
+                var values = trimmed.split(/\s+/);
+                if (values.length >= 1 && FlexDirection.isValid(values[0])) {
+                    properties.push([exports.flexDirectionProperty, FlexDirection.parse(values[0])]);
+                }
+                if (value.length >= 2 && FlexWrap.isValid(values[1])) {
+                    properties.push([exports.flexWrapProperty, FlexWrap.parse(values[1])]);
+                }
+            }
         }
+        return properties;
     }
-    return properties;
 });
-styleProperty.registerShorthandCallback("flex", function (value) {
-    var properties = [];
-    var trimmed = value && value.trim();
-    if (trimmed) {
-        var values = trimmed.split(/\s+/);
-        if (values.length === 1) {
-            switch (values[0]) {
-                case "inital":
-                    properties.push({ property: exports.flexGrowProperty, value: 0 });
-                    properties.push({ property: exports.flexShrinkProperty, value: 1 });
-                    break;
-                case "auto":
-                    properties.push({ property: exports.flexGrowProperty, value: 1 });
-                    properties.push({ property: exports.flexShrinkProperty, value: 1 });
-                    break;
-                case "none":
-                    properties.push({ property: exports.flexGrowProperty, value: 0 });
-                    properties.push({ property: exports.flexShrinkProperty, value: 0 });
-                    break;
-                default:
-                    if (FlexGrow.isValid(values[0])) {
-                        properties.push({ property: exports.flexGrowProperty, value: FlexGrow.parse(values[0]) });
-                        properties.push({ property: exports.flexShrinkProperty, value: 1 });
+flexFlowProperty.register(layout_base_1.Style);
+var flexProperty = new layout_base_1.ShorthandProperty({
+    name: "flex", cssName: "flex",
+    getter: function () {
+        return this.flexGrow + " " + this.flexShrink;
+    },
+    converter: function (value) {
+        var properties = [];
+        if (value === layout_base_1.unsetValue) {
+            properties.push([exports.flexGrowProperty, value]);
+            properties.push([exports.flexShrinkProperty, value]);
+        }
+        else {
+            var trimmed = value && value.trim();
+            if (trimmed) {
+                var values = trimmed.split(/\s+/);
+                if (values.length === 1) {
+                    switch (values[0]) {
+                        case "inital":
+                            properties.push([exports.flexGrowProperty, 0]);
+                            properties.push([exports.flexShrinkProperty, 1]);
+                            break;
+                        case "auto":
+                            properties.push([exports.flexGrowProperty, 1]);
+                            properties.push([exports.flexShrinkProperty, 1]);
+                            break;
+                        case "none":
+                            properties.push([exports.flexGrowProperty, 0]);
+                            properties.push([exports.flexShrinkProperty, 0]);
+                            break;
+                        default:
+                            if (FlexGrow.isValid(values[0])) {
+                                properties.push([exports.flexGrowProperty, FlexGrow.parse(values[0])]);
+                                properties.push([exports.flexShrinkProperty, 1]);
+                            }
                     }
+                }
+                if (values.length >= 2) {
+                    if (FlexGrow.isValid(values[0]) && FlexShrink.isValid(values[1])) {
+                        properties.push([exports.flexGrowProperty, FlexGrow.parse(values[0])]);
+                        properties.push([exports.flexShrinkProperty, FlexShrink.parse(values[1])]);
+                    }
+                }
             }
         }
-        if (values.length >= 2) {
-            if (FlexGrow.isValid(values[0]) && FlexShrink.isValid(values[1])) {
-                properties.push({ property: exports.flexGrowProperty, value: FlexGrow.parse(values[0]) });
-                properties.push({ property: exports.flexShrinkProperty, value: FlexShrink.parse(values[1]) });
-            }
-        }
+        return properties;
     }
-    return properties;
 });
+flexProperty.register(layout_base_1.Style);
 //# sourceMappingURL=flexbox-layout-common.js.map

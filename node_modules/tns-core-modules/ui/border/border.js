@@ -1,15 +1,13 @@
-var contentView = require("ui/content-view");
-var viewModule = require("ui/core/view");
-var utils = require("utils/utils");
-var types = require("utils/types");
+Object.defineProperty(exports, "__esModule", { value: true });
+var content_view_1 = require("../content-view");
 var Border = (function (_super) {
     __extends(Border, _super);
     function Border() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     Object.defineProperty(Border.prototype, "cornerRadius", {
         get: function () {
-            if (types.isNumber(this.borderRadius)) {
+            if (typeof this.borderRadius === "number") {
                 return this.borderRadius;
             }
             return 0;
@@ -21,34 +19,26 @@ var Border = (function (_super) {
         configurable: true
     });
     Border.prototype.onMeasure = function (widthMeasureSpec, heightMeasureSpec) {
-        var width = utils.layout.getMeasureSpecSize(widthMeasureSpec);
-        var widthMode = utils.layout.getMeasureSpecMode(widthMeasureSpec);
-        var height = utils.layout.getMeasureSpecSize(heightMeasureSpec);
-        var heightMode = utils.layout.getMeasureSpecMode(heightMeasureSpec);
-        var density = utils.layout.getDisplayDensity();
-        var borderWidth = 0;
-        if (types.isNumber(this.borderWidth)) {
-            borderWidth = this.borderWidth;
-        }
-        var borderSize = (2 * borderWidth) * density;
-        var result = viewModule.View.measureChild(this, this.layoutView, utils.layout.makeMeasureSpec(width - borderSize, widthMode), utils.layout.makeMeasureSpec(height - borderSize, heightMode));
-        var widthAndState = viewModule.View.resolveSizeAndState(result.measuredWidth + borderSize, width, widthMode, 0);
-        var heightAndState = viewModule.View.resolveSizeAndState(result.measuredHeight + borderSize, height, heightMode, 0);
+        var width = content_view_1.layout.getMeasureSpecSize(widthMeasureSpec);
+        var widthMode = content_view_1.layout.getMeasureSpecMode(widthMeasureSpec);
+        var height = content_view_1.layout.getMeasureSpecSize(heightMeasureSpec);
+        var heightMode = content_view_1.layout.getMeasureSpecMode(heightMeasureSpec);
+        var horizontalBorderLength = this.effectiveBorderLeftWidth + this.effectiveBorderRightWidth;
+        var verticalBorderLength = this.effectiveBorderTopWidth + this.effectiveBorderBottomWidth;
+        var result = content_view_1.View.measureChild(this, this.layoutView, content_view_1.layout.makeMeasureSpec(width - horizontalBorderLength, widthMode), content_view_1.layout.makeMeasureSpec(height - verticalBorderLength, heightMode));
+        var widthAndState = content_view_1.View.resolveSizeAndState(result.measuredWidth + horizontalBorderLength, width, widthMode, 0);
+        var heightAndState = content_view_1.View.resolveSizeAndState(result.measuredHeight + verticalBorderLength, height, heightMode, 0);
         this.setMeasuredDimension(widthAndState, heightAndState);
     };
     Border.prototype.onLayout = function (left, top, right, bottom) {
-        var density = utils.layout.getDisplayDensity();
-        var borderWidth = 0;
-        if (types.isNumber(this.borderWidth)) {
-            borderWidth = this.borderWidth;
-        }
-        var borderSize = borderWidth * density;
-        viewModule.View.layoutChild(this, this.layoutView, borderSize, borderSize, right - left - borderSize, bottom - top - borderSize);
+        var horizontalBorderLength = this.effectiveBorderLeftWidth + this.effectiveBorderRightWidth;
+        var verticalBorderLength = this.effectiveBorderTopWidth + this.effectiveBorderBottomWidth;
+        content_view_1.View.layoutChild(this, this.layoutView, this.effectiveBorderLeftWidth, this.effectiveBorderTopWidth, right - left - horizontalBorderLength, bottom - top - verticalBorderLength);
     };
-    Border = __decorate([
-        Deprecated
-    ], Border);
     return Border;
-}(contentView.ContentView));
+}(content_view_1.ContentView));
+Border = __decorate([
+    Deprecated
+], Border);
 exports.Border = Border;
 //# sourceMappingURL=border.js.map

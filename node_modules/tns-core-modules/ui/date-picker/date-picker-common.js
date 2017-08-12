@@ -1,78 +1,30 @@
-var dependencyObservable = require("ui/core/dependency-observable");
-var proxy = require("ui/core/proxy");
-var view = require("ui/core/view");
-var DatePicker = (function (_super) {
-    __extends(DatePicker, _super);
-    function DatePicker() {
-        _super.call(this);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
+var DatePickerBase = (function (_super) {
+    __extends(DatePickerBase, _super);
+    function DatePickerBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(DatePicker.prototype, "year", {
-        get: function () {
-            return this._getValue(DatePicker.yearProperty);
-        },
-        set: function (value) {
-            this._setValue(DatePicker.yearProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DatePicker.prototype, "month", {
-        get: function () {
-            return this._getValue(DatePicker.monthProperty);
-        },
-        set: function (value) {
-            this._setValue(DatePicker.monthProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DatePicker.prototype, "day", {
-        get: function () {
-            return this._getValue(DatePicker.dayProperty);
-        },
-        set: function (value) {
-            this._setValue(DatePicker.dayProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DatePicker.prototype, "maxDate", {
-        get: function () {
-            return this._getValue(DatePicker.maxDateProperty);
-        },
-        set: function (value) {
-            this._setValue(DatePicker.maxDateProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DatePicker.prototype, "minDate", {
-        get: function () {
-            return this._getValue(DatePicker.minDateProperty);
-        },
-        set: function (value) {
-            this._setValue(DatePicker.minDateProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DatePicker.prototype, "date", {
-        get: function () {
-            return this._getValue(DatePicker.dateProperty);
-        },
-        set: function (value) {
-            this._setValue(DatePicker.dateProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    DatePicker.yearProperty = new dependencyObservable.Property("year", "DatePicker", new proxy.PropertyMetadata(undefined));
-    DatePicker.monthProperty = new dependencyObservable.Property("month", "DatePicker", new proxy.PropertyMetadata(undefined));
-    DatePicker.dayProperty = new dependencyObservable.Property("day", "DatePicker", new proxy.PropertyMetadata(undefined));
-    DatePicker.maxDateProperty = new dependencyObservable.Property("maxDate", "DatePicker", new proxy.PropertyMetadata(undefined));
-    DatePicker.minDateProperty = new dependencyObservable.Property("minDate", "DatePicker", new proxy.PropertyMetadata(undefined));
-    DatePicker.dateProperty = new dependencyObservable.Property("date", "DatePicker", new proxy.PropertyMetadata(undefined));
-    return DatePicker;
-}(view.View));
-exports.DatePicker = DatePicker;
+    return DatePickerBase;
+}(view_1.View));
+exports.DatePickerBase = DatePickerBase;
+exports.yearProperty = new view_1.Property({ name: "year", valueConverter: function (v) { return parseInt(v); } });
+exports.yearProperty.register(DatePickerBase);
+exports.monthProperty = new view_1.Property({ name: "month", valueConverter: function (v) { return parseInt(v); } });
+exports.monthProperty.register(DatePickerBase);
+exports.dayProperty = new view_1.Property({ name: "day", valueConverter: function (v) { return parseInt(v); } });
+exports.dayProperty.register(DatePickerBase);
+function dateComparer(x, y) {
+    return (x <= y && x >= y) ? true : false;
+}
+exports.maxDateProperty = new view_1.Property({ name: "maxDate", equalityComparer: dateComparer, valueConverter: function (v) { return new Date(v); } });
+exports.maxDateProperty.register(DatePickerBase);
+exports.minDateProperty = new view_1.Property({ name: "minDate", equalityComparer: dateComparer, valueConverter: function (v) { return new Date(v); } });
+exports.minDateProperty.register(DatePickerBase);
+exports.dateProperty = new view_1.Property({ name: "date", equalityComparer: dateComparer, valueConverter: function (v) { return new Date(v); } });
+exports.dateProperty.register(DatePickerBase);
 //# sourceMappingURL=date-picker-common.js.map

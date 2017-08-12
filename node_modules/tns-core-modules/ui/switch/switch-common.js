@@ -1,23 +1,17 @@
-var view = require("ui/core/view");
-var dependencyObservable = require("ui/core/dependency-observable");
-var proxy = require("ui/core/proxy");
-var Switch = (function (_super) {
-    __extends(Switch, _super);
-    function Switch() {
-        _super.apply(this, arguments);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
+var SwitchBase = (function (_super) {
+    __extends(SwitchBase, _super);
+    function SwitchBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(Switch.prototype, "checked", {
-        get: function () {
-            return this._getValue(Switch.checkedProperty);
-        },
-        set: function (value) {
-            this._setValue(Switch.checkedProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Switch.checkedProperty = new dependencyObservable.Property("checked", "Switch", new proxy.PropertyMetadata(false));
-    return Switch;
-}(view.View));
-exports.Switch = Switch;
+    return SwitchBase;
+}(view_1.View));
+exports.SwitchBase = SwitchBase;
+exports.checkedProperty = new view_1.Property({ name: "checked", defaultValue: false, valueConverter: view_1.booleanConverter });
+exports.checkedProperty.register(SwitchBase);
 //# sourceMappingURL=switch-common.js.map
