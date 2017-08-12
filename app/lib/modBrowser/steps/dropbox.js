@@ -42,6 +42,16 @@ module.exports = {
 				setTimeout(next, 1);
 			}
 		}
+		else if(action == 'downloadAsText') {
+			var entry = ctx.vars[step.entry];
+			entry.download(function(res) {
+				var localFile = res.localFile;
+				localFile.readText().then(function(content) {
+					ctx.vars[step.content] = content;
+					setTimeout(next, 1);
+				});
+			});
+		}
 		else if(action == 'log') {
 			var result = ctx.vars[step.result];
 			if(result.entries && result.entries.length) {
