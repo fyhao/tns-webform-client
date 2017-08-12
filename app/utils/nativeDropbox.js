@@ -245,7 +245,7 @@ var DropBoxClient = (function () {
             });
             var args = {
                 path: targetFolder + '/' + localFile.name,
-                mode: "add",
+                mode: "overwrite",
                 autorename: true,
                 mute: false
             };
