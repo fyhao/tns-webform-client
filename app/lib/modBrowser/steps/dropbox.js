@@ -27,6 +27,10 @@ module.exports = {
 				}
 			}
 		}
+		else if(action == 'code') {
+			var fn = new Function('ctx', 'ctx; ' + step.code);
+			fn(ctx);
+		}
 		setTimeout(next, 1);
 	}
 }
