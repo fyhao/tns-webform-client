@@ -1,9 +1,12 @@
-var trace = require("trace");
-var platform = require("platform");
+Object.defineProperty(exports, "__esModule", { value: true });
+function __message(message, level) {
+    if (global.__consoleMessage) {
+        global.__consoleMessage(message, level);
+    }
+}
 var Console = (function () {
     function Console() {
         this.TAG = "JS";
-        this.dir = this.dump;
         this._timers = {};
         this._stripFirstTwoLinesRegEx = /^([^\n]*?\n){2}((.|\n)*)$/gmi;
     }
@@ -174,7 +177,7 @@ var Console = (function () {
     };
     Console.prototype.time = function (reportName) {
         var name = reportName ? '__' + reportName : '__internal_console_time__';
-        if (('undefined' === typeof (this._timers[name])) || (this._timers.hasOwnProperty(name))) {
+        if (this._timers[name] === undefined || this._timers.hasOwnProperty(name)) {
             this._timers[name] = this.timeMillis();
         }
         else {
@@ -203,10 +206,8 @@ var Console = (function () {
         if (!test) {
             Array.prototype.shift.apply(arguments);
             var formatedMessage = this.formatParams.apply(this, arguments);
-            this.error(formatedMessage, trace.messageType.error);
-            if (global.__consoleMessage) {
-                global.__consoleMessage(formatedMessage, "error");
-            }
+            this.error(formatedMessage, 3);
+            __message(formatedMessage, "error");
         }
     };
     Console.prototype.info = function (message) {
@@ -214,7 +215,7 @@ var Console = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             formatParams[_i - 1] = arguments[_i];
         }
-        this.logMessage(this.formatParams.apply(this, arguments), trace.messageType.info);
+        this.logMessage(this.formatParams.apply(this, arguments), 1);
     };
     Console.prototype.warn = function (message) {
         var formatParams = [];
@@ -222,10 +223,8 @@ var Console = (function () {
             formatParams[_i - 1] = arguments[_i];
         }
         var formatedMessage = this.formatParams.apply(this, arguments);
-        this.logMessage(formatedMessage, trace.messageType.warn);
-        if (global.__consoleMessage) {
-            global.__consoleMessage(formatedMessage, "warning");
-        }
+        this.logMessage(formatedMessage, 2);
+        __message(formatedMessage, "warning");
     };
     Console.prototype.error = function (message) {
         var formatParams = [];
@@ -233,10 +232,8 @@ var Console = (function () {
             formatParams[_i - 1] = arguments[_i];
         }
         var formatedMessage = this.formatParams.apply(this, arguments);
-        this.logMessage(formatedMessage, trace.messageType.error);
-        if (global.__consoleMessage) {
-            global.__consoleMessage(formatedMessage, "error");
-        }
+        this.logMessage(formatedMessage, 3);
+        __message(formatedMessage, "error");
     };
     Console.prototype.log = function (message) {
         var formatParams = [];
@@ -244,10 +241,8 @@ var Console = (function () {
             formatParams[_i - 1] = arguments[_i];
         }
         var formatedMessage = this.formatParams.apply(this, arguments);
-        this.logMessage(formatedMessage, trace.messageType.log);
-        if (global.__consoleMessage) {
-            global.__consoleMessage(formatedMessage, "log");
-        }
+        this.logMessage(formatedMessage, 0);
+        __message(formatedMessage, "log");
     };
     Console.prototype.logMessage = function (message, messageType) {
         if (!global.android) {
@@ -255,29 +250,28 @@ var Console = (function () {
         }
         var arrayToLog = [];
         if (message.length > 4000) {
-            var i;
-            for (i = 0; i * 4000 < message.length; i++) {
+            for (var i = 0; i * 4000 < message.length; i++) {
                 arrayToLog.push(message.substr((i * 4000), 4000));
             }
         }
         else {
             arrayToLog.push(message);
         }
-        for (i = 0; i < arrayToLog.length; i++) {
+        for (var i = 0; i < arrayToLog.length; i++) {
             switch (messageType) {
-                case trace.messageType.log: {
+                case 0: {
                     android.util.Log.v(this.TAG, arrayToLog[i]);
                     break;
                 }
-                case trace.messageType.warn: {
+                case 2: {
                     android.util.Log.w(this.TAG, arrayToLog[i]);
                     break;
                 }
-                case trace.messageType.error: {
+                case 3: {
                     android.util.Log.e(this.TAG, arrayToLog[i]);
                     break;
                 }
-                case trace.messageType.info: {
+                case 1: {
                     android.util.Log.i(this.TAG, arrayToLog[i]);
                     break;
                 }
@@ -297,7 +291,7 @@ var Console = (function () {
             result.push("=== dump(): object is 'null' ===");
             return result.join('');
         }
-        if ("undefined" === typeof obj) {
+        if (obj === undefined) {
             result.push("=== dump(): object is 'undefined' ===");
             return result.join('');
         }
@@ -338,14 +332,9 @@ var Console = (function () {
         result.push('=== dump(): finished ===');
         return result.join('');
     };
-    Console.prototype.dump = function (obj) {
+    Console.prototype.dir = function (obj) {
         var dump = this.createDump(obj);
-        if (platform.device.os === platform.platformNames.android) {
-            this.log(dump);
-        }
-        else if (platform.device.os === platform.platformNames.ios) {
-            console.log(dump);
-        }
+        this.log(dump);
     };
     return Console;
 }());

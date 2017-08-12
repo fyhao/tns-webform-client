@@ -1,119 +1,65 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 require("globals");
-var observable = require("data/observable");
-var frame = require("ui/frame");
-require("../bundle-entry-points");
-var builder;
-function ensureBuilder() {
-    if (!builder) {
-        builder = require("ui/builder");
-    }
+var observable_1 = require("../data/observable");
+exports.Observable = observable_1.Observable;
+var events = new observable_1.Observable();
+var launched = false;
+function setLaunched() {
+    launched = true;
+    events.off("launch", setLaunched);
 }
-var platform;
-function ensurePlatform() {
-    if (!platform) {
-        platform = require("platform");
-    }
+events.on("launch", setLaunched);
+function hasLaunched() {
+    return launched;
 }
-var fileNameResolver;
-function ensureFileNameResolver() {
-    if (!fileNameResolver) {
-        fileNameResolver = require("file-system/file-name-resolver");
-    }
-}
-var styleScope = undefined;
-var events = new observable.Observable();
-global.moduleMerge(events, exports);
+exports.hasLaunched = hasLaunched;
 exports.launchEvent = "launch";
 exports.suspendEvent = "suspend";
+exports.displayedEvent = "displayed";
 exports.resumeEvent = "resume";
 exports.exitEvent = "exit";
 exports.lowMemoryEvent = "lowMemory";
 exports.uncaughtErrorEvent = "uncaughtError";
 exports.orientationChangedEvent = "orientationChanged";
-exports.cssFile = "app.css";
-function setCssFileName(cssFileName) {
-    exports.cssFile = cssFileName;
+var cssFile = "app.css";
+var resources = {};
+function getResources() {
+    return resources;
 }
-exports.setCssFileName = setCssFileName;
-exports.appSelectors = [];
-exports.additionalSelectors = [];
-exports.cssSelectors = [];
-exports.cssSelectorVersion = 0;
-exports.keyframes = {};
-exports.resources = {};
+exports.getResources = getResources;
 function setResources(res) {
-    exports.resources = res;
+    resources = res;
 }
 exports.setResources = setResources;
-exports.onUncaughtError = undefined;
-exports.onLaunch = undefined;
-exports.onSuspend = undefined;
-exports.onResume = undefined;
-exports.onExit = undefined;
-exports.onLowMemory = undefined;
 exports.android = undefined;
 exports.ios = undefined;
-function loadCss(cssFile) {
-    if (!cssFile) {
-        return undefined;
-    }
-    var result;
-    var fs = require("file-system");
-    if (!styleScope) {
-        styleScope = require("ui/styling/style-scope");
-    }
-    var cssFileName = fs.path.join(fs.knownFolders.currentApp().path, cssFile);
-    if (fs.File.exists(cssFileName)) {
-        var file = fs.File.fromPath(cssFileName);
-        var applicationCss = file.readTextSync();
-        if (applicationCss) {
-            result = parseCss(applicationCss, cssFileName);
-        }
-    }
-    return result;
+exports.on = events.on.bind(events);
+exports.off = events.off.bind(events);
+exports.notify = events.notify.bind(events);
+exports.hasListeners = events.hasListeners.bind(events);
+var app;
+function setApplication(instance) {
+    app = instance;
 }
-exports.loadCss = loadCss;
-function mergeCssSelectors(module) {
-    module.cssSelectors = module.appSelectors.slice();
-    module.cssSelectors.push.apply(module.cssSelectors, module.additionalSelectors);
-    module.cssSelectorVersion++;
+exports.setApplication = setApplication;
+function livesync() {
+    events.notify({ eventName: "livesync", object: app });
 }
-exports.mergeCssSelectors = mergeCssSelectors;
-function parseCss(cssText, cssFileName) {
-    if (!styleScope) {
-        styleScope = require("ui/styling/style-scope");
-    }
-    return styleScope.StyleScope.createSelectorsFromCss(cssText, cssFileName, exports.keyframes);
+exports.livesync = livesync;
+function setCssFileName(cssFileName) {
+    cssFile = cssFileName;
+    events.notify({ eventName: "cssChanged", object: app, cssFile: cssFileName });
 }
-exports.parseCss = parseCss;
-function __onLiveSync() {
-    if (global.errorPage) {
-        global.errorPage.closeModal();
-        global.errorPage = undefined;
-    }
-    try {
-        ensureFileNameResolver();
-        fileNameResolver.clearCache();
-        loadCss();
-        global.__onLiveSyncCore();
-    }
-    catch (ex) {
-        ensureBuilder();
-        global.errorPage = builder.parse("<Page><ScrollView><Label text=\"" + ex + "\" textWrap=\"true\" style=\"color: red;\" /></ScrollView></Page>");
-        global.errorPage.showModal();
-    }
+exports.setCssFileName = setCssFileName;
+function getCssFileName() {
+    return cssFile;
 }
-exports.__onLiveSync = __onLiveSync;
-function __onLiveSyncCore() {
-    frame.reloadPage();
+exports.getCssFileName = getCssFileName;
+function addCss(cssText) {
+    events.notify({ eventName: "cssChanged", object: app, cssText: cssText });
 }
-exports.__onLiveSyncCore = __onLiveSyncCore;
-global.__onLiveSyncCore = __onLiveSyncCore;
-function _onOrientationChanged() {
-    ensurePlatform();
-    platform.screen.mainScreen._invalidate();
-    ensureFileNameResolver();
-    fileNameResolver._invalidateResolverInstance();
-}
-exports._onOrientationChanged = _onOrientationChanged;
+exports.addCss = addCss;
+global.__onUncaughtError = function (error) {
+    events.notify({ eventName: exports.uncaughtErrorEvent, object: app, android: error, ios: error, error: error });
+};
 //# sourceMappingURL=application-common.js.map

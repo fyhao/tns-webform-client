@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 var expressionSymbolsRegex = /[\+\-\*\/%\?:<>=!\|&\(\)^~]/;
 var bindingConstants;
 (function (bindingConstants) {

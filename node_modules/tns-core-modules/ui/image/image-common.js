@@ -1,78 +1,25 @@
-var dependencyObservable = require("ui/core/dependency-observable");
-var view = require("ui/core/view");
-var proxy = require("ui/core/proxy");
-var imageSource = require("image-source");
-var imageAssetModule = require("image-asset");
-var enums = require("ui/enums");
-var platform = require("platform");
-var utils = require("utils/utils");
-var types = require("utils/types");
-var SRC = "src";
-var IMAGE_SOURCE = "imageSource";
-var LOAD_MODE = "loadMode";
-var SYNC = "sync";
-var ASYNC = "async";
-var IMAGE = "Image";
-var ISLOADING = "isLoading";
-var STRETCH = "stretch";
-var AffectsLayout = platform.device.os === platform.platformNames.android ? dependencyObservable.PropertyMetadataSettings.None : dependencyObservable.PropertyMetadataSettings.AffectsLayout;
-function onSrcPropertyChanged(data) {
-    var image = data.object;
-    image._createImageSourceFromSrc();
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var Image = (function (_super) {
-    __extends(Image, _super);
-    function Image() {
-        _super.apply(this, arguments);
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+var image_asset_1 = require("../../image-asset");
+var image_source_1 = require("../../image-source");
+exports.ImageSource = image_source_1.ImageSource;
+exports.fromAsset = image_source_1.fromAsset;
+exports.fromNativeSource = image_source_1.fromNativeSource;
+exports.fromUrl = image_source_1.fromUrl;
+var utils_1 = require("../../utils/utils");
+exports.isDataURI = utils_1.isDataURI;
+exports.isFileOrResourcePath = utils_1.isFileOrResourcePath;
+exports.RESOURCE_PREFIX = utils_1.RESOURCE_PREFIX;
+__export(require("../core/view"));
+var ImageBase = (function (_super) {
+    __extends(ImageBase, _super);
+    function ImageBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(Image.prototype, "imageSource", {
-        get: function () {
-            return this._getValue(Image.imageSourceProperty);
-        },
-        set: function (value) {
-            this._setValue(Image.imageSourceProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Image.prototype, "src", {
-        get: function () {
-            return this._getValue(Image.srcProperty);
-        },
-        set: function (value) {
-            this._setValue(Image.srcProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Image.prototype, "isLoading", {
-        get: function () {
-            return this._getValue(Image.isLoadingProperty);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Image.prototype, "stretch", {
-        get: function () {
-            return this._getValue(Image.stretchProperty);
-        },
-        set: function (value) {
-            this._setValue(Image.stretchProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Image.prototype, "loadMode", {
-        get: function () {
-            return this._getValue(Image.loadModeProperty);
-        },
-        set: function (value) {
-            this._setValue(Image.loadModeProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Image.prototype, "tintColor", {
+    Object.defineProperty(ImageBase.prototype, "tintColor", {
         get: function () {
             return this.style.tintColor;
         },
@@ -82,91 +29,98 @@ var Image = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Image.prototype._setNativeImage = function (nativeImage) {
-    };
-    Image.prototype._createImageSourceFromSrc = function () {
+    ImageBase.prototype._createImageSourceFromSrc = function () {
         var _this = this;
         var value = this.src;
-        if (types.isString(value)) {
+        var originalValue = value;
+        var sync = this.loadMode === "sync";
+        if (typeof value === "string" || value instanceof String) {
             value = value.trim();
             this.imageSource = null;
             this["_url"] = value;
-            this._setValue(Image.isLoadingProperty, true);
-            var source = new imageSource.ImageSource();
+            this.isLoading = true;
+            var source_1 = new image_source_1.ImageSource();
             var imageLoaded = function () {
                 var currentValue = _this.src;
-                if (!types.isString(_this.src) || value !== currentValue.trim()) {
+                if (currentValue !== originalValue) {
                     return;
                 }
-                _this.imageSource = source;
-                _this._setValue(Image.isLoadingProperty, false);
+                _this.imageSource = source_1;
+                _this.isLoading = false;
             };
-            if (utils.isDataURI(value)) {
+            if (utils_1.isDataURI(value)) {
                 var base64Data = value.split(",")[1];
-                if (types.isDefined(base64Data)) {
-                    if (this.loadMode === SYNC) {
-                        source.loadFromBase64(base64Data);
+                if (base64Data !== undefined) {
+                    if (sync) {
+                        source_1.loadFromBase64(base64Data);
                         imageLoaded();
                     }
-                    else if (this.loadMode === ASYNC) {
-                        source.fromBase64(base64Data).then(imageLoaded);
+                    else {
+                        source_1.fromBase64(base64Data).then(imageLoaded);
                     }
                 }
             }
-            else if (imageSource.isFileOrResourcePath(value)) {
-                if (value.indexOf(utils.RESOURCE_PREFIX) === 0) {
-                    var resPath = value.substr(utils.RESOURCE_PREFIX.length);
-                    if (this.loadMode === SYNC) {
-                        source.loadFromResource(resPath);
+            else if (utils_1.isFileOrResourcePath(value)) {
+                if (value.indexOf(utils_1.RESOURCE_PREFIX) === 0) {
+                    var resPath = value.substr(utils_1.RESOURCE_PREFIX.length);
+                    if (sync) {
+                        source_1.loadFromResource(resPath);
                         imageLoaded();
                     }
-                    else if (this.loadMode === ASYNC) {
+                    else {
                         this.imageSource = null;
-                        source.fromResource(resPath).then(imageLoaded);
+                        source_1.fromResource(resPath).then(imageLoaded);
                     }
                 }
                 else {
-                    if (this.loadMode === SYNC) {
-                        source.loadFromFile(value);
+                    if (sync) {
+                        source_1.loadFromFile(value);
                         imageLoaded();
                     }
-                    else if (this.loadMode === ASYNC) {
+                    else {
                         this.imageSource = null;
-                        source.fromFile(value).then(imageLoaded);
+                        source_1.fromFile(value).then(imageLoaded);
                     }
                 }
             }
             else {
                 this.imageSource = null;
-                imageSource.fromUrl(value).then(function (r) {
+                image_source_1.fromUrl(value).then(function (r) {
                     if (_this["_url"] === value) {
                         _this.imageSource = r;
-                        _this._setValue(Image.isLoadingProperty, false);
+                        _this.isLoading = false;
                     }
                 });
             }
         }
-        else if (value instanceof imageSource.ImageSource) {
+        else if (value instanceof image_source_1.ImageSource) {
             this.imageSource = value;
-            this._setValue(Image.isLoadingProperty, false);
+            this.isLoading = false;
         }
-        else if (value instanceof imageAssetModule.ImageAsset) {
-            imageSource.fromAsset(value).then(function (result) {
+        else if (value instanceof image_asset_1.ImageAsset) {
+            image_source_1.fromAsset(value).then(function (result) {
                 _this.imageSource = result;
-                _this._setValue(Image.isLoadingProperty, false);
+                _this.isLoading = false;
             });
         }
         else {
-            this.imageSource = imageSource.fromNativeSource(value);
-            this._setValue(Image.isLoadingProperty, false);
+            this.imageSource = image_source_1.fromNativeSource(value);
+            this.isLoading = false;
         }
     };
-    Image.srcProperty = new dependencyObservable.Property(SRC, IMAGE, new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.None, onSrcPropertyChanged));
-    Image.imageSourceProperty = new dependencyObservable.Property(IMAGE_SOURCE, IMAGE, new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.None));
-    Image.isLoadingProperty = new dependencyObservable.Property(ISLOADING, IMAGE, new proxy.PropertyMetadata(false, dependencyObservable.PropertyMetadataSettings.None));
-    Image.stretchProperty = new dependencyObservable.Property(STRETCH, IMAGE, new proxy.PropertyMetadata(enums.Stretch.aspectFit, AffectsLayout));
-    Image.loadModeProperty = new dependencyObservable.Property(LOAD_MODE, IMAGE, new proxy.PropertyMetadata(SYNC, 0, null, function (value) { return value === SYNC || value === ASYNC; }, null));
-    return Image;
-}(view.View));
-exports.Image = Image;
+    return ImageBase;
+}(view_1.View));
+exports.ImageBase = ImageBase;
+exports.imageSourceProperty = new view_1.Property({ name: "imageSource" });
+exports.imageSourceProperty.register(ImageBase);
+exports.srcProperty = new view_1.Property({ name: "src" });
+exports.srcProperty.register(ImageBase);
+exports.loadModeProperty = new view_1.Property({ name: "loadMode", defaultValue: "sync" });
+exports.loadModeProperty.register(ImageBase);
+exports.isLoadingProperty = new view_1.Property({ name: "isLoading", defaultValue: false, valueConverter: view_1.booleanConverter });
+exports.isLoadingProperty.register(ImageBase);
+exports.stretchProperty = new view_1.Property({ name: "stretch", defaultValue: "aspectFit", affectsLayout: view_1.isIOS });
+exports.stretchProperty.register(ImageBase);
+exports.tintColorProperty = new view_1.InheritedCssProperty({ name: "tintColor", cssName: "tint-color", equalityComparer: view_1.Color.equals, valueConverter: function (value) { return new view_1.Color(value); } });
+exports.tintColorProperty.register(view_1.Style);
 //# sourceMappingURL=image-common.js.map

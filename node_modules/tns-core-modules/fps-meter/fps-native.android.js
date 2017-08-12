@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 var FPSCallback = (function () {
     function FPSCallback(onFrame) {
         var _this = this;

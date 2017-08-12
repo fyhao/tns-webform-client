@@ -1,52 +1,34 @@
-var dts = require("ui/action-bar");
-var bindable = require("ui/core/bindable");
-var dependencyObservable = require("ui/core/dependency-observable");
-var enums = require("ui/enums");
-var proxy = require("ui/core/proxy");
-var view = require("ui/core/view");
-var ACTION_ITEMS = "actionItems";
-var style;
-function ensureStyle() {
-    if (!style) {
-        style = require("../styling/style");
-    }
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("../core/view"));
+var view_1 = require("../core/view");
 var knownCollections;
 (function (knownCollections) {
     knownCollections.actionItems = "actionItems";
 })(knownCollections = exports.knownCollections || (exports.knownCollections = {}));
-function onTitlePropertyChanged(data) {
-    var actionBar = data.object;
-    actionBar._onTitlePropertyChanged();
-}
-var ActionBar = (function (_super) {
-    __extends(ActionBar, _super);
-    function ActionBar() {
-        _super.call(this);
-        this._actionItems = new ActionItems(this);
+var ActionBarBase = (function (_super) {
+    __extends(ActionBarBase, _super);
+    function ActionBarBase() {
+        var _this = _super.call(this) || this;
+        _this._actionItems = new ActionItems(_this);
+        return _this;
     }
-    Object.defineProperty(ActionBar.prototype, "title", {
-        get: function () {
-            return this._getValue(ActionBar.titleProperty);
-        },
-        set: function (value) {
-            this._setValue(ActionBar.titleProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ActionBar.prototype, "navigationButton", {
+    Object.defineProperty(ActionBarBase.prototype, "navigationButton", {
         get: function () {
             return this._navigationButton;
         },
         set: function (value) {
             if (this._navigationButton !== value) {
                 if (this._navigationButton) {
+                    this._removeView(this._navigationButton);
                     this._navigationButton.actionBar = undefined;
                 }
                 this._navigationButton = value;
                 if (this._navigationButton) {
                     this._navigationButton.actionBar = this;
+                    this._addView(this._navigationButton);
                 }
                 this.update();
             }
@@ -54,7 +36,7 @@ var ActionBar = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ActionBar.prototype, "actionItems", {
+    Object.defineProperty(ActionBarBase.prototype, "actionItems", {
         get: function () {
             return this._actionItems;
         },
@@ -64,23 +46,27 @@ var ActionBar = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ActionBar.prototype, "titleView", {
+    Object.defineProperty(ActionBarBase.prototype, "titleView", {
         get: function () {
             return this._titleView;
         },
         set: function (value) {
             if (this._titleView !== value) {
-                ensureStyle();
                 if (this._titleView) {
                     this._removeView(this._titleView);
-                    this._titleView.style._resetValue(style.horizontalAlignmentProperty, dependencyObservable.ValueSource.Inherited);
-                    this._titleView.style._resetValue(style.verticalAlignmentProperty, dependencyObservable.ValueSource.Inherited);
+                    this._titleView.style[view_1.horizontalAlignmentProperty.cssName] = view_1.unsetValue;
+                    this._titleView.style[view_1.verticalAlignmentProperty.cssName] = view_1.unsetValue;
                 }
                 this._titleView = value;
-                if (this._titleView) {
-                    this._titleView.style._setValue(style.horizontalAlignmentProperty, enums.HorizontalAlignment.center, dependencyObservable.ValueSource.Inherited);
-                    this._titleView.style._setValue(style.verticalAlignmentProperty, enums.VerticalAlignment.center, dependencyObservable.ValueSource.Inherited);
-                    this._addView(this._titleView);
+                if (value) {
+                    this._addView(value);
+                    var style = value.style;
+                    if (!view_1.horizontalAlignmentProperty.isSet(style)) {
+                        style[view_1.horizontalAlignmentProperty.cssName] = "center";
+                    }
+                    if (!view_1.verticalAlignmentProperty.isSet(style)) {
+                        style[view_1.verticalAlignmentProperty.cssName] = "middle";
+                    }
                 }
                 this.update();
             }
@@ -88,29 +74,14 @@ var ActionBar = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ActionBar.prototype, "page", {
-        get: function () {
-            return this._page;
-        },
-        set: function (value) {
-            this._page = value;
-            this.unbind("bindingContext");
-            this.bind({
-                sourceProperty: "bindingContext",
-                targetProperty: "bindingContext"
-            }, this._page);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ActionBar.prototype, "android", {
+    Object.defineProperty(ActionBarBase.prototype, "android", {
         get: function () {
             return undefined;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ActionBar.prototype, "_childrenCount", {
+    Object.defineProperty(ActionBarBase.prototype, "_childrenCount", {
         get: function () {
             var actionViewsCount = 0;
             this._actionItems.getItems().forEach(function (actionItem) {
@@ -123,44 +94,35 @@ var ActionBar = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    ActionBar.prototype.update = function () {
+    ActionBarBase.prototype.update = function () {
     };
-    ActionBar.prototype._onTitlePropertyChanged = function () {
+    ActionBarBase.prototype._onTitlePropertyChanged = function () {
     };
-    ActionBar.prototype._addArrayFromBuilder = function (name, value) {
-        if (name === ACTION_ITEMS) {
+    ActionBarBase.prototype._addArrayFromBuilder = function (name, value) {
+        if (name === "actionItems") {
             this.actionItems.setItems(value);
         }
     };
-    ActionBar.prototype._addChildFromBuilder = function (name, value) {
-        if (value instanceof dts.NavigationButton) {
-            this.navigationButton = value;
-        }
-        else if (value instanceof dts.ActionItem) {
-            this.actionItems.addItem(value);
-        }
-        else if (value instanceof view.View) {
-            this.titleView = value;
+    ActionBarBase.prototype.eachChildView = function (callback) {
+        var titleView = this.titleView;
+        if (titleView) {
+            callback(titleView);
         }
     };
-    ActionBar.prototype._onBindingContextChanged = function (oldValue, newValue) {
-        _super.prototype._onBindingContextChanged.call(this, oldValue, newValue);
-        if (this._navigationButton) {
-            this._navigationButton.bindingContext = newValue;
+    ActionBarBase.prototype.eachChild = function (callback) {
+        var titleView = this.titleView;
+        if (titleView) {
+            callback(titleView);
         }
-        this._actionItems.getItems().forEach(function (item, i, arr) { item.bindingContext = newValue; });
-    };
-    ActionBar.prototype._eachChildView = function (callback) {
-        if (this.titleView) {
-            callback(this.titleView);
+        var navigationButton = this._navigationButton;
+        if (navigationButton) {
+            callback(navigationButton);
         }
         this.actionItems.getItems().forEach(function (actionItem) {
-            if (actionItem.actionView) {
-                callback(actionItem.actionView);
-            }
+            callback(actionItem);
         });
     };
-    ActionBar.prototype._isEmpty = function () {
+    ActionBarBase.prototype._isEmpty = function () {
         if (this.title ||
             this.titleView ||
             (this.android && this.android.icon) ||
@@ -170,10 +132,9 @@ var ActionBar = (function (_super) {
         }
         return true;
     };
-    ActionBar.titleProperty = new dependencyObservable.Property("title", "ActionBar", new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.None, onTitlePropertyChanged));
-    return ActionBar;
-}(view.View));
-exports.ActionBar = ActionBar;
+    return ActionBarBase;
+}(view_1.View));
+exports.ActionBarBase = ActionBarBase;
 var ActionItems = (function () {
     function ActionItems(actionBar) {
         this._items = new Array();
@@ -185,6 +146,7 @@ var ActionItems = (function () {
         }
         this._items.push(item);
         item.actionBar = this._actionBar;
+        this._actionBar._addView(item);
         this.invalidate();
     };
     ActionItems.prototype.removeItem = function (item) {
@@ -196,6 +158,7 @@ var ActionItems = (function () {
             throw new Error("Cannot find item to remove");
         }
         this._items.splice(itemIndex, 1);
+        this._actionBar._removeView(item);
         item.actionBar = undefined;
         this.invalidate();
     };
@@ -234,25 +197,28 @@ var ActionItems = (function () {
     return ActionItems;
 }());
 exports.ActionItems = ActionItems;
-var ActionItem = (function (_super) {
-    __extends(ActionItem, _super);
-    function ActionItem() {
-        _super.apply(this, arguments);
+var ActionItemBase = (function (_super) {
+    __extends(ActionItemBase, _super);
+    function ActionItemBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(ActionItem.prototype, "actionView", {
+    Object.defineProperty(ActionItemBase.prototype, "actionView", {
         get: function () {
             return this._actionView;
         },
         set: function (value) {
             if (this._actionView !== value) {
-                ensureStyle();
-                if (this._actionView && this._actionBar) {
-                    this._actionBar._removeView(this._actionView);
-                    this._actionView.style._resetValue(style.horizontalAlignmentProperty, dependencyObservable.ValueSource.Inherited);
-                    this._actionView.style._resetValue(style.verticalAlignmentProperty, dependencyObservable.ValueSource.Inherited);
+                if (this._actionView) {
+                    this._actionView.style[view_1.horizontalAlignmentProperty.cssName] = view_1.unsetValue;
+                    this._actionView.style[view_1.verticalAlignmentProperty.cssName] = view_1.unsetValue;
+                    this._removeView(this._actionView);
                 }
                 this._actionView = value;
-                this._addActionViewToActionBar();
+                if (this._actionView) {
+                    this._addView(this._actionView);
+                    this._actionView.style[view_1.horizontalAlignmentProperty.cssName] = "center";
+                    this._actionView.style[view_1.verticalAlignmentProperty.cssName] = "middle";
+                }
                 if (this._actionBar) {
                     this._actionBar.update();
                 }
@@ -261,88 +227,51 @@ var ActionItem = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ActionItem.prototype, "text", {
-        get: function () {
-            return this._getValue(ActionItem.textProperty);
-        },
-        set: function (value) {
-            this._setValue(ActionItem.textProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ActionItem.prototype, "icon", {
-        get: function () {
-            return this._getValue(ActionItem.iconProperty);
-        },
-        set: function (value) {
-            this._setValue(ActionItem.iconProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ActionItem.prototype, "visibility", {
-        get: function () {
-            return this._getValue(ActionItem.visibilityProperty);
-        },
-        set: function (value) {
-            this._setValue(ActionItem.visibilityProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ActionItem.prototype, "actionBar", {
+    Object.defineProperty(ActionItemBase.prototype, "actionBar", {
         get: function () {
             return this._actionBar;
         },
         set: function (value) {
             if (value !== this._actionBar) {
                 this._actionBar = value;
-                if (this._actionBar) {
-                    this.bindingContext = this._actionBar.bindingContext;
-                    this._addActionViewToActionBar();
-                }
             }
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ActionItem.prototype, "page", {
-        get: function () {
-            return this.actionBar ? this.actionBar.page : undefined;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ActionItem.prototype._raiseTap = function () {
-        this._emit(ActionItem.tapEvent);
+    ActionItemBase.prototype._raiseTap = function () {
+        this._emit(ActionItemBase.tapEvent);
     };
-    ActionItem.onItemChanged = function (data) {
-        var menuItem = data.object;
-        if (menuItem.actionBar) {
-            menuItem.actionBar.update();
-        }
-    };
-    ActionItem.prototype._addActionViewToActionBar = function () {
-        if (this._actionView && !this._actionView._isAddedToNativeVisualTree && this._actionBar) {
-            ensureStyle();
-            this._actionView.style._setValue(style.horizontalAlignmentProperty, enums.HorizontalAlignment.center, dependencyObservable.ValueSource.Inherited);
-            this._actionView.style._setValue(style.verticalAlignmentProperty, enums.VerticalAlignment.center, dependencyObservable.ValueSource.Inherited);
-            this._actionBar._addView(this._actionView);
-        }
-    };
-    ActionItem.prototype._addChildFromBuilder = function (name, value) {
+    ActionItemBase.prototype._addChildFromBuilder = function (name, value) {
         this.actionView = value;
     };
-    ActionItem.tapEvent = "tap";
-    ActionItem.textProperty = new dependencyObservable.Property("text", "ActionItem", new dependencyObservable.PropertyMetadata("", null, ActionItem.onItemChanged));
-    ActionItem.iconProperty = new dependencyObservable.Property("icon", "ActionItem", new dependencyObservable.PropertyMetadata(null, null, ActionItem.onItemChanged));
-    ActionItem.visibilityProperty = new dependencyObservable.Property("visibility", "ActionItem", new dependencyObservable.PropertyMetadata(enums.Visibility.visible, null, ActionItem.onItemChanged));
-    return ActionItem;
-}(bindable.Bindable));
-exports.ActionItem = ActionItem;
+    ActionItemBase.prototype.eachChild = function (callback) {
+        if (this._actionView) {
+            callback(this._actionView);
+        }
+    };
+    return ActionItemBase;
+}(view_1.ViewBase));
+ActionItemBase.tapEvent = "tap";
+exports.ActionItemBase = ActionItemBase;
 function isVisible(item) {
-    return item.visibility === enums.Visibility.visible;
+    return item.visibility === "visible";
 }
 exports.isVisible = isVisible;
+function onTitlePropertyChanged(actionBar, oldValue, newValue) {
+    actionBar._onTitlePropertyChanged();
+}
+var titleProperty = new view_1.Property({ name: "title", valueChanged: onTitlePropertyChanged });
+titleProperty.register(ActionBarBase);
+function onItemChanged(item, oldValue, newValue) {
+    if (item.actionBar) {
+        item.actionBar.update();
+    }
+}
+var textProperty = new view_1.Property({ name: "text", defaultValue: "", valueChanged: onItemChanged });
+textProperty.register(ActionItemBase);
+var iconProperty = new view_1.Property({ name: "icon", valueChanged: onItemChanged });
+iconProperty.register(ActionItemBase);
+var visibilityProperty = new view_1.Property({ name: "visibility", defaultValue: "visible", valueChanged: onItemChanged });
+visibilityProperty.register(ActionItemBase);
 //# sourceMappingURL=action-bar-common.js.map

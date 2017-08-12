@@ -1,19 +1,33 @@
-var view_1 = require("ui/core/view");
-var dependency_observable_1 = require("ui/core/dependency-observable");
-var bindable_1 = require("ui/core/bindable");
-var platform_1 = require("platform");
-var proxy_1 = require("ui/core/proxy");
-var types = require("utils/types");
-var trace = require("trace");
-var AffectsLayout = platform_1.isAndroid ? dependency_observable_1.PropertyMetadataSettings.None : dependency_observable_1.PropertyMetadataSettings.AffectsLayout;
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
 exports.traceCategory = "TabView";
-var TabViewItem = (function (_super) {
-    __extends(TabViewItem, _super);
-    function TabViewItem() {
-        _super.apply(this, arguments);
-        this._title = "";
+var TabViewItemBase = (function (_super) {
+    __extends(TabViewItemBase, _super);
+    function TabViewItemBase() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this._title = "";
+        return _this;
     }
-    Object.defineProperty(TabViewItem.prototype, "title", {
+    Object.defineProperty(TabViewItemBase.prototype, "textTransform", {
+        get: function () {
+            return this.style.textTransform;
+        },
+        set: function (value) {
+            this.style.textTransform = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    TabViewItemBase.prototype._addChildFromBuilder = function (name, value) {
+        if (value instanceof view_1.View) {
+            this.view = value;
+        }
+    };
+    Object.defineProperty(TabViewItemBase.prototype, "title", {
         get: function () {
             return this._title;
         },
@@ -26,7 +40,7 @@ var TabViewItem = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TabViewItem.prototype, "view", {
+    Object.defineProperty(TabViewItemBase.prototype, "view", {
         get: function () {
             return this._view;
         },
@@ -36,12 +50,13 @@ var TabViewItem = (function (_super) {
                     throw new Error("Changing the view of an already loaded TabViewItem is not currently supported.");
                 }
                 this._view = value;
+                this._addView(value);
             }
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TabViewItem.prototype, "iconSource", {
+    Object.defineProperty(TabViewItemBase.prototype, "iconSource", {
         get: function () {
             return this._iconSource;
         },
@@ -54,177 +69,25 @@ var TabViewItem = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    TabViewItem.prototype._update = function () {
+    TabViewItemBase.prototype.eachChild = function (callback) {
+        var view = this._view;
+        if (view) {
+            callback(view);
+        }
     };
-    return TabViewItem;
-}(bindable_1.Bindable));
-exports.TabViewItem = TabViewItem;
-var TAB_VIEW = "TabView";
-var ITEMS = "items";
-var SELECTED_INDEX = "selectedIndex";
+    return TabViewItemBase;
+}(view_1.ViewBase));
+exports.TabViewItemBase = TabViewItemBase;
 var knownCollections;
 (function (knownCollections) {
     knownCollections.items = "items";
 })(knownCollections = exports.knownCollections || (exports.knownCollections = {}));
-var itemsProperty = new dependency_observable_1.Property(ITEMS, TAB_VIEW, new proxy_1.PropertyMetadata(undefined, AffectsLayout));
-var selectedIndexProperty = new dependency_observable_1.Property(SELECTED_INDEX, TAB_VIEW, new proxy_1.PropertyMetadata(undefined, AffectsLayout));
-selectedIndexProperty.metadata.onSetNativeValue = function (data) {
-    var tabView = data.object;
-    tabView._onSelectedIndexPropertyChangedSetNativeValue(data);
-};
-itemsProperty.metadata.onSetNativeValue = function (data) {
-    var tabView = data.object;
-    tabView._onItemsPropertyChangedSetNativeValue(data);
-};
-var TabView = (function (_super) {
-    __extends(TabView, _super);
-    function TabView() {
-        _super.apply(this, arguments);
+var TabViewBase = (function (_super) {
+    __extends(TabViewBase, _super);
+    function TabViewBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    TabView.prototype._addArrayFromBuilder = function (name, value) {
-        if (name === ITEMS) {
-            this.items = value;
-        }
-    };
-    Object.defineProperty(TabView.prototype, "items", {
-        get: function () {
-            return this._getValue(TabView.itemsProperty);
-        },
-        set: function (value) {
-            this._setValue(TabView.itemsProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TabView.prototype._onItemsPropertyChangedSetNativeValue = function (data) {
-        if (trace.enabled) {
-            trace.write("TabView.__onItemsPropertyChangedSetNativeValue(" + data.oldValue + " -> " + data.newValue + ");", exports.traceCategory);
-        }
-        if (data.oldValue) {
-            this._removeTabs(data.oldValue);
-        }
-        if (data.newValue) {
-            this._addTabs(data.newValue);
-        }
-        this._updateSelectedIndexOnItemsPropertyChanged(data.newValue);
-    };
-    TabView.prototype._updateSelectedIndexOnItemsPropertyChanged = function (newItems) {
-        if (trace.enabled) {
-            trace.write("TabView._updateSelectedIndexOnItemsPropertyChanged(" + newItems + ");", exports.traceCategory);
-        }
-        var newItemsCount = 0;
-        if (newItems) {
-            newItemsCount = newItems.length;
-        }
-        if (newItemsCount === 0) {
-            this.selectedIndex = undefined;
-        }
-        else if (types.isUndefined(this.selectedIndex) || this.selectedIndex >= newItemsCount) {
-            this.selectedIndex = 0;
-        }
-    };
-    TabView.prototype._removeTabs = function (oldItems) {
-        var i;
-        var length = oldItems.length;
-        var oldItem;
-        for (i = 0; i < length; i++) {
-            oldItem = oldItems[i];
-            if (!oldItem) {
-                throw new Error("TabViewItem at index " + i + " is undefined.");
-            }
-            if (!oldItem.view) {
-                throw new Error("TabViewItem at index " + i + " does not have a view.");
-            }
-            this._removeView(oldItem.view);
-        }
-    };
-    TabView.prototype._addTabs = function (newItems) {
-        var i;
-        var length = newItems.length;
-        var newItem;
-        for (i = 0; i < length; i++) {
-            newItem = newItems[i];
-            if (!newItem) {
-                throw new Error("TabViewItem at index " + i + " is undefined.");
-            }
-            if (!newItem.view) {
-                throw new Error("TabViewItem at index " + i + " does not have a view.");
-            }
-            this._addView(newItem.view, i);
-        }
-    };
-    Object.defineProperty(TabView.prototype, "selectedIndex", {
-        get: function () {
-            return this._getValue(TabView.selectedIndexProperty);
-        },
-        set: function (value) {
-            this._setValue(TabView.selectedIndexProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TabView.prototype, "selectedColor", {
-        get: function () {
-            if (platform_1.isAndroid) {
-                return this.style.androidSelectedTabHighlightColor;
-            }
-            else {
-                return this.style.selectedTabTextColor;
-            }
-        },
-        set: function (value) {
-            if (platform_1.isAndroid) {
-                this.style.androidSelectedTabHighlightColor = value;
-                ;
-            }
-            else {
-                this.style.selectedTabTextColor = value;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TabView.prototype, "tabsBackgroundColor", {
-        get: function () {
-            return this.style.tabBackgroundColor;
-        },
-        set: function (value) {
-            this.style.tabBackgroundColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TabView.prototype, "tabTextColor", {
-        get: function () {
-            return this.style.tabTextColor;
-        },
-        set: function (value) {
-            this.style.tabTextColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TabView.prototype, "tabBackgroundColor", {
-        get: function () {
-            return this.style.tabBackgroundColor;
-        },
-        set: function (value) {
-            this.style.tabBackgroundColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TabView.prototype, "selectedTabTextColor", {
-        get: function () {
-            return this.style.selectedTabTextColor;
-        },
-        set: function (value) {
-            this.style.selectedTabTextColor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TabView.prototype, "androidSelectedTabHighlightColor", {
+    Object.defineProperty(TabViewBase.prototype, "androidSelectedTabHighlightColor", {
         get: function () {
             return this.style.androidSelectedTabHighlightColor;
         },
@@ -234,65 +97,60 @@ var TabView = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TabView.prototype, "textTransform", {
+    Object.defineProperty(TabViewBase.prototype, "tabTextColor", {
         get: function () {
-            return this.style.textTransform;
+            return this.style.tabTextColor;
         },
         set: function (value) {
-            this.style.textTransform = value;
+            this.style.tabTextColor = value;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TabView.prototype, "iosIconRenderingMode", {
+    Object.defineProperty(TabViewBase.prototype, "tabBackgroundColor", {
         get: function () {
-            return undefined;
+            return this.style.tabBackgroundColor;
         },
         set: function (value) {
+            this.style.tabBackgroundColor = value;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TabView.prototype, "androidOffscreenTabLimit", {
+    Object.defineProperty(TabViewBase.prototype, "selectedTabTextColor", {
         get: function () {
-            return undefined;
+            return this.style.selectedTabTextColor;
         },
         set: function (value) {
+            this.style.selectedTabTextColor = value;
         },
         enumerable: true,
         configurable: true
     });
-    TabView.prototype._onSelectedIndexPropertyChangedSetNativeValue = function (data) {
-        var index = this.selectedIndex;
-        if (types.isUndefined(index)) {
-            return;
-        }
-        if (types.isDefined(this.items)) {
-            if (index < 0 || index >= this.items.length) {
-                this.selectedIndex = undefined;
-                throw new Error("SelectedIndex should be between [0, items.length)");
-            }
+    TabViewBase.prototype._addArrayFromBuilder = function (name, value) {
+        if (name === "items") {
+            this.items = value;
         }
     };
-    Object.defineProperty(TabView.prototype, "_selectedView", {
+    TabViewBase.prototype._addChildFromBuilder = function (name, value) {
+        if (name === "TabViewItem") {
+            if (!this.items) {
+                this.items = new Array();
+            }
+            this.items.push(value);
+            this._addView(value);
+            exports.selectedIndexProperty.coerce(this);
+        }
+    };
+    Object.defineProperty(TabViewBase.prototype, "_selectedView", {
         get: function () {
-            var _items = this.items;
-            var _selectedIndex = this.selectedIndex;
-            if (!_items) {
-                return undefined;
-            }
-            if (_items.length === 0) {
-                return undefined;
-            }
-            if (_selectedIndex === undefined) {
-                return undefined;
-            }
-            return _items[_selectedIndex].view;
+            var selectedIndex = this.selectedIndex;
+            return selectedIndex > -1 ? this.items[selectedIndex].view : null;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(TabView.prototype, "_childrenCount", {
+    Object.defineProperty(TabViewBase.prototype, "_childrenCount", {
         get: function () {
             if (this.items) {
                 return this.items.length;
@@ -302,44 +160,88 @@ var TabView = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    TabView.prototype._eachChildView = function (callback) {
-        var _items = this.items;
-        if (!_items) {
-            return;
+    TabViewBase.prototype.eachChild = function (callback) {
+        var items = this.items;
+        if (items) {
+            items.forEach(function (item, i) {
+                callback(item);
+            });
         }
-        var i;
-        var length = _items.length;
-        var item;
-        var retVal;
-        for (i = 0; i < length; i++) {
-            item = _items[i];
-            if (item.view) {
-                retVal = callback(item.view);
-                if (retVal === false) {
-                    break;
+    };
+    TabViewBase.prototype.eachChildView = function (callback) {
+        var items = this.items;
+        if (items) {
+            items.forEach(function (item, i) {
+                callback(item.view);
+            });
+        }
+    };
+    TabViewBase.prototype.onItemsChanged = function (oldItems, newItems) {
+        if (oldItems) {
+            for (var i = 0, count = oldItems.length; i < count; i++) {
+                this._removeView(oldItems[i]);
+            }
+        }
+        if (newItems) {
+            for (var i = 0, count = newItems.length; i < count; i++) {
+                var item = newItems[i];
+                if (!item) {
+                    throw new Error("TabViewItem at index " + i + " is undefined.");
                 }
+                if (!item.view) {
+                    throw new Error("TabViewItem at index " + i + " does not have a view.");
+                }
+                this._addView(item);
             }
         }
     };
-    TabView.prototype._onBindingContextChanged = function (oldValue, newValue) {
-        _super.prototype._onBindingContextChanged.call(this, oldValue, newValue);
-        if (this.items && this.items.length > 0) {
-            var i = 0;
-            var length = this.items.length;
-            for (; i < length; i++) {
-                this.items[i].bindingContext = newValue;
-            }
-        }
-    };
-    TabView.prototype._getAndroidTabView = function () {
-        return undefined;
-    };
-    TabView.prototype._updateIOSTabBarColorsAndFonts = function () {
-    };
-    TabView.itemsProperty = itemsProperty;
-    TabView.selectedIndexProperty = selectedIndexProperty;
-    TabView.selectedIndexChangedEvent = "selectedIndexChanged";
-    return TabView;
+    return TabViewBase;
 }(view_1.View));
-exports.TabView = TabView;
+TabViewBase.selectedIndexChangedEvent = "selectedIndexChanged";
+exports.TabViewBase = TabViewBase;
+exports.selectedIndexProperty = new view_1.CoercibleProperty({
+    name: "selectedIndex", defaultValue: -1, affectsLayout: view_1.isIOS,
+    valueChanged: function (target, oldValue, newValue) {
+        target.notify({ eventName: TabViewBase.selectedIndexChangedEvent, object: target, oldIndex: oldValue, newIndex: newValue });
+    },
+    coerceValue: function (target, value) {
+        var items = target.items;
+        if (items) {
+            var max = items.length - 1;
+            if (value < 0) {
+                value = 0;
+            }
+            if (value > max) {
+                value = max;
+            }
+        }
+        else {
+            value = -1;
+        }
+        return value;
+    },
+    valueConverter: function (v) { return parseInt(v); }
+});
+exports.selectedIndexProperty.register(TabViewBase);
+exports.itemsProperty = new view_1.Property({
+    name: "items", valueChanged: function (target, oldValue, newValue) {
+        target.onItemsChanged(oldValue, newValue);
+    }
+});
+exports.itemsProperty.register(TabViewBase);
+exports.iosIconRenderingModeProperty = new view_1.Property({ name: "iosIconRenderingMode", defaultValue: "automatic" });
+exports.iosIconRenderingModeProperty.register(TabViewBase);
+exports.androidOffscreenTabLimitProperty = new view_1.Property({
+    name: "androidOffscreenTabLimit", defaultValue: 1, affectsLayout: view_1.isIOS,
+    valueConverter: function (v) { return parseInt(v); }
+});
+exports.androidOffscreenTabLimitProperty.register(TabViewBase);
+exports.tabTextColorProperty = new view_1.CssProperty({ name: "tabTextColor", cssName: "tab-text-color", equalityComparer: view_1.Color.equals, valueConverter: function (v) { return new view_1.Color(v); } });
+exports.tabTextColorProperty.register(view_1.Style);
+exports.tabBackgroundColorProperty = new view_1.CssProperty({ name: "tabBackgroundColor", cssName: "tab-background-color", equalityComparer: view_1.Color.equals, valueConverter: function (v) { return new view_1.Color(v); } });
+exports.tabBackgroundColorProperty.register(view_1.Style);
+exports.selectedTabTextColorProperty = new view_1.CssProperty({ name: "selectedTabTextColor", cssName: "selected-tab-text-color", equalityComparer: view_1.Color.equals, valueConverter: function (v) { return new view_1.Color(v); } });
+exports.selectedTabTextColorProperty.register(view_1.Style);
+exports.androidSelectedTabHighlightColorProperty = new view_1.CssProperty({ name: "androidSelectedTabHighlightColor", cssName: "android-selected-tab-highlight-color", equalityComparer: view_1.Color.equals, valueConverter: function (v) { return new view_1.Color(v); } });
+exports.androidSelectedTabHighlightColorProperty.register(view_1.Style);
 //# sourceMappingURL=tab-view-common.js.map

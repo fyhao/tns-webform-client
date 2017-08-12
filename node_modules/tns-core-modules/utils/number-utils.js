@@ -1,3 +1,4 @@
+Object.defineProperty(exports, "__esModule", { value: true });
 var epsilon = 1E-05;
 function areClose(value1, value2) {
     return (Math.abs(value1 - value2) < epsilon);
@@ -27,4 +28,6 @@ function notNegative(value) {
     return value >= 0;
 }
 exports.notNegative = notNegative;
+exports.radiansToDegrees = function (a) { return a * (180 / Math.PI); };
+exports.degreesToRadians = function (a) { return a * (Math.PI / 180); };
 //# sourceMappingURL=number-utils.js.map

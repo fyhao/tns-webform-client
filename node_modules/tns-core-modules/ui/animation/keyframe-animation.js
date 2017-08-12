@@ -1,6 +1,20 @@
-var animationModule = require("ui/animation");
-var enums = require("ui/enums");
-var style = require("ui/styling/style");
+Object.defineProperty(exports, "__esModule", { value: true });
+var enums_1 = require("../enums");
+var properties_1 = require("../core/properties");
+var animation_1 = require("./animation");
+var style_properties_1 = require("../styling/style-properties");
+var Keyframes = (function () {
+    function Keyframes() {
+    }
+    return Keyframes;
+}());
+exports.Keyframes = Keyframes;
+var UnparsedKeyframe = (function () {
+    function UnparsedKeyframe() {
+    }
+    return UnparsedKeyframe;
+}());
+exports.UnparsedKeyframe = UnparsedKeyframe;
 var KeyframeDeclaration = (function () {
     function KeyframeDeclaration() {
     }
@@ -9,6 +23,7 @@ var KeyframeDeclaration = (function () {
 exports.KeyframeDeclaration = KeyframeDeclaration;
 var KeyframeInfo = (function () {
     function KeyframeInfo() {
+        this.curve = enums_1.AnimationCurve.ease;
     }
     return KeyframeInfo;
 }());
@@ -19,7 +34,7 @@ var KeyframeAnimationInfo = (function () {
         this.duration = 0.3;
         this.delay = 0;
         this.iterations = 1;
-        this.curve = enums.AnimationCurve.ease;
+        this.curve = "ease";
         this.isForwards = false;
         this.isReverse = false;
     }
@@ -31,20 +46,20 @@ var KeyframeAnimation = (function () {
         this.delay = 0;
         this.iterations = 1;
     }
-    KeyframeAnimation.keyframeAnimationFromInfo = function (info, valueSourceModifier) {
-        var animations = new Array();
+    KeyframeAnimation.keyframeAnimationFromInfo = function (info) {
         var length = info.keyframes.length;
+        var animations = new Array();
         var startDuration = 0;
         if (info.isReverse) {
             for (var index_1 = length - 1; index_1 >= 0; index_1--) {
                 var keyframe = info.keyframes[index_1];
-                startDuration = KeyframeAnimation.parseKeyframe(info, keyframe, animations, startDuration, valueSourceModifier);
+                startDuration = KeyframeAnimation.parseKeyframe(info, keyframe, animations, startDuration);
             }
         }
         else {
             for (var index_2 = 0; index_2 < length; index_2++) {
                 var keyframe = info.keyframes[index_2];
-                startDuration = KeyframeAnimation.parseKeyframe(info, keyframe, animations, startDuration, valueSourceModifier);
+                startDuration = KeyframeAnimation.parseKeyframe(info, keyframe, animations, startDuration);
             }
             for (var index_3 = length - 1; index_3 > 0; index_3--) {
                 var a1 = animations[index_3];
@@ -55,12 +70,7 @@ var KeyframeAnimation = (function () {
                 }
             }
         }
-        for (var index_4 = 1; index_4 < length; index_4++) {
-            var a = animations[index_4];
-            if (a["curve"] === undefined) {
-                a["curve"] = info.curve;
-            }
-        }
+        animations.map(function (a) { return a["curve"] ? a : Object.assign(a, { curve: info.curve }); });
         var animation = new KeyframeAnimation();
         animation.delay = info.delay;
         animation.iterations = info.iterations;
@@ -68,7 +78,7 @@ var KeyframeAnimation = (function () {
         animation._isForwards = info.isForwards;
         return animation;
     };
-    KeyframeAnimation.parseKeyframe = function (info, keyframe, animations, startDuration, valueSourceModifier) {
+    KeyframeAnimation.parseKeyframe = function (info, keyframe, animations, startDuration) {
         var animation = {};
         for (var _i = 0, _a = keyframe.declarations; _i < _a.length; _i++) {
             var declaration = _a[_i];
@@ -82,10 +92,10 @@ var KeyframeAnimation = (function () {
             duration = (info.duration * duration) - startDuration;
             startDuration += duration;
         }
-        animation["duration"] = info.isReverse ? info.duration - duration : duration;
-        animation["curve"] = keyframe.curve;
-        animation["forceLayer"] = true;
-        animation["valueSource"] = valueSourceModifier;
+        animation.duration = info.isReverse ? info.duration - duration : duration;
+        animation.curve = keyframe.curve;
+        animation.forceLayer = true;
+        animation.valueSource = "keyframe";
         animations.push(animation);
         return startDuration;
     };
@@ -139,23 +149,22 @@ var KeyframeAnimation = (function () {
         }
         if (index === 0) {
             var animation = this.animations[0];
-            var modifier = animation["valueSource"];
             if ("backgroundColor" in animation) {
-                view.style._setValue(style.backgroundColorProperty, animation["backgroundColor"], modifier);
+                view.style[style_properties_1.backgroundColorProperty.keyframe] = animation.backgroundColor;
             }
             if ("scale" in animation) {
-                view.style._setValue(style.scaleXProperty, animation["scale"].x, modifier);
-                view.style._setValue(style.scaleYProperty, animation["scale"].y, modifier);
+                view.style[style_properties_1.scaleXProperty.keyframe] = animation.scale.x;
+                view.style[style_properties_1.scaleYProperty.keyframe] = animation.scale.y;
             }
             if ("translate" in animation) {
-                view.style._setValue(style.translateXProperty, animation["translate"].x, modifier);
-                view.style._setValue(style.translateYProperty, animation["translate"].y, modifier);
+                view.style[style_properties_1.translateXProperty.keyframe] = animation.translate.x;
+                view.style[style_properties_1.translateYProperty.keyframe] = animation.translate.y;
             }
             if ("rotate" in animation) {
-                view.style._setValue(style.rotateProperty, animation["rotate"], modifier);
+                view.style[style_properties_1.rotateProperty.keyframe] = animation.rotate;
             }
             if ("opacity" in animation) {
-                view.style._setValue(style.opacityProperty, animation["opacity"], modifier);
+                view.style[style_properties_1.opacityProperty.keyframe] = animation.opacity;
             }
             setTimeout(function () { return _this.animate(view, 1, iterations); }, 1);
         }
@@ -175,9 +184,13 @@ var KeyframeAnimation = (function () {
         else {
             var animationDef = this.animations[index];
             animationDef.target = view;
-            var animation = new animationModule.Animation([animationDef]);
+            var animation = new animation_1.Animation([animationDef]);
             animation.play().then(function () {
                 _this.animate(view, index + 1, iterations);
+            }).catch(function (error) {
+                if (error.message.indexOf("Animation cancelled") < 0) {
+                    throw error;
+                }
             });
             this._nativeAnimations.push(animation);
         }
@@ -195,23 +208,22 @@ var KeyframeAnimation = (function () {
         this._reject(new Error("Animation cancelled."));
     };
     KeyframeAnimation.prototype._resetAnimationValues = function (view, animation) {
-        var modifier = animation["valueSource"];
         if ("backgroundColor" in animation) {
-            view.style._resetValue(style.backgroundColorProperty, modifier);
+            view.style[style_properties_1.backgroundColorProperty.keyframe] = properties_1.unsetValue;
         }
         if ("scale" in animation) {
-            view.style._resetValue(style.scaleXProperty, modifier);
-            view.style._resetValue(style.scaleYProperty, modifier);
+            view.style[style_properties_1.scaleXProperty.keyframe] = properties_1.unsetValue;
+            view.style[style_properties_1.scaleYProperty.keyframe] = properties_1.unsetValue;
         }
         if ("translate" in animation) {
-            view.style._resetValue(style.translateXProperty, modifier);
-            view.style._resetValue(style.translateYProperty, modifier);
+            view.style[style_properties_1.translateXProperty.keyframe] = properties_1.unsetValue;
+            view.style[style_properties_1.translateYProperty.keyframe] = properties_1.unsetValue;
         }
         if ("rotate" in animation) {
-            view.style._resetValue(style.rotateProperty, modifier);
+            view.style[style_properties_1.rotateProperty.keyframe] = properties_1.unsetValue;
         }
         if ("opacity" in animation) {
-            view.style._resetValue(style.opacityProperty, modifier);
+            view.style[style_properties_1.opacityProperty.keyframe] = properties_1.unsetValue;
         }
     };
     return KeyframeAnimation;

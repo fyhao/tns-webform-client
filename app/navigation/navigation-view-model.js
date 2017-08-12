@@ -7,17 +7,17 @@ menuItems = [
     {
         "title": "Browse",
         "moduleName": "components/browseView/browseView",
-        "icon": "\ue0dd"
+        "icon": "\ue903"
     },
     {
         "title": "Browse from History",
         "moduleName": "components/browseHistoryView/browseHistoryView",
-        "icon": "\ue0dd"
+        "icon": "\ue903"
     },
     {
         "title": "Home View",
         "moduleName": "components/homeView/homeView",
-        "icon": "\ue0dd"
+        "icon": "\ue903"
     }
 
 ];

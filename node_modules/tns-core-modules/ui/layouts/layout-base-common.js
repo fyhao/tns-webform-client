@@ -1,70 +1,66 @@
-var types = require("utils/types");
-var view = require("ui/core/view");
-var dependencyObservable = require("ui/core/dependency-observable");
-var dependency_observable_1 = require("ui/core/dependency-observable");
-var proxy_1 = require("ui/core/proxy");
-var clipToBoundsProperty = new dependency_observable_1.Property("clipToBounds", "LayoutBase", new proxy_1.PropertyMetadata(true, dependencyObservable.PropertyMetadataSettings.None));
-function onClipToBoundsPropertyChanged(data) {
-    var layout = data.object;
-    layout._onClipToBoundsChanged(data.oldValue, data.newValue);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-clipToBoundsProperty.metadata.onSetNativeValue = onClipToBoundsPropertyChanged;
-var LayoutBase = (function (_super) {
-    __extends(LayoutBase, _super);
-    function LayoutBase() {
-        _super.apply(this, arguments);
-        this._subViews = new Array();
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
+var LayoutBaseCommon = (function (_super) {
+    __extends(LayoutBaseCommon, _super);
+    function LayoutBaseCommon() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this._subViews = new Array();
+        return _this;
     }
-    LayoutBase.prototype._addChildFromBuilder = function (name, value) {
-        if (value instanceof view.View) {
+    LayoutBaseCommon.prototype._addChildFromBuilder = function (name, value) {
+        if (value instanceof view_1.View) {
             this.addChild(value);
         }
     };
-    LayoutBase.prototype.getChildrenCount = function () {
+    LayoutBaseCommon.prototype.getChildrenCount = function () {
         return this._subViews.length;
     };
-    Object.defineProperty(LayoutBase.prototype, "_childrenCount", {
+    Object.defineProperty(LayoutBaseCommon.prototype, "_childrenCount", {
         get: function () {
             return this._subViews.length;
         },
         enumerable: true,
         configurable: true
     });
-    LayoutBase.prototype.getChildAt = function (index) {
+    LayoutBaseCommon.prototype.getChildAt = function (index) {
         return this._subViews[index];
     };
-    LayoutBase.prototype.getChildIndex = function (child) {
+    LayoutBaseCommon.prototype.getChildIndex = function (child) {
         return this._subViews.indexOf(child);
     };
-    LayoutBase.prototype.getChildById = function (id) {
-        return view.getViewById(this, id);
+    LayoutBaseCommon.prototype.getChildById = function (id) {
+        return view_1.getViewById(this, id);
     };
-    LayoutBase.prototype._registerLayoutChild = function (child) {
+    LayoutBaseCommon.prototype._registerLayoutChild = function (child) {
     };
-    LayoutBase.prototype._unregisterLayoutChild = function (child) {
+    LayoutBaseCommon.prototype._unregisterLayoutChild = function (child) {
     };
-    LayoutBase.prototype.addChild = function (child) {
+    LayoutBaseCommon.prototype.addChild = function (child) {
         this._subViews.push(child);
         this._addView(child);
         this._registerLayoutChild(child);
     };
-    LayoutBase.prototype.insertChild = function (child, atIndex) {
+    LayoutBaseCommon.prototype.insertChild = function (child, atIndex) {
         this._subViews.splice(atIndex, 0, child);
         this._addView(child, atIndex);
         this._registerLayoutChild(child);
     };
-    LayoutBase.prototype.removeChild = function (child) {
+    LayoutBaseCommon.prototype.removeChild = function (child) {
         this._removeView(child);
         var index = this._subViews.indexOf(child);
         this._subViews.splice(index, 1);
         this._unregisterLayoutChild(child);
     };
-    LayoutBase.prototype.removeChildren = function () {
+    LayoutBaseCommon.prototype.removeChildren = function () {
         while (this.getChildrenCount() !== 0) {
             this.removeChild(this._subViews[this.getChildrenCount() - 1]);
         }
     };
-    Object.defineProperty(LayoutBase.prototype, "padding", {
+    Object.defineProperty(LayoutBaseCommon.prototype, "padding", {
         get: function () {
             return this.style.padding;
         },
@@ -74,7 +70,7 @@ var LayoutBase = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LayoutBase.prototype, "paddingTop", {
+    Object.defineProperty(LayoutBaseCommon.prototype, "paddingTop", {
         get: function () {
             return this.style.paddingTop;
         },
@@ -84,7 +80,7 @@ var LayoutBase = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LayoutBase.prototype, "paddingRight", {
+    Object.defineProperty(LayoutBaseCommon.prototype, "paddingRight", {
         get: function () {
             return this.style.paddingRight;
         },
@@ -94,7 +90,7 @@ var LayoutBase = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LayoutBase.prototype, "paddingBottom", {
+    Object.defineProperty(LayoutBaseCommon.prototype, "paddingBottom", {
         get: function () {
             return this.style.paddingBottom;
         },
@@ -104,7 +100,7 @@ var LayoutBase = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LayoutBase.prototype, "paddingLeft", {
+    Object.defineProperty(LayoutBaseCommon.prototype, "paddingLeft", {
         get: function () {
             return this.style.paddingLeft;
         },
@@ -114,20 +110,8 @@ var LayoutBase = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(LayoutBase.prototype, "clipToBounds", {
-        get: function () {
-            return this._getValue(LayoutBase.clipToBoundsProperty);
-        },
-        set: function (value) {
-            this._setValue(LayoutBase.clipToBoundsProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    LayoutBase.prototype._onClipToBoundsChanged = function (oldValue, newValue) {
-    };
-    LayoutBase.prototype._childIndexToNativeChildIndex = function (index) {
-        if (types.isUndefined(index)) {
+    LayoutBaseCommon.prototype._childIndexToNativeChildIndex = function (index) {
+        if (index === undefined) {
             return undefined;
         }
         var result = 0;
@@ -136,46 +120,32 @@ var LayoutBase = (function (_super) {
         }
         return result;
     };
-    LayoutBase.prototype._eachChildView = function (callback) {
-        var i;
-        var length = this._subViews.length;
-        var retVal;
-        for (i = 0; i < length; i++) {
-            retVal = callback(this._subViews[i]);
+    LayoutBaseCommon.prototype.eachChildView = function (callback) {
+        for (var i = 0, length_1 = this._subViews.length; i < length_1; i++) {
+            var retVal = callback(this._subViews[i]);
             if (retVal === false) {
                 break;
             }
         }
     };
-    LayoutBase.prototype.eachLayoutChild = function (callback) {
+    LayoutBaseCommon.prototype.eachLayoutChild = function (callback) {
         var lastChild = null;
-        this._eachChildView(function (cv) {
+        this.eachChildView(function (cv) {
             cv._eachLayoutView(function (lv) {
-                if (lastChild && lastChild._isVisible) {
+                if (lastChild && !lastChild.isCollapsed) {
                     callback(lastChild, false);
                 }
                 lastChild = lv;
             });
             return true;
         });
-        if (lastChild && lastChild._isVisible) {
+        if (lastChild && !lastChild.isCollapsed) {
             callback(lastChild, true);
         }
     };
-    LayoutBase.adjustChildrenLayoutParams = function (layoutBase, widthMeasureSpec, heightMeasureSpec) {
-        for (var i = 0, count = layoutBase.getChildrenCount(); i < count; i++) {
-            var child = layoutBase.getChildAt(i);
-            view.View.adjustChildLayoutParams(child, widthMeasureSpec, heightMeasureSpec);
-        }
-    };
-    LayoutBase.restoreOriginalParams = function (layoutBase) {
-        for (var i = 0, count = layoutBase.getChildrenCount(); i < count; i++) {
-            var child = layoutBase.getChildAt(i);
-            view.View.restoreChildOriginalParams(child);
-        }
-    };
-    LayoutBase.clipToBoundsProperty = clipToBoundsProperty;
-    return LayoutBase;
-}(view.CustomLayoutView));
-exports.LayoutBase = LayoutBase;
+    return LayoutBaseCommon;
+}(view_1.CustomLayoutView));
+exports.LayoutBaseCommon = LayoutBaseCommon;
+exports.clipToBoundsProperty = new view_1.Property({ name: "clipToBounds", defaultValue: true, valueConverter: view_1.booleanConverter });
+exports.clipToBoundsProperty.register(LayoutBaseCommon);
 //# sourceMappingURL=layout-base-common.js.map
