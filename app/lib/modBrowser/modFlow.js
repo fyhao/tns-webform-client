@@ -24,7 +24,7 @@ var FlowEngine = function(flow) {
 		ctx = v;
 		wv = ctx.wv;
 		item = ctx.item;
-		ctx.enable_FLOW_ENGINE_CANCELLED = enable_FLOW_ENGINE_CANCELLED;
+		ctx.FLOW_ENGINE_CANCELED_notification_queues.push(enable_FLOW_ENGINE_CANCELLED);
 		return this;
 	}
 	this.setInputVars = function(_vars) {
