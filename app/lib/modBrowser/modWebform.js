@@ -92,7 +92,7 @@ var showItemWebform = function(item, opts) {
 					_funcs['showCategory'](json.redirectUrl);
 				}
 				if(json.closewin) {
-					//helper.back();
+					topmost.goBack();
 				}
 				
 				//#47 submit callback level
@@ -118,6 +118,11 @@ var showItemWebform = function(item, opts) {
     	modWidget.init(param, {wv:wv});
 	}
 	
+	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
+		modFlow.FLOW_ENGINE_CANCELED = true;
+		console.log('FLOW engine canceled')
+	})
+  
     var _interceptCallsFromWebview = function (args) {
         var request = args.url;
         var reqMsgProtocol = 'js2ios:';
@@ -211,15 +216,6 @@ var showItemWebform = function(item, opts) {
 	ctx.vars = {};
 	ctx.blobVars = {};
 	ctx._logs = [];
-	ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
-	ctx.enable_FLOW_ENGINE_CANCELLED = function() {
-		var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
-		if(queues && queues.length) {
-			for(var i = 0; i < queues.length; i++) {
-				queues[i]();
-			}
-		}
-	}
 	ctx.createFlowEngine = function(flow) {
 		if(typeof flow != 'undefined') {
 			if(typeof flow == 'object') {
@@ -254,8 +250,6 @@ var showItemWebform = function(item, opts) {
 	ctx.showItemWebform = showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
 	ctx.showWebView = _funcs['showWebView'];
-	ctx.showCategoryItems = _funcs['showCategoryItems'];
-	ctx.showListChooser = _funcs['showListChooser'];
 	
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {
@@ -267,20 +261,6 @@ var showItemWebform = function(item, opts) {
 	var flow = item.flow;
 	// #47 FlowEngine webform level
 	ctx.createFlowEngine(flow).execute(function() {});
-	
-	// Put in external vars from showItemWebform opts
-	if(opts.vars) {
-		for(var i in opts.vars) {
-			ctx.vars[i] = opts.vars[i];
-		}
-	}
-	
-	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
-		modFlow.FLOW_ENGINE_CANCELED = true;
-		ctx.enable_FLOW_ENGINE_CANCELLED();
-		console.log('FLOW engine canceled')
-	})
-  
 }
 
 module.exports.showItemWebform = showItemWebform;
