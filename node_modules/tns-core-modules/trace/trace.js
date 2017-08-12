@@ -1,16 +1,20 @@
-var types = require("utils/types");
-exports.enabled = false;
+Object.defineProperty(exports, "__esModule", { value: true });
+var enabled = false;
 var _categories = {};
 var _writers = [];
 var _eventListeners = [];
 function enable() {
-    exports.enabled = true;
+    enabled = true;
 }
 exports.enable = enable;
 function disable() {
-    exports.enabled = false;
+    enabled = false;
 }
 exports.disable = disable;
+function isEnabled() {
+    return enabled;
+}
+exports.isEnabled = isEnabled;
 function isCategorySet(category) {
     return category in _categories;
 }
@@ -50,8 +54,9 @@ function write(message, category, type) {
         for (i = 0; i < _writers.length; i++) {
             _writers[i].write(message, category, type);
         }
+        return;
     }
-    if (!exports.enabled) {
+    if (!enabled) {
         return;
     }
     if (!(category in _categories)) {
@@ -63,7 +68,7 @@ function write(message, category, type) {
 }
 exports.write = write;
 function notifyEvent(object, name, data) {
-    if (!exports.enabled) {
+    if (!enabled) {
         return;
     }
     var i, listener, filters;
@@ -140,7 +145,7 @@ var ConsoleWriter = (function () {
             return;
         }
         var msgType;
-        if (types.isUndefined(type)) {
+        if (type === undefined) {
             msgType = messageType.log;
         }
         else {

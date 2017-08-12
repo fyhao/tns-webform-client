@@ -1,5 +1,13 @@
-var textModule = require("text");
-var utils = require("utils/utils");
+Object.defineProperty(exports, "__esModule", { value: true });
+var textModule = require("../text");
+var application_1 = require("../application");
+var applicationContext;
+function getApplicationContext() {
+    if (!applicationContext) {
+        applicationContext = application_1.getNativeApplication().getApplicationContext();
+    }
+    return applicationContext;
+}
 var FileSystemAccess = (function () {
     function FileSystemAccess() {
         this._pathSeparator = "/";
@@ -147,15 +155,15 @@ var FileSystemAccess = (function () {
         }
     };
     FileSystemAccess.prototype.getDocumentsFolderPath = function () {
-        var dir = utils.ad.getApplicationContext().getFilesDir();
+        var dir = getApplicationContext().getFilesDir();
         return dir.getAbsolutePath();
     };
     FileSystemAccess.prototype.getLogicalRootPath = function () {
-        var dir = utils.ad.getApplicationContext().getFilesDir();
+        var dir = getApplicationContext().getFilesDir();
         return dir.getCanonicalPath();
     };
     FileSystemAccess.prototype.getTempFolderPath = function () {
-        var dir = utils.ad.getApplicationContext().getCacheDir();
+        var dir = getApplicationContext().getCacheDir();
         return dir.getAbsolutePath();
     };
     FileSystemAccess.prototype.getCurrentAppPath = function () {
@@ -191,7 +199,6 @@ var FileSystemAccess = (function () {
     };
     FileSystemAccess.prototype.readText = function (path, onError, encoding) {
         try {
-            var types = require("utils/types");
             var javaFile = new java.io.File(path);
             var stream = new java.io.FileInputStream(javaFile);
             var actualEncoding = encoding;
@@ -204,7 +211,7 @@ var FileSystemAccess = (function () {
             var result = "";
             while (true) {
                 line = bufferedReader.readLine();
-                if (types.isNullOrUndefined(line)) {
+                if (line === null) {
                     break;
                 }
                 if (result.length > 0) {

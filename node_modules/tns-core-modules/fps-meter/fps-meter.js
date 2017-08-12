@@ -1,4 +1,5 @@
-var fpsNative = require("fps-meter/fps-native");
+Object.defineProperty(exports, "__esModule", { value: true });
+var fpsNative = require("./fps-native");
 var callbacks = {};
 var idCounter = 0;
 var _minFps = 1000;

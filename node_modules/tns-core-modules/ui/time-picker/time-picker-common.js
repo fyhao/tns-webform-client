@@ -1,37 +1,9 @@
-var dependencyObservable = require("ui/core/dependency-observable");
-var proxy = require("ui/core/proxy");
-var view = require("ui/core/view");
-var types = require("utils/types");
-function isHourValid(value) {
-    return types.isNumber(value) && value >= 0 && value <= 23;
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-function isMinuteValid(value) {
-    return types.isNumber(value) && value >= 0 && value <= 59;
-}
-function isMinuteIntervalValid(value) {
-    return types.isNumber(value) && value >= 1 && value <= 30 && 60 % value === 0;
-}
-function getMinutes(hour) {
-    return hour * 60;
-}
-function isGreaterThanMinTime(picker, hour, minute) {
-    if (!types.isDefined(picker.minHour) || !types.isDefined(picker.minMinute)) {
-        return true;
-    }
-    return getMinutes(types.isDefined(hour) ? hour : picker.hour) + (types.isDefined(minute) ? minute : picker.minute) >= getMinutes(picker.minHour) + picker.minMinute;
-}
-exports.isGreaterThanMinTime = isGreaterThanMinTime;
-function isLessThanMaxTime(picker, hour, minute) {
-    if (!types.isDefined(picker.maxHour) || !types.isDefined(picker.maxMinute)) {
-        return true;
-    }
-    return getMinutes(types.isDefined(hour) ? hour : picker.hour) + (types.isDefined(minute) ? minute : picker.minute) <= getMinutes(picker.maxHour) + picker.maxMinute;
-}
-exports.isLessThanMaxTime = isLessThanMaxTime;
-function isValidTime(picker) {
-    return isGreaterThanMinTime(picker) && isLessThanMaxTime(picker);
-}
-exports.isValidTime = isValidTime;
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
 function getValidTime(picker, hour, minute) {
     if (picker.minuteInterval > 1) {
         var minuteFloor = minute - (minute % picker.minuteInterval);
@@ -42,16 +14,50 @@ function getValidTime(picker, hour, minute) {
         }
     }
     var time = { hour: hour, minute: minute };
-    if (!isGreaterThanMinTime(picker, hour, minute)) {
-        time = { hour: picker.minHour, minute: picker.minMinute };
-    }
     if (!isLessThanMaxTime(picker, hour, minute)) {
         time = { hour: picker.maxHour, minute: picker.maxMinute };
+    }
+    if (!isGreaterThanMinTime(picker, hour, minute)) {
+        time = { hour: picker.minHour, minute: picker.minMinute };
     }
     return time;
 }
 exports.getValidTime = getValidTime;
+function isValidTime(picker) {
+    return isGreaterThanMinTime(picker) && isLessThanMaxTime(picker);
+}
+function isHourValid(value) {
+    return typeof value === "number" && value >= 0 && value <= 23;
+}
+function isMinuteValid(value) {
+    return typeof value === "number" && value >= 0 && value <= 59;
+}
+function isMinuteIntervalValid(value) {
+    return typeof value === "number" && value >= 1 && value <= 30 && 60 % value === 0;
+}
+function getMinutes(hour) {
+    return hour * 60;
+}
+function isDefined(value) {
+    return value !== undefined;
+}
+exports.isDefined = isDefined;
+function isGreaterThanMinTime(picker, hour, minute) {
+    if (picker.minHour === undefined || picker.minMinute === undefined) {
+        return true;
+    }
+    return getMinutes(hour !== undefined ? hour : picker.hour) + (minute !== undefined ? minute : picker.minute) >= getMinutes(picker.minHour) + picker.minMinute;
+}
+function isLessThanMaxTime(picker, hour, minute) {
+    if (!isDefined(picker.maxHour) || !isDefined(picker.maxMinute)) {
+        return true;
+    }
+    return getMinutes(isDefined(hour) ? hour : picker.hour) + (isDefined(minute) ? minute : picker.minute) <= getMinutes(picker.maxHour) + picker.maxMinute;
+}
 function toString(value) {
+    if (value instanceof Date) {
+        return value + "";
+    }
     return value < 10 ? "0" + value : "" + value;
 }
 function getMinMaxTimeErrorMessage(picker) {
@@ -60,190 +66,83 @@ function getMinMaxTimeErrorMessage(picker) {
 function getErrorMessage(picker, propertyName, newValue) {
     return propertyName + " property value (" + toString(newValue) + ":" + toString(picker.minute) + ") is not valid. " + getMinMaxTimeErrorMessage(picker) + ".";
 }
-function onHourPropertyChanged(data) {
-    var picker = data.object;
-    if (isValidTime(picker)) {
-        picker._setNativeTime();
-        if (picker.time) {
-            picker.time.setHours(picker.hour);
+var TimePickerBase = (function (_super) {
+    __extends(TimePickerBase, _super);
+    function TimePickerBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return TimePickerBase;
+}(view_1.View));
+exports.TimePickerBase = TimePickerBase;
+exports.minHourProperty = new view_1.Property({
+    name: "minHour", defaultValue: 0, valueChanged: function (picker, oldValue, newValue) {
+        if (!isHourValid(newValue) || !isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "minHour", newValue));
         }
-        else {
-            picker.time = new Date(0, 0, 0, picker.hour, picker.minute);
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.minHourProperty.register(TimePickerBase);
+exports.maxHourProperty = new view_1.Property({
+    name: "maxHour", defaultValue: 23, valueChanged: function (picker, oldValue, newValue) {
+        if (!isHourValid(newValue) || !isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "maxHour", newValue));
         }
-    }
-    else {
-        throw new Error(getErrorMessage(picker, "Hour", data.newValue));
-    }
-}
-function onMinutePropertyChanged(data) {
-    var picker = data.object;
-    if (isValidTime(picker)) {
-        picker._setNativeTime();
-        if (picker.time) {
-            picker.time.setMinutes(picker.minute);
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.maxHourProperty.register(TimePickerBase);
+exports.minMinuteProperty = new view_1.Property({
+    name: "minMinute", defaultValue: 0, valueChanged: function (picker, oldValue, newValue) {
+        if (!isMinuteValid(newValue) || !isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "minMinute", newValue));
         }
-        else {
-            picker.time = new Date(0, 0, 0, picker.hour, picker.minute);
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.minMinuteProperty.register(TimePickerBase);
+exports.maxMinuteProperty = new view_1.Property({
+    name: "maxMinute", defaultValue: 59, valueChanged: function (picker, oldValue, newValue) {
+        if (!isMinuteValid(newValue) || !isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "maxMinute", newValue));
         }
-    }
-    else {
-        throw new Error(getErrorMessage(picker, "Minute", data.newValue));
-    }
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.maxMinuteProperty.register(TimePickerBase);
+exports.minuteIntervalProperty = new view_1.Property({
+    name: "minuteInterval", defaultValue: 1, valueChanged: function (picker, oldValue, newValue) {
+        if (!isMinuteIntervalValid(newValue)) {
+            throw new Error(getErrorMessage(picker, "minuteInterval", newValue));
+        }
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.minuteIntervalProperty.register(TimePickerBase);
+function dateComparer(x, y) {
+    return (x <= y && x >= y) ? true : false;
 }
-function onTimePropertyChanged(data) {
-    var picker = data.object;
-    var newTime = data.newValue;
-    picker.hour = newTime.getHours();
-    picker.minute = newTime.getMinutes();
-    if (isValidTime(picker)) {
-        picker._setNativeTime();
+exports.minuteProperty = new view_1.Property({
+    name: "minute", defaultValue: 0, valueChanged: function (picker, oldValue, newValue) {
+        if (!isMinuteValid(newValue) || !isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "minute", newValue));
+        }
+        picker.time = new Date(0, 0, 0, picker.hour, picker.minute);
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.minuteProperty.register(TimePickerBase);
+exports.hourProperty = new view_1.Property({
+    name: "hour", defaultValue: 0, valueChanged: function (picker, oldValue, newValue) {
+        if (!isHourValid(newValue) || !isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "Hour", newValue));
+        }
+        picker.time = new Date(0, 0, 0, picker.hour, picker.minute);
+    }, valueConverter: function (v) { return parseInt(v); }
+});
+exports.hourProperty.register(TimePickerBase);
+exports.timeProperty = new view_1.Property({
+    name: "time", equalityComparer: dateComparer, valueChanged: function (picker, oldValue, newValue) {
+        if (!isValidTime(picker)) {
+            throw new Error(getErrorMessage(picker, "time", newValue));
+        }
+        picker.hour = newValue.getHours();
+        picker.minute = newValue.getMinutes();
     }
-    else {
-        throw new Error(getErrorMessage(picker, "Time", data.newValue));
-    }
-}
-function onMinMinutePropertyChanged(data) {
-    var picker = data.object;
-    if (isValidTime(picker)) {
-        picker._setNativeMinTime();
-    }
-    else {
-        throw new Error(getErrorMessage(picker, "Minute", data.newValue));
-    }
-}
-function onMaxMinutePropertyChanged(data) {
-    var picker = data.object;
-    if (isValidTime(picker)) {
-        picker._setNativeMaxTime();
-    }
-    else {
-        throw new Error(getErrorMessage(picker, "Minute", data.newValue));
-    }
-}
-function onMinHourPropertyChanged(data) {
-    var picker = data.object;
-    if (isValidTime(picker)) {
-        picker._setNativeMinTime();
-    }
-    else {
-        throw new Error(getErrorMessage(picker, "Hour", data.newValue));
-    }
-}
-function onMaxHourPropertyChanged(data) {
-    var picker = data.object;
-    if (isValidTime(picker)) {
-        picker._setNativeMaxTime();
-    }
-    else {
-        throw new Error(getErrorMessage(picker, "Hour", data.newValue));
-    }
-}
-function onMinuteIntervalPropertyChanged(data) {
-    var picker = data.object;
-    picker._setNativeMinuteIntervalTime();
-}
-var TimePicker = (function (_super) {
-    __extends(TimePicker, _super);
-    function TimePicker() {
-        _super.apply(this, arguments);
-    }
-    Object.defineProperty(TimePicker.prototype, "hour", {
-        get: function () {
-            return this._getValue(TimePicker.hourProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.hourProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "minute", {
-        get: function () {
-            return this._getValue(TimePicker.minuteProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.minuteProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "time", {
-        get: function () {
-            return this._getValue(TimePicker.timeProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.timeProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "minuteInterval", {
-        get: function () {
-            return this._getValue(TimePicker.minuteIntervalProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.minuteIntervalProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "maxHour", {
-        get: function () {
-            return this._getValue(TimePicker.maxHourProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.maxHourProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "maxMinute", {
-        get: function () {
-            return this._getValue(TimePicker.maxMinuteProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.maxMinuteProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "minHour", {
-        get: function () {
-            return this._getValue(TimePicker.minHourProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.minHourProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TimePicker.prototype, "minMinute", {
-        get: function () {
-            return this._getValue(TimePicker.minMinuteProperty);
-        },
-        set: function (value) {
-            this._setValue(TimePicker.minMinuteProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TimePicker.prototype._setNativeTime = function () {
-    };
-    TimePicker.prototype._setNativeMinTime = function () {
-    };
-    TimePicker.prototype._setNativeMaxTime = function () {
-    };
-    TimePicker.prototype._setNativeMinuteIntervalTime = function () {
-    };
-    TimePicker.hourProperty = new dependencyObservable.Property("hour", "TimePicker", new proxy.PropertyMetadata(0, dependencyObservable.PropertyMetadataSettings.None, onHourPropertyChanged, isHourValid));
-    TimePicker.minHourProperty = new dependencyObservable.Property("minHour", "TimePicker", new proxy.PropertyMetadata(0, dependencyObservable.PropertyMetadataSettings.None, onMinHourPropertyChanged, isHourValid));
-    TimePicker.maxHourProperty = new dependencyObservable.Property("maxHour", "TimePicker", new proxy.PropertyMetadata(23, dependencyObservable.PropertyMetadataSettings.None, onMaxHourPropertyChanged, isHourValid));
-    TimePicker.minuteProperty = new dependencyObservable.Property("minute", "TimePicker", new proxy.PropertyMetadata(0, dependencyObservable.PropertyMetadataSettings.None, onMinutePropertyChanged, isMinuteValid));
-    TimePicker.minMinuteProperty = new dependencyObservable.Property("minMinute", "TimePicker", new proxy.PropertyMetadata(0, dependencyObservable.PropertyMetadataSettings.None, onMinMinutePropertyChanged, isMinuteValid));
-    TimePicker.maxMinuteProperty = new dependencyObservable.Property("maxMinute", "TimePicker", new proxy.PropertyMetadata(59, dependencyObservable.PropertyMetadataSettings.None, onMaxMinutePropertyChanged, isMinuteValid));
-    TimePicker.minuteIntervalProperty = new dependencyObservable.Property("minuteInterval", "TimePicker", new proxy.PropertyMetadata(1, dependencyObservable.PropertyMetadataSettings.None, onMinuteIntervalPropertyChanged, isMinuteIntervalValid));
-    TimePicker.timeProperty = new dependencyObservable.Property("time", "TimePicker", new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.None, onTimePropertyChanged, isValidTime));
-    return TimePicker;
-}(view.View));
-exports.TimePicker = TimePicker;
+});
+exports.timeProperty.register(TimePickerBase);
 //# sourceMappingURL=time-picker-common.js.map

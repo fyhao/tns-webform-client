@@ -1,8 +1,9 @@
-var transition_1 = require("ui/transition");
+Object.defineProperty(exports, "__esModule", { value: true });
+var transition_1 = require("./transition");
 var FadeTransition = (function (_super) {
     __extends(FadeTransition, _super);
     function FadeTransition() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     FadeTransition.prototype.createAndroidAnimator = function (transitionType) {
         var alphaValues = Array.create("float", 2);

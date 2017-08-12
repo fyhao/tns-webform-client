@@ -1,24 +1,17 @@
-var view_1 = require("ui/core/view");
-var dependency_observable_1 = require("ui/core/dependency-observable");
-var proxy_1 = require("ui/core/proxy");
-var busyProperty = new dependency_observable_1.Property("busy", "ActivityIndicator", new proxy_1.PropertyMetadata(false));
-var ActivityIndicator = (function (_super) {
-    __extends(ActivityIndicator, _super);
-    function ActivityIndicator() {
-        _super.apply(this, arguments);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var view_1 = require("../core/view");
+__export(require("../core/view"));
+var ActivityIndicatorBase = (function (_super) {
+    __extends(ActivityIndicatorBase, _super);
+    function ActivityIndicatorBase() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(ActivityIndicator.prototype, "busy", {
-        get: function () {
-            return this._getValue(ActivityIndicator.busyProperty);
-        },
-        set: function (value) {
-            this._setValue(ActivityIndicator.busyProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ActivityIndicator.busyProperty = busyProperty;
-    return ActivityIndicator;
+    return ActivityIndicatorBase;
 }(view_1.View));
-exports.ActivityIndicator = ActivityIndicator;
+exports.ActivityIndicatorBase = ActivityIndicatorBase;
+exports.busyProperty = new view_1.Property({ name: "busy", defaultValue: false, valueConverter: view_1.booleanConverter });
+exports.busyProperty.register(ActivityIndicatorBase);
 //# sourceMappingURL=activity-indicator-common.js.map

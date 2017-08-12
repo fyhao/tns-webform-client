@@ -1,9 +1,11 @@
-var transition_1 = require("ui/transition");
+Object.defineProperty(exports, "__esModule", { value: true });
+var transition_1 = require("./transition");
 var FlipTransition = (function (_super) {
     __extends(FlipTransition, _super);
     function FlipTransition(direction, duration, curve) {
-        _super.call(this, duration, curve);
-        this._direction = direction;
+        var _this = _super.call(this, duration, curve) || this;
+        _this._direction = direction;
+        return _this;
     }
     FlipTransition.prototype.createAndroidAnimator = function (transitionType) {
         var objectAnimators;

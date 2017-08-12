@@ -1,157 +1,59 @@
-var proxy = require("ui/core/proxy");
-var dependencyObservable = require("ui/core/dependency-observable");
-var viewModule = require("ui/core/view");
-var layoutBaseModule = require("ui/layouts/layout-base");
-var utils = require("utils/utils");
-var trace = require("trace");
-var platform = require("platform");
-var stackLayout = require("ui/layouts/stack-layout");
-var types = require("utils/types");
-var builder = require("ui/builder");
-var observableArray = require("data/observable-array");
-var weakEvents = require("ui/core/weak-event-listener");
-var label;
-function ensureLabel() {
-    if (!label) {
-        label = require("ui/label");
-    }
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var ITEMS = "items";
-var ITEMTEMPLATE = "itemTemplate";
-var LAYOUT = "layout";
-var REPEATER = "Repeater";
+Object.defineProperty(exports, "__esModule", { value: true });
+var label_1 = require("../label");
+var layout_base_1 = require("../layouts/layout-base");
+var stack_layout_1 = require("../layouts/stack-layout");
+var observable_array_1 = require("../../data/observable-array");
+var weak_event_listener_1 = require("../core/weak-event-listener");
+var builder_1 = require("../builder");
+__export(require("../layouts/layout-base"));
 var knownTemplates;
 (function (knownTemplates) {
     knownTemplates.itemTemplate = "itemTemplate";
 })(knownTemplates = exports.knownTemplates || (exports.knownTemplates = {}));
-function onItemsPropertyChanged(data) {
-    var repeater = data.object;
-    repeater._onItemsPropertyChanged(data);
-}
-function onItemTemplatePropertyChanged(data) {
-    var repeater = data.object;
-    repeater._onItemTemplatePropertyChanged(data);
-}
-function onItemsLayoutPropertyPropertyChanged(data) {
-    var repeater = data.object;
-    repeater._onItemsLayoutPropertyPropertyChanged(data);
-}
 var Repeater = (function (_super) {
     __extends(Repeater, _super);
     function Repeater() {
-        _super.call(this);
-        this._isDirty = false;
-        if (platform.device.os === platform.platformNames.ios) {
-            this._ios = UIView.new();
-        }
-        this.itemsLayout = new stackLayout.StackLayout();
+        var _this = _super.call(this) || this;
+        _this._isDirty = false;
+        _this.itemsLayout = new stack_layout_1.StackLayout();
+        return _this;
     }
-    Object.defineProperty(Repeater.prototype, "items", {
-        get: function () {
-            return this._getValue(Repeater.itemsProperty);
-        },
-        set: function (value) {
-            this._setValue(Repeater.itemsProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Repeater.prototype, "itemTemplate", {
-        get: function () {
-            return this._getValue(Repeater.itemTemplateProperty);
-        },
-        set: function (value) {
-            this._setValue(Repeater.itemTemplateProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Repeater.prototype, "itemsLayout", {
-        get: function () {
-            return this._getValue(Repeater.itemsLayoutProperty);
-        },
-        set: function (value) {
-            this._setValue(Repeater.itemsLayoutProperty, value);
-        },
-        enumerable: true,
-        configurable: true
-    });
     Repeater.prototype.onLoaded = function () {
-        if (trace.enabled) {
-            trace.write("Repeater.onLoaded()", "Repeater");
-        }
         if (this._isDirty) {
             this.refresh();
         }
         _super.prototype.onLoaded.call(this);
     };
     Repeater.prototype._requestRefresh = function () {
-        if (trace.enabled) {
-            trace.write("Repeater._requestRefresh()", "Repeater");
-        }
         this._isDirty = true;
         if (this.isLoaded) {
             this.refresh();
         }
     };
     Repeater.prototype.refresh = function () {
-        if (trace.enabled) {
-            trace.write("Repeater.refresh()", "Repeater");
-        }
         if (this.itemsLayout) {
             this.itemsLayout.removeChildren();
         }
-        if (types.isNullOrUndefined(this.items) || !types.isNumber(this.items.length)) {
+        if (!this.items) {
             return;
         }
         var length = this.items.length;
         for (var i = 0; i < length; i++) {
-            var viewToAdd = !types.isNullOrUndefined(this.itemTemplate) ? builder.parse(this.itemTemplate, this) : this._getDefaultItemContent(i);
+            var viewToAdd = this.itemTemplate ? builder_1.parse(this.itemTemplate, this) : this._getDefaultItemContent(i);
             var dataItem = this._getDataItem(i);
             viewToAdd.bindingContext = dataItem;
             this.itemsLayout.addChild(viewToAdd);
         }
         this._isDirty = false;
     };
-    Repeater.prototype._onItemsPropertyChanged = function (data) {
-        if (trace.enabled) {
-            trace.write("Repeater._onItemsPropertyChanged(" + data.oldValue + " => " + data.newValue + ")", "Repeater");
-        }
-        if (data.oldValue instanceof observableArray.ObservableArray) {
-            weakEvents.removeWeakEventListener(data.oldValue, observableArray.ObservableArray.changeEvent, this._onItemsChanged, this);
-        }
-        if (data.newValue instanceof observableArray.ObservableArray) {
-            weakEvents.addWeakEventListener(data.newValue, observableArray.ObservableArray.changeEvent, this._onItemsChanged, this);
-        }
-        this._requestRefresh();
-    };
-    Repeater.prototype._onItemTemplatePropertyChanged = function (data) {
-        if (trace.enabled) {
-            trace.write("Repeater._onItemTemplatePropertyChanged(" + data.oldValue + " => " + data.newValue + ")", "Repeater");
-        }
-        this._requestRefresh();
-    };
-    Repeater.prototype._onItemsLayoutPropertyPropertyChanged = function (data) {
-        if (trace.enabled) {
-            trace.write("Repeater._onItemsLayoutPropertyPropertyChanged(" + data.oldValue + " => " + data.newValue + ")", "Repeater");
-        }
-        if (data.oldValue instanceof layoutBaseModule.LayoutBase) {
-            this._removeView(data.oldValue);
-        }
-        if (data.newValue instanceof layoutBaseModule.LayoutBase) {
-            this._addView(data.newValue);
-        }
-        this._requestRefresh();
-    };
     Repeater.prototype._onItemsChanged = function (data) {
-        if (trace.enabled) {
-            trace.write("Repeater._onItemsChanged(" + data + ")", "Repeater");
-        }
         this._requestRefresh();
     };
     Repeater.prototype._getDefaultItemContent = function (index) {
-        ensureLabel();
-        var lbl = new label.Label();
+        var lbl = new label_1.Label();
         lbl.bind({
             targetProperty: "text",
             sourceProperty: "$value"
@@ -159,15 +61,9 @@ var Repeater = (function (_super) {
         return lbl;
     };
     Repeater.prototype._getDataItem = function (index) {
-        return this.items.getItem ? this.items.getItem(index) : this.items[index];
+        var items = this.items;
+        return items.getItem ? items.getItem(index) : this.items[index];
     };
-    Object.defineProperty(Repeater.prototype, "ios", {
-        get: function () {
-            return this._ios;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Repeater.prototype, "_childrenCount", {
         get: function () {
             var count = 0;
@@ -179,28 +75,56 @@ var Repeater = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Repeater.prototype._eachChildView = function (callback) {
+    Repeater.prototype.eachChildView = function (callback) {
         if (this.itemsLayout) {
             callback(this.itemsLayout);
         }
     };
     Repeater.prototype.onLayout = function (left, top, right, bottom) {
-        viewModule.View.layoutChild(this, this.itemsLayout, 0, 0, right - left, bottom - top);
+        layout_base_1.View.layoutChild(this, this.itemsLayout, 0, 0, right - left, bottom - top);
     };
     Repeater.prototype.onMeasure = function (widthMeasureSpec, heightMeasureSpec) {
-        var result = viewModule.View.measureChild(this, this.itemsLayout, widthMeasureSpec, heightMeasureSpec);
-        var width = utils.layout.getMeasureSpecSize(widthMeasureSpec);
-        var widthMode = utils.layout.getMeasureSpecMode(widthMeasureSpec);
-        var height = utils.layout.getMeasureSpecSize(heightMeasureSpec);
-        var heightMode = utils.layout.getMeasureSpecMode(heightMeasureSpec);
-        var widthAndState = viewModule.View.resolveSizeAndState(result.measuredWidth, width, widthMode, 0);
-        var heightAndState = viewModule.View.resolveSizeAndState(result.measuredHeight, height, heightMode, 0);
+        var result = layout_base_1.View.measureChild(this, this.itemsLayout, widthMeasureSpec, heightMeasureSpec);
+        var width = layout_base_1.layout.getMeasureSpecSize(widthMeasureSpec);
+        var widthMode = layout_base_1.layout.getMeasureSpecMode(widthMeasureSpec);
+        var height = layout_base_1.layout.getMeasureSpecSize(heightMeasureSpec);
+        var heightMode = layout_base_1.layout.getMeasureSpecMode(heightMeasureSpec);
+        var widthAndState = layout_base_1.View.resolveSizeAndState(result.measuredWidth, width, widthMode, 0);
+        var heightAndState = layout_base_1.View.resolveSizeAndState(result.measuredHeight, height, heightMode, 0);
         this.setMeasuredDimension(widthAndState, heightAndState);
     };
-    Repeater.itemsProperty = new dependencyObservable.Property(ITEMS, REPEATER, new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.AffectsLayout, onItemsPropertyChanged));
-    Repeater.itemTemplateProperty = new dependencyObservable.Property(ITEMTEMPLATE, REPEATER, new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.AffectsLayout, onItemTemplatePropertyChanged));
-    Repeater.itemsLayoutProperty = new dependencyObservable.Property(LAYOUT, REPEATER, new proxy.PropertyMetadata(undefined, dependencyObservable.PropertyMetadataSettings.AffectsLayout, onItemsLayoutPropertyPropertyChanged));
     return Repeater;
-}(viewModule.CustomLayoutView));
+}(layout_base_1.CustomLayoutView));
 exports.Repeater = Repeater;
+exports.itemTemplateProperty = new layout_base_1.Property({
+    name: "itemTemplate", affectsLayout: true, valueChanged: function (target) {
+        target._requestRefresh();
+    }
+});
+exports.itemTemplateProperty.register(Repeater);
+exports.itemsProperty = new layout_base_1.Property({
+    name: "items", affectsLayout: true, valueChanged: function (target, oldValue, newValue) {
+        if (oldValue instanceof observable_array_1.ObservableArray) {
+            weak_event_listener_1.removeWeakEventListener(oldValue, observable_array_1.ObservableArray.changeEvent, target._onItemsChanged, target);
+        }
+        if (newValue instanceof observable_array_1.ObservableArray) {
+            weak_event_listener_1.addWeakEventListener(newValue, observable_array_1.ObservableArray.changeEvent, target._onItemsChanged, target);
+        }
+        target._requestRefresh();
+    }
+});
+exports.itemsProperty.register(Repeater);
+exports.itemsLayoutProperty = new layout_base_1.Property({
+    name: "itemsLayout", affectsLayout: true, valueChanged: function (target, oldValue, newValue) {
+        if (oldValue) {
+            target._removeView(oldValue);
+            oldValue.removeChildren();
+        }
+        if (newValue) {
+            target._addView(newValue);
+        }
+        target._requestRefresh();
+    }
+});
+exports.itemsLayoutProperty.register(Repeater);
 //# sourceMappingURL=repeater.js.map

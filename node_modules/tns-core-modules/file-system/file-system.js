@@ -1,4 +1,5 @@
-var file_access_module = require("file-system/file-system-access");
+Object.defineProperty(exports, "__esModule", { value: true });
+var file_access_module = require("./file-system-access");
 var fileAccess;
 var getFileAccess = function () {
     if (!fileAccess) {
@@ -162,7 +163,7 @@ exports.FileSystemEntity = FileSystemEntity;
 var File = (function (_super) {
     __extends(File, _super);
     function File() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     File.fromPath = function (path) {
         var onError = function (error) {
@@ -292,7 +293,7 @@ exports.File = File;
 var Folder = (function (_super) {
     __extends(Folder, _super);
     function Folder() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     Folder.fromPath = function (path) {
         var onError = function (error) {
@@ -583,7 +584,7 @@ var path;
     function join() {
         var paths = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            paths[_i - 0] = arguments[_i];
+            paths[_i] = arguments[_i];
         }
         var fileAccess = getFileAccess();
         return fileAccess.joinPaths(paths);

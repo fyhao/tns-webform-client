@@ -1,4 +1,5 @@
-var httpRequest = require("http/http-request");
+Object.defineProperty(exports, "__esModule", { value: true });
+var httpRequest = require("./http-request");
 global.moduleMerge(httpRequest, exports);
 function getString(arg) {
     return new Promise(function (resolve, reject) {
@@ -51,18 +52,4 @@ function getFile(arg, destinationFilePath) {
     });
 }
 exports.getFile = getFile;
-function addHeader(headers, key, value) {
-    if (!headers[key]) {
-        headers[key] = value;
-    }
-    else if (Array.isArray(headers[key])) {
-        headers[key].push(value);
-    }
-    else {
-        var values = [headers[key]];
-        values.push(value);
-        headers[key] = values;
-    }
-}
-exports.addHeader = addHeader;
 //# sourceMappingURL=http.js.map
