@@ -52,6 +52,12 @@ module.exports = {
 				});
 			});
 		}
+		else if(action == 'uploadFileTo') {
+			client.uploadFileTo(ctx.vars[step.content], step.path, function(writeRes) {
+				ctx.vars[step.result] = writeRes;
+				setTimeout(next, 1);
+			});
+		}
 		else if(action == 'log') {
 			var result = ctx.vars[step.result];
 			if(result.entries && result.entries.length) {
