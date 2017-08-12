@@ -28,8 +28,8 @@ module.exports = {
 			}
 		}
 		else if(action == 'code') {
-			var fn = new Function('ctx', 'ctx; ' + step.code);
-			fn(ctx);
+			var fn = new Function('ctx','client', 'ctx; client;' + step.code);
+			fn(ctx, client);
 		}
 		setTimeout(next, 1);
 	}
