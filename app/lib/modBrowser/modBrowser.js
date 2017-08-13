@@ -19,8 +19,18 @@ module.exports.createBrowser = function() {
 }
 
 function Browser() {
-	this.open = function(url) {
-		showCategory(url);
+	this.open = function(obj) {
+		if(typeof obj == 'string') {
+			showCategory(url);
+		}
+		else if(typeof obj == 'object') {
+			if(typeof obj.cat != 'undefined') {
+				showCategoryItems(obj);
+			}
+			else if(typeof obj.type != 'undefined') {
+				showItem(obj);
+			}
+		}
 	}
 }
 function showListChooser(options, callback) {
