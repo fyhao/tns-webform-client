@@ -3,7 +3,6 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 var list_picker_common_1 = require("./list-picker-common");
-var profiling_1 = require("../../profiling");
 __export(require("./list-picker-common"));
 var ListPicker = (function (_super) {
     __extends(ListPicker, _super);
@@ -12,6 +11,7 @@ var ListPicker = (function (_super) {
         _this.nativeView = _this._ios = UIPickerView.new();
         _this._ios.dataSource = _this._dataSource = ListPickerDataSource.initWithOwner(new WeakRef(_this));
         _this._delegate = ListPickerDelegateImpl.initWithOwner(new WeakRef(_this));
+        _this.nativeView = _this._ios;
         return _this;
     }
     ListPicker.prototype.onLoaded = function () {
@@ -58,9 +58,6 @@ var ListPicker = (function (_super) {
     };
     return ListPicker;
 }(list_picker_common_1.ListPickerBase));
-__decorate([
-    profiling_1.profile
-], ListPicker.prototype, "onLoaded", null);
 exports.ListPicker = ListPicker;
 var ListPickerDataSource = (function (_super) {
     __extends(ListPickerDataSource, _super);
