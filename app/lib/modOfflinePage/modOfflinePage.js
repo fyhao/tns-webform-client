@@ -1,11 +1,16 @@
 var setting = require('../../utils/nativeSetting');
 
-function getList() {
+function getList(fn) {
 
 	
 }
 
+function addPage(item, fn) {
+	
+}
+
 exports.getList = getList;
+exports.addPage = addPage;
 
 // for unit test mocking
 exports.setSettingController = function(s) {
