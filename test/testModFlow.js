@@ -14,15 +14,6 @@ describe('modFlow', function() {
 		ctx.vars = {};
 		ctx.blobVars = {};
 		ctx._logs = [];
-		ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
-		ctx.enable_FLOW_ENGINE_CANCELLED = function() {
-			var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
-			if(queues && queues.length) {
-				for(var i = 0; i < queues.length; i++) {
-					queues[i]();
-				}
-			}
-		}
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
 				if(typeof flow == 'object') {

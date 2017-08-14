@@ -5,7 +5,6 @@ var css_selector_1 = require("./css-selector");
 var trace_1 = require("../../trace");
 var file_system_1 = require("../../file-system");
 var application = require("../../application");
-var profiling_1 = require("../../profiling");
 var keyframeAnimationModule;
 function ensureKeyframeAnimationModule() {
     if (!keyframeAnimationModule) {
@@ -31,7 +30,7 @@ var applicationAdditionalSelectors = [];
 var applicationKeyframes = {};
 var animationsSymbol = Symbol("animations");
 var pattern = /('|")(.*?)\1/;
-var onCssChanged = profiling_1.profile('"style-scope".onCssChanged', function (args) {
+function onCssChanged(args) {
     if (args.cssText) {
         var parsed = createSelectorsFromCss(args.cssText, args.cssFile, applicationKeyframes);
         if (parsed) {
@@ -42,11 +41,11 @@ var onCssChanged = profiling_1.profile('"style-scope".onCssChanged', function (a
     else if (args.cssFile) {
         loadCss(args.cssFile);
     }
-});
+}
 function onLiveSync(args) {
     loadCss(application.getCssFileName());
 }
-var loadCss = profiling_1.profile("\"style-scope\".loadCss", function (cssFile) {
+function loadCss(cssFile) {
     if (!cssFile) {
         return undefined;
     }
@@ -61,18 +60,18 @@ var loadCss = profiling_1.profile("\"style-scope\".loadCss", function (cssFile) 
             mergeCssSelectors();
         }
     }
-});
+}
 application.on("cssChanged", onCssChanged);
 application.on("livesync", onLiveSync);
-exports.loadCssOnLaunch = profiling_1.profile('"style-scope".loadCssOnLaunch', function () {
+function loadCssOnLaunch() {
     loadCss(application.getCssFileName());
-    application.off("launch", exports.loadCssOnLaunch);
-});
+    application.off("launch", loadCssOnLaunch);
+}
 if (application.hasLaunched()) {
-    exports.loadCssOnLaunch();
+    loadCssOnLaunch();
 }
 else {
-    application.on("launch", exports.loadCssOnLaunch);
+    application.on("launch", loadCssOnLaunch);
 }
 var CssState = (function () {
     function CssState(view, match) {
@@ -156,7 +155,7 @@ var StyleScope = (function () {
         this._localCssSelectorVersion = 0;
         this._localCssSelectorsAppliedVersion = 0;
         this._applicationCssSelectorsAppliedVersion = 0;
-        this._keyframes = new Map();
+        this._keyframes = {};
     }
     Object.defineProperty(StyleScope.prototype, "css", {
         get: function () {
@@ -191,39 +190,36 @@ var StyleScope = (function () {
         this.ensureSelectors();
     };
     StyleScope.prototype.getKeyframeAnimationWithName = function (animationName) {
-        var cssKeyframes = this._keyframes[animationName];
-        if (!cssKeyframes) {
-            return;
+        var keyframes = this._keyframes[animationName];
+        if (keyframes !== undefined) {
+            ensureKeyframeAnimationModule();
+            var animation = new keyframeAnimationModule.KeyframeAnimationInfo();
+            ensureCssAnimationParserModule();
+            animation.keyframes = cssAnimationParserModule.CssAnimationParser.keyframesArrayFromCSS(keyframes);
+            return animation;
         }
-        ensureKeyframeAnimationModule();
-        var animation = new keyframeAnimationModule.KeyframeAnimationInfo();
-        ensureCssAnimationParserModule();
-        animation.keyframes = cssAnimationParserModule
-            .CssAnimationParser.keyframesArrayFromCSS(cssKeyframes.keyframes);
-        return animation;
+        return undefined;
     };
     StyleScope.prototype.ensureSelectors = function () {
+        var toMerge;
         if (this._applicationCssSelectorsAppliedVersion !== applicationCssSelectorVersion ||
             this._localCssSelectorVersion !== this._localCssSelectorsAppliedVersion ||
             !this._mergedCssSelectors) {
-            this._createSelectors();
+            toMerge = [];
+            toMerge.push(applicationCssSelectors);
+            this._applicationCssSelectorsAppliedVersion = applicationCssSelectorVersion;
+            toMerge.push(this._localCssSelectors);
+            this._localCssSelectorsAppliedVersion = this._localCssSelectorVersion;
+            for (var keyframe in applicationKeyframes) {
+                this._keyframes[keyframe] = applicationKeyframes[keyframe];
+            }
         }
-        return this._getSelectorsVersion();
-    };
-    StyleScope.prototype._createSelectors = function () {
-        var toMerge = [];
-        toMerge.push(applicationCssSelectors);
-        this._applicationCssSelectorsAppliedVersion = applicationCssSelectorVersion;
-        toMerge.push(this._localCssSelectors);
-        this._localCssSelectorsAppliedVersion = this._localCssSelectorVersion;
-        for (var keyframe in applicationKeyframes) {
-            this._keyframes[keyframe] = applicationKeyframes[keyframe];
-        }
-        if (toMerge.length > 0) {
+        if (toMerge && toMerge.length > 0) {
             this._mergedCssSelectors = toMerge.filter(function (m) { return !!m; }).reduce(function (merged, next) { return merged.concat(next); }, []);
             this._applyKeyframesOnSelectors();
             this._selectors = new css_selector_1.SelectorsMap(this._mergedCssSelectors);
         }
+        return this._getSelectorsVersion();
     };
     StyleScope.prototype.applySelectors = function (view) {
         this.ensureSelectors();
@@ -250,10 +246,9 @@ var StyleScope = (function () {
                 ensureCssAnimationParserModule();
                 for (var _i = 0, animations_1 = animations; _i < animations_1.length; _i++) {
                     var animation = animations_1[_i];
-                    var cssKeyframe = this._keyframes[animation.name];
-                    if (cssKeyframe !== undefined) {
-                        animation.keyframes = cssAnimationParserModule
-                            .CssAnimationParser.keyframesArrayFromCSS(cssKeyframe.keyframes);
+                    var keyframe = this._keyframes[animation.name];
+                    if (keyframe !== undefined) {
+                        animation.keyframes = cssAnimationParserModule.CssAnimationParser.keyframesArrayFromCSS(keyframe);
                     }
                 }
             }
@@ -264,15 +259,6 @@ var StyleScope = (function () {
     };
     return StyleScope;
 }());
-__decorate([
-    profiling_1.profile
-], StyleScope.prototype, "setCss", null);
-__decorate([
-    profiling_1.profile
-], StyleScope.prototype, "appendCss", null);
-__decorate([
-    profiling_1.profile
-], StyleScope.prototype, "_createSelectors", null);
 exports.StyleScope = StyleScope;
 function createSelectorsFromCss(css, cssFileName, keyframes) {
     try {
@@ -317,10 +303,7 @@ function createSelectorsFromSyntaxTree(ast, keyframes) {
     var rulesets = css_selector_1.fromAstNodes(nodes);
     if (rulesets && rulesets.length) {
         ensureCssAnimationParserModule();
-        rulesets.forEach(function (rule) {
-            rule[animationsSymbol] = cssAnimationParserModule.CssAnimationParser
-                .keyframeAnimationsFromCSSDeclarations(rule.declarations);
-        });
+        rulesets.forEach(function (rule) { return rule[animationsSymbol] = cssAnimationParserModule.CssAnimationParser.keyframeAnimationsFromCSSDeclarations(rule.declarations); });
     }
     return rulesets;
 }
@@ -342,7 +325,7 @@ function resolveFileNameFromUrl(url, appDirectory, fileExists) {
 exports.resolveFileNameFromUrl = resolveFileNameFromUrl;
 function applyInlineStyle(view, styleStr) {
     var localStyle = "local { " + styleStr + " }";
-    var inlineRuleSet = createSelectorsFromCss(localStyle, null, new Map());
+    var inlineRuleSet = createSelectorsFromCss(localStyle, null, {});
     var style = view.style;
     inlineRuleSet[0].declarations.forEach(function (d) {
         var name = d.property;

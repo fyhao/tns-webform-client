@@ -132,16 +132,13 @@ var Button = (function (_super) {
     Button.prototype[button_common_1.textAlignmentProperty.setNative] = function (value) {
         switch (value) {
             case "left":
-                this.nativeView.titleLabel.textAlignment = 0;
                 this.nativeView.contentHorizontalAlignment = 1;
                 break;
             case "initial":
             case "center":
-                this.nativeView.titleLabel.textAlignment = 1;
                 this.nativeView.contentHorizontalAlignment = 0;
                 break;
             case "right":
-                this.nativeView.titleLabel.textAlignment = 2;
                 this.nativeView.contentHorizontalAlignment = 2;
                 break;
         }
@@ -158,31 +155,6 @@ var Button = (function (_super) {
                 nativeView.lineBreakMode = 5;
                 nativeView.numberOfLines = 1;
                 break;
-        }
-    };
-    Button.prototype.onMeasure = function (widthMeasureSpec, heightMeasureSpec) {
-        if (!this.textWrap) {
-            return _super.prototype.onMeasure.call(this, widthMeasureSpec, heightMeasureSpec);
-        }
-        var nativeView = this.nativeView;
-        if (nativeView) {
-            var width = button_common_1.layout.getMeasureSpecSize(widthMeasureSpec);
-            var widthMode = button_common_1.layout.getMeasureSpecMode(widthMeasureSpec);
-            var height = button_common_1.layout.getMeasureSpecSize(heightMeasureSpec);
-            var heightMode = button_common_1.layout.getMeasureSpecMode(heightMeasureSpec);
-            var horizontalPadding = this.effectivePaddingLeft + this.effectiveBorderLeftWidth + this.effectivePaddingRight + this.effectiveBorderRightWidth;
-            var verticalPadding = this.effectivePaddingTop + this.effectiveBorderTopWidth + this.effectivePaddingBottom + this.effectiveBorderBottomWidth;
-            if (verticalPadding === 0) {
-                verticalPadding = button_common_1.layout.toDevicePixels(12);
-            }
-            var desiredSize = button_common_1.layout.measureNativeView(nativeView.titleLabel, width - horizontalPadding, widthMode, height - verticalPadding, heightMode);
-            desiredSize.width = desiredSize.width + horizontalPadding;
-            desiredSize.height = desiredSize.height + verticalPadding;
-            var measureWidth = Math.max(desiredSize.width, this.effectiveMinWidth);
-            var measureHeight = Math.max(desiredSize.height, this.effectiveMinHeight);
-            var widthAndState = button_common_1.View.resolveSizeAndState(measureWidth, width, widthMode, 0);
-            var heightAndState = button_common_1.View.resolveSizeAndState(measureHeight, height, heightMode, 0);
-            this.setMeasuredDimension(widthAndState, heightAndState);
         }
     };
     return Button;

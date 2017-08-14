@@ -7,7 +7,6 @@ var frame_1 = require("../frame");
 var action_bar_1 = require("../action-bar");
 var style_scope_1 = require("../styling/style-scope");
 var file_system_1 = require("../../file-system");
-var profiling_1 = require("../../profiling");
 __export(require("../content-view"));
 var PageBase = (function (_super) {
     __extends(PageBase, _super);
@@ -257,10 +256,8 @@ var PageBase = (function (_super) {
     });
     PageBase.prototype._resetCssValues = function () {
         var resetCssValuesFunc = function (view) {
-            view._batchUpdate(function () {
-                view._cancelAllAnimations();
-                content_view_1.resetCSSProperties(view.style);
-            });
+            view._cancelAllAnimations();
+            content_view_1.resetCSSProperties(view.style);
             return true;
         };
         resetCssValuesFunc(this);
@@ -274,9 +271,6 @@ PageBase.navigatingFromEvent = "navigatingFrom";
 PageBase.navigatedFromEvent = "navigatedFrom";
 PageBase.shownModallyEvent = "shownModally";
 PageBase.showingModallyEvent = "showingModally";
-__decorate([
-    profiling_1.profile
-], PageBase.prototype, "onLoaded", null);
 exports.PageBase = PageBase;
 exports.actionBarHiddenProperty = new content_view_1.Property({ name: "actionBarHidden", affectsLayout: content_view_1.isIOS, valueConverter: content_view_1.booleanConverter });
 exports.actionBarHiddenProperty.register(PageBase);
