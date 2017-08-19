@@ -27,6 +27,7 @@ function addPageInCategory(cat, url, fn) {
 	pageItem.sourceURL = url;
 	pageItem.createdTime = new Date();
 	pageItem.cat = cat;
+	pageItem.id = 'id' + new Date().getTime();
 	getDB(function(items) {
 		items.push(pageItem);
 		saveDB(items, function(status) {
