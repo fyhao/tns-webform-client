@@ -20,10 +20,11 @@ function addPage(item, fn) {
 	});
 }
 
-function addPageInCategory(cat, fn) {
+function addPageInCategory(cat, url, fn) {
 	var pageItem = {};
 	pageItem.title = 'Untitled';
 	pageItem.type = 'category';
+	pageItem.sourceURL = url;
 	pageItem.createdTime = new Date();
 	pageItem.cat = cat;
 	getDB(function(items) {

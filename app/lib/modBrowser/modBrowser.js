@@ -51,7 +51,8 @@ function showListChooser(options, callback) {
 	}
 	showCategoryItems(cat);
 }
-function showCategoryItems(cat) {
+function showCategoryItems(cat, opts) {
+	if(typeof opts == 'undefined') opts = {};
     var page = new pagesModule.Page();
 	var listView = new listViewModule.ListView();
     page.content = listView;
@@ -92,7 +93,8 @@ function showCategoryItems(cat) {
 						modWebform.showItemWebform(this.menu.webform);
 					}
 					if(this.menu.supportOffline) {
-						modOfflinePage.addPageInCategory(cat);
+						var url = opts.url || null;
+						modOfflinePage.addPageInCategory(cat, url);
 					}
 				}
 			};
@@ -114,7 +116,7 @@ function showCategory(url) {
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
-                showCategoryItems(cat);
+                showCategoryItems(cat, {url:url});
             }
         });
     }
