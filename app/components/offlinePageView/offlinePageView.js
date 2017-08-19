@@ -34,6 +34,8 @@ function pageLoaded(args) {
 			navButton.text = 'Done';
 		else
 			navButton.text = 'Edit';
+		
+		editMode = !editMode;
 	})
 	util.setRightNavButton(page, navButton);
 	// NAVBUTTON - end
