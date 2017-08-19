@@ -5,12 +5,12 @@
 
     <StackLayout>
 		<ListView class="list" items="{{ menuItems }}" itemTap="menuItemTap">
-        <ListView.itemTemplate>
-            <GridLayout cssClass="list-item" columns="auto, *">
-                <Label cssClass="list-title" col="1" text="{{ title }}" textWrap="true" />
-            </GridLayout>
-        </ListView.itemTemplate>
-    </ListView>
+			<ListView.itemTemplate>
+				<GridLayout cssClass="list-item" columns="auto, *">
+					<Label cssClass="list-title" col="1" text="{{ title }}" textWrap="true" />
+				</GridLayout>
+			</ListView.itemTemplate>
+		</ListView>
         <!-- END_CUSTOM_CODE_homeView -->
     </StackLayout>
 </Page>
