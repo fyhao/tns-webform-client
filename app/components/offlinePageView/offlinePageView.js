@@ -3,7 +3,7 @@ var isInit = true,
     helpers = require('../../utils/widgets/helper'),
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
-    viewModel = require('./offlinePageView-view-model')，
+    viewModel = require('./offlinePageView-view-model'),
 	modOfflinePage = require('../../lib/modOfflinePage/modOfflinePage.js')
 	;
 
