@@ -5,7 +5,7 @@ var isInit = true,
     // additional requires
     viewModel = require('./offlinePageView-view-model'),
 	modOfflinePage = require('../../lib/modOfflinePage/modOfflinePage.js'),
-	modBrowser = require('../../lib/modBrowser/modBrowser.js');
+	modBrowser = require('../../lib/modBrowser/modBrowser.js'),
 	actionBarModule = require("ui/action-bar"),
 	buttonModule = require("ui/button"),
 	util = require('../../utils/MyUtil')
