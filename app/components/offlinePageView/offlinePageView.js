@@ -28,8 +28,8 @@ function loadItems() {
         for(var i = 0; i < items.length; i++) {
             var item = items[i];
             menuItems.push({
-                "title": "[" + item + "]",
-                "url" : item,
+                "title": "[" + item.title + "]",
+                "item" : item,
                 "icon": "\ue903"
             },);
         }

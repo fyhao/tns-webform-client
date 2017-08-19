@@ -2,7 +2,12 @@ var setting = require('../../utils/nativeSetting');
 
 function getList(fn) {
 
+	var items = [
+		{title:'aaaaa'},
+		{title:'bbbbb'}
+	];
 	
+	fn(items);
 }
 
 function addPage(item, fn) {
