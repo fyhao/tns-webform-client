@@ -99,7 +99,9 @@ function menuItemTap(args) {
 				});
 			}});
 		}
-		
+		options.push({id:'opt2',text:'Update title', func:function() {
+			
+		}});
 		util.showOptionDialog(options);
 	}
 }
