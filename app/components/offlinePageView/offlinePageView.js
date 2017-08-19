@@ -39,5 +39,20 @@ function loadItems() {
 // START_CUSTOM_CODE_homeView
 // Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes
 
+// NAVBUTTON - start
+var navButton = new actionBarModule.NavigationButton();
+navButton.text = 'Edit'
+navButton.height = 44;
+navButton.on(buttonModule.Button.tapEvent, function() {
+	if(!editMode)
+		navButton.text = 'Done';
+	else
+		navButton.text = 'Edit';
+})
+util.setRightNavButton(page, navButton);
+// NAVBUTTON - end
+
+var editMode = false;
+
 // END_CUSTOM_CODE_homeView
 exports.pageLoaded = pageLoaded;
