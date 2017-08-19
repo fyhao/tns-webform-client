@@ -84,5 +84,5 @@ function menuItemTap(args) {
 var editMode = false;
 
 
-
+exports.menuItemTap = menuItemTap;
 exports.pageLoaded = pageLoaded;
