@@ -15,6 +15,11 @@ menuItems = [
         "icon": "\ue903"
     },
     {
+        "title": "Offline Page",
+        "moduleName": "components/offlinePageView/offlinePageView",
+        "icon": "\ue903"
+    },
+    {
         "title": "Home View",
         "moduleName": "components/homeView/homeView",
         "icon": "\ue903"
