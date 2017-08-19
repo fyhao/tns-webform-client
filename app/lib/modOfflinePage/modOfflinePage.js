@@ -39,7 +39,7 @@ function addPageInCategory(cat, url, fn) {
 function clearDB(fn) {
 	// db
     items = [];
-	saveHistory(items, function(code) {
+	saveDB(items, function(code) {
 		fn(code);
 	});
 }
