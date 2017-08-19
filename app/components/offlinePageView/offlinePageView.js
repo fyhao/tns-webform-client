@@ -4,7 +4,8 @@ var isInit = true,
     navigationProperty = require('../../utils/widgets/navigation-property'),
     // additional requires
     viewModel = require('./offlinePageView-view-model'),
-	modOfflinePage = require('../../lib/modOfflinePage/modOfflinePage.js')
+	modOfflinePage = require('../../lib/modOfflinePage/modOfflinePage.js'),
+	actionBarModule = require("ui/action-bar")
 	;
 
 // additional functions
