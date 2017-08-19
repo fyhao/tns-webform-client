@@ -1,16 +1,65 @@
 var setting = require('../../utils/nativeSetting');
 
 function getList(fn) {
-
-	
+	getDB(function(items) {
+		fn(items);
+	});
 }
 
 function addPage(item, fn) {
-	
+	var pageItem = {};
+	pageItem.title = 'Untitled';
+	pageItem.type = 'item';
+	pageItem.createdTime = new Date();
+	pageItem.item = item;
+	getDB(function(items) {
+		items.push(pageItem);
+		saveDB(items, function(status) {
+			fn(status);
+		});
+	});
 }
+
+function addPageInCategory(cat, fn) {
+	var pageItem = {};
+	pageItem.title = 'Untitled';
+	pageItem.type = 'category';
+	pageItem.createdTime = new Date();
+	pageItem.cat = cat;
+	getDB(function(items) {
+		items.push(pageItem);
+		saveDB(items, function(status) {
+			fn(status);
+		});
+	});
+}
+
+
+function clearDB(fn) {
+	// db
+    items = [];
+	saveHistory(items, function(code) {
+		fn(code);
+	});
+}
+
+function getDB(fn) {
+	// db
+	var str = setting.getString(DB_SETTING_NAME, '[]');
+	var items = JSON.parse(str);
+    fn(items.slice().reverse());
+}
+
+function saveDB(items, fn) {
+	// db
+	setting.setString(DB_SETTING_NAME, JSON.stringify(items));
+	fn(0);
+}
+var DB_SETTING_NAME = "OfflinePageDB";
 
 exports.getList = getList;
 exports.addPage = addPage;
+exports.addPageInCategory = addPageInCategory;
 
 // for unit test mocking
 exports.setSettingController = function(s) {

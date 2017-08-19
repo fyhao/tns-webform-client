@@ -13,7 +13,7 @@ var util = require('../../utils/MyUtil');
 var sharer = require('../../utils/nativeSharer');
 var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
-
+var modOfflinePage = require('../modOfflinePage/modOfflinePage.js');
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -24,7 +24,7 @@ function Browser() {
 			showCategory(obj);
 		}
 		else if(typeof obj == 'object') {
-			if(typeof obj.cat != 'undefined') {
+			if(typeof obj.list != 'undefined') {
 				showCategoryItems(obj);
 			}
 			else if(typeof obj.type != 'undefined') {
@@ -90,6 +90,9 @@ function showCategoryItems(cat) {
 					}
 					if(this.menu.webform) {
 						modWebform.showItemWebform(this.menu.webform);
+					}
+					if(this.menu.supportOffline) {
+						modOfflinePage.addPageInCategory(cat);
 					}
 				}
 			};
