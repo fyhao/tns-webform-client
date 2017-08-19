@@ -67,7 +67,8 @@ function menuItemTap(args) {
     var menuItems = viewModel.get('menuItems');
     var menuItem = menuItems[args.index];
     var item = menuItem.item;
-	if(item.type == 'cat') {
+	//console.log(JSON.stringify(item));
+	if(item.type == 'category') {
 		var browser = modBrowser.createBrowser();
 		browser.open(item.cat);
 	}
