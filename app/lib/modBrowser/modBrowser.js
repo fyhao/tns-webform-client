@@ -21,7 +21,7 @@ module.exports.createBrowser = function() {
 function Browser() {
 	this.open = function(obj) {
 		if(typeof obj == 'string') {
-			showCategory(url);
+			showCategory(obj);
 		}
 		else if(typeof obj == 'object') {
 			if(typeof obj.cat != 'undefined') {
