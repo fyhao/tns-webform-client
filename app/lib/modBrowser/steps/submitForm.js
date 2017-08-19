@@ -24,6 +24,7 @@ module.exports = {
 				}
 			}
 		}
+		submitBtnCallback();
 		var url = endpoint;
 		var formParams = {};
 		for(var key in paramField) {
