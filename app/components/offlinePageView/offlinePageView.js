@@ -90,7 +90,7 @@ function menuItemTap(args) {
 							for(var i = 0; i < items.length; i++) {
 								if(items[i].id == item.id) {
 									items[i].cat = item.cat;
-									modOfflinePage.saveDB(items)
+									modOfflinePage.saveDB(items);
 									break;
 								}
 							}
@@ -101,6 +101,21 @@ function menuItemTap(args) {
 		}
 		options.push({id:'opt2',text:'Update title', func:function() {
 			
+		}});
+		options.push({id:'opt3',text:'Delete', func:function() {
+			var menuOptions = [];
+			menuOptions.push({id:'opt1',text:'Yes, delete it',func:function() {
+				modOfflinePage.getDB(function(items) {
+					for(var i = 0; i < items.length; i++) {
+						if(items[i].id == item.id) {
+							items.splice(i,1);
+							modOfflinePage.saveDB(items);
+							break;
+						}
+					}
+				});
+			});
+			util.showOptionDialog(menuOptions);
 		}});
 		util.showOptionDialog(options);
 	}
