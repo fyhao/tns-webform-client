@@ -86,14 +86,8 @@ function menuItemTap(args) {
 					url : item.sourceURL,
 					callbackJSON : function(data) {
 						item.cat = data;
-						modOfflinePage.getDB(function(items) {
-							for(var i = 0; i < items.length; i++) {
-								if(items[i].id == item.id) {
-									items[i].cat = item.cat;
-									modOfflinePage.saveDB(items)
-									break;
-								}
-							}
+						modOfflinePage.updateById(item.id, item, function() {
+							console.log('saved offline page id = ' + item.id);
 						});
 					}
 				});
@@ -101,6 +95,15 @@ function menuItemTap(args) {
 		}
 		options.push({id:'opt2',text:'Update title', func:function() {
 			
+		}});
+		options.push({id:'opt3',text:'Delete', func:function() {
+			var menuOptions = [];
+			menuOptions.push({id:'opt1',text:'Yes, delete it',func:function() {
+				modOfflinePage.deleteById(item.id, function() {
+					console.log('deleted offline page id = '  item.id);
+				});
+			});
+			util.showOptionDialog(menuOptions);
 		}});
 		util.showOptionDialog(options);
 	}
