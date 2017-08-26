@@ -13,14 +13,24 @@ var util = require('../../utils/MyUtil');
 var sharer = require('../../utils/nativeSharer');
 var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
-
+var modOfflinePage = require('../modOfflinePage/modOfflinePage.js');
 module.exports.createBrowser = function() {
 	return new Browser();
 }
 
 function Browser() {
-	this.open = function(url) {
-		showCategory(url);
+	this.open = function(obj) {
+		if(typeof obj == 'string') {
+			showCategory(obj);
+		}
+		else if(typeof obj == 'object') {
+			if(typeof obj.list != 'undefined') {
+				showCategoryItems(obj);
+			}
+			else if(typeof obj.type != 'undefined') {
+				showItem(obj);
+			}
+		}
 	}
 }
 function showListChooser(options, callback) {
@@ -41,7 +51,8 @@ function showListChooser(options, callback) {
 	}
 	showCategoryItems(cat);
 }
-function showCategoryItems(cat) {
+function showCategoryItems(cat, opts) {
+	if(typeof opts == 'undefined') opts = {};
     var page = new pagesModule.Page();
 	var listView = new listViewModule.ListView();
     page.content = listView;
@@ -81,6 +92,10 @@ function showCategoryItems(cat) {
 					if(this.menu.webform) {
 						modWebform.showItemWebform(this.menu.webform);
 					}
+					if(this.menu.supportOffline) {
+						var url = opts.url || null;
+						modOfflinePage.addPageInCategory(cat, url);
+					}
 				}
 			};
 			options.splice(0,0,option);
@@ -101,7 +116,7 @@ function showCategory(url) {
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
-                showCategoryItems(cat);
+                showCategoryItems(cat, {url:url});
             }
         });
     }
