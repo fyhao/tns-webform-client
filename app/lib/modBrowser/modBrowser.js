@@ -13,6 +13,7 @@ var util = require('../../utils/MyUtil');
 var sharer = require('../../utils/nativeSharer');
 var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
+var modPage = require('./modPage.js');
 var modOfflinePage = require('../modOfflinePage/modOfflinePage.js');
 module.exports.createBrowser = function() {
 	return new Browser();
@@ -142,6 +143,9 @@ function showItem(item) {
 		
 		//helpers.back();
 	}
+	else if(item.type == 'page') {
+		modPage.showItemNSPage(item.page);
+	}
 }
 function showItemVideo(item) {
     helpers.navigate({
@@ -188,3 +192,8 @@ modWebform.setFunc('showCategory', showCategory);
 modWebform.setFunc('showCategoryItems', showCategoryItems);
 modWebform.setFunc('showListChooser', showListChooser);
 modWebform.setFunc('showWebView', showWebView);
+
+modPage.setFunc('showCategory', showCategory);
+modPage.setFunc('showCategoryItems', showCategoryItems);
+modPage.setFunc('showListChooser', showListChooser);
+modPage.setFunc('showWebView', showWebView);
