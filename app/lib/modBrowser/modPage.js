@@ -20,6 +20,7 @@ var modHTMLRenderer = require('./modHTMLRenderer.js');
 var modWebform = require('./modWebform.js');
 
 function showItemNSPage(itemPage) {
+	console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
 	itemPage.comp = page;
 	processComponents(itemPage);
