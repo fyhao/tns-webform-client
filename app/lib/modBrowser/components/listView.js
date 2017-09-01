@@ -10,11 +10,12 @@ module.exports = {
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
 			console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
-				fillItemTemplateVars(c.itemTemplate, c.items, args1.index);
-				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(c.itemTemplate));
-				c.processType(c.itemTemplate);
+				var itemTemplate = c.itemTemplate;
+				fillItemTemplateVars(itemTemplate, c.items, args1.index);
+				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
+				c.processType(itemTemplate);
 				if(!args1.view) {
-					args1.view = c.itemTemplate.comp;
+					args1.view = itemTemplate.comp;
 				}
 			}
 			else {
