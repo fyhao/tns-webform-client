@@ -23,6 +23,7 @@ function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
 	itemPage.comp = page;
+	itemPage.processType = processType;
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
 	ctx.itemPage = itemPage;
