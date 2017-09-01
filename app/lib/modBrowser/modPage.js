@@ -23,7 +23,6 @@ function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
 	itemPage.comp = page;
-	itemPage.processType = processType;
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
 	ctx.itemPage = itemPage;
@@ -72,6 +71,7 @@ function processChilds(itemPage) {
 /*## PROCESS TYPE ##*/
 function processType(c) {
 	console.log("DEBUG processType: " + JSON.stringify(c));
+	c.processType = processType;
 	var dec = require('./components/' + c.type + '.js');
 	dec.process(c);
 	processParamIntoComp(c);
