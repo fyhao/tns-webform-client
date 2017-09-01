@@ -4,6 +4,7 @@ module.exports = {
 	
 	process : function(c) {
 		c.comp = new listViewModule.ListView();
+		var ctx = c.ctx;
 		var listView = c.comp;
 		console.log('processing listview, items: ' + JSON.stringify(c.items));
 		listView.items = c.items;
