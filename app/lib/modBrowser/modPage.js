@@ -31,7 +31,7 @@ function processComponents(itemPage) {
 	}
 	if(itemPage.childs) {
 		processChilds(itemPage);
-	}}
+	}
 }
 
 function processContent(itemPage) {
