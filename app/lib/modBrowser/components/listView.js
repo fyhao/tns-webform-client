@@ -5,6 +5,7 @@ module.exports = {
 	process : function(c) {
 		c.comp = new listViewModule.ListView();
 		var listView = c.comp;
+		console.log('processing listview, items: ' + JSON.stringify(c.items));
 		listView.items = c.items;
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
 			console.log('listView itemLoadingEvent');
