@@ -7,6 +7,7 @@ module.exports = {
 		var listView = c.comp;
 		listView.items = c.items;
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
+			console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
 				fillItemTemplateVars(c.itemTemplate, c.items, args1.index);
 				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(c.itemTemplate));
