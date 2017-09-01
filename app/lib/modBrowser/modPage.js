@@ -88,6 +88,8 @@ function processTapable(dec, c) {
 	}
 }
 
+var _funcs = {};
+
 // Execute flow
 // FLOW - start
 var ctx = {}; // context object
@@ -148,7 +150,7 @@ ctx.showListChooser = _funcs['showListChooser'];
 
 
 module.exports.showItemNSPage = showItemNSPage;
-var _funcs = {};
+
 module.exports.setFunc = function(name, func) {
 	_funcs[name] = func;
 }
