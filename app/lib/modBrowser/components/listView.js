@@ -60,7 +60,7 @@ var fillFields = function(template, items, replaceTemp) {
 		}
 		else { // if string
 			console.log('in fillFields before replaceAll');
-			template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[index][field]);
+			template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[field]);
 		}
 	}
 	return template;
