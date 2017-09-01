@@ -37,7 +37,7 @@ var fillItemTemplateVars = function(itemTemplate, items, index) {
 		if(typeof itemTemplate[i] == 'object') {
 			fillItemTemplateVars(itemTemplate[i], items, index);
 		}
-		else {
+		else if(typeof itemTemplate[i] == 'string') {
 			// replace {{item}}
 			if(items.length) { // array
 				console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
