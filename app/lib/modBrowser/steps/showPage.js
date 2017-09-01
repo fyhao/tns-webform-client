@@ -1,12 +1,7 @@
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		if(step.url) {
-			ctx.showCategory(step.url);
-		}
-		else if(step.cat) {
-			ctx.showCategoryItems(step.cat);
-		}
+		ctx.showItemNSPage(step.page);
 		setTimeout(next, 1);
 	}
 }
