@@ -39,13 +39,13 @@ var fillItemTemplateVars = function(itemTemplate, items, index) {
 			fillItemTemplateVars(itemTemplate[i], items, index);
 		}
 		else if(typeof itemTemplate[i] == 'string') {
-			// replace {{item}}
+			
 			if(items.length) { // array
 				console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
-				itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]);
-				itemTemplate[i] = fillFields(itemTemplate[i], items[index]);
+				itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]); // replace {{item}}
+				itemTemplate[i] = fillFields(itemTemplate[i], items[index]); // replace {{item.<field>}}
 			}
-			// replace {{item.<field>}}
+			
 			else { // object
 				itemTemplate[i] = fillFields(itemTemplate[i], items[index]);
 			}
