@@ -25,6 +25,12 @@ function showItemNSPage(itemPage) {
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
 	ctx.itemPage = itemPage;
+	ctx.showItemWebform = modWebform.showItemWebform;
+	ctx.showCategory = _funcs['showCategory'];
+	ctx.showWebView = _funcs['showWebView'];
+	ctx.showCategoryItems = _funcs['showCategoryItems'];
+	ctx.showListChooser = _funcs['showListChooser'];
+	ctx.showItemNSPage = _funcs['showItemNSPage'];
 	if(typeof itemPage.flows != 'undefined') {
 		for(var i in itemPage.flows) {
 			ctx.flows[i] = itemPage.flows[i];
@@ -138,12 +144,7 @@ ctx.createFlowEngine = function(flow) {
 		}
 	};
 }
-ctx.showItemWebform = modWebform.showItemWebform;
-ctx.showCategory = _funcs['showCategory'];
-ctx.showWebView = _funcs['showWebView'];
-ctx.showCategoryItems = _funcs['showCategoryItems'];
-ctx.showListChooser = _funcs['showListChooser'];
-ctx.showItemNSPage = _funcs['showItemNSPage'];
+
 
 
 // FLOW - end
