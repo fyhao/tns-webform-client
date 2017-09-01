@@ -28,6 +28,14 @@ module.exports = {
 				args1.view.text = c.items[args1.index].title;
 			}
 		});
+		listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
+			var tappedItemIndex = args2.index;
+			var tappedItemView = args2.view;
+			var flow = c.tap;
+			ctx.vars['_items'] = c.items;
+			ctx.vars['_index'] = args2.index;
+			ctx.createFlowEngine(flow).execute(function() {});
+		});
 	}
 }
 
