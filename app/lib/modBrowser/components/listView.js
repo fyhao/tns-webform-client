@@ -9,6 +9,7 @@ module.exports = {
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
 			if(c.itemTemplate) {
 				fillItemTemplateVars(c.itemTemplate, c.items, args1.index);
+				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(c.itemTemplate));
 				c.processType(c.itemTemplate);
 				if(!args1.view) {
 					args1.view = c.itemTemplate.comp;
