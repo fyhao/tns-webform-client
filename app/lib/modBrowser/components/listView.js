@@ -11,7 +11,7 @@ module.exports = {
 			console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
 				var itemTemplate = util.clone(c.itemTemplate);
-				fillItemTemplateVars(itemTemplate, c.items, args1.index);
+				util.fillItemTemplateVars(itemTemplate, c.items, args1.index);
 				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
 				c.processType(itemTemplate);
 				if(!args1.view) {
@@ -31,37 +31,3 @@ module.exports = {
 	}
 }
 
-var fillItemTemplateVars = function(itemTemplate, items, index) {
-	for(var i in itemTemplate) {
-		console.log('fillItemTemplateVars itemTemplate[i] type: ' + typeof(itemTemplate[i]));
-		if(typeof itemTemplate[i] == 'function') continue;
-		if(typeof itemTemplate[i] == 'object') {
-			fillItemTemplateVars(itemTemplate[i], items, index);
-		}
-		else if(typeof itemTemplate[i] == 'string') {
-			
-			if(items.length) { // array
-				console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
-				itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]); // replace {{item}}
-				itemTemplate[i] = fillFields(itemTemplate[i], items[index]); // replace {{item.<field>}}
-			}
-			
-			else { // object
-				itemTemplate[i] = fillFields(itemTemplate[i], items[index]);
-			}
-		}
-	}
-}
-var fillFields = function(template, items, replaceTemp) {
-	if(!replaceTemp) replaceTemp = 'item.';
-	for(var field in items) {
-		if(typeof items[field] == 'object' && !items.length) { // if object not array, TODO array later
-			template = fillFields(template, items[field], replaceTemp + field + '.');
-		}
-		else { // if string
-			console.log('in fillFields before replaceAll');
-			template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[field]);
-		}
-	}
-	return template;
-}
