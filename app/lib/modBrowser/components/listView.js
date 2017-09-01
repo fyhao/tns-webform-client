@@ -39,16 +39,16 @@ var fillItemTemplateVars = function(itemTemplate, items, index) {
 			}
 			// replace {{item.<field>}}
 			else {
-				itemTemplate[i] = fillFields(itemTemplate[i], items, index);
+				itemTemplate[i] = fillFields(itemTemplate[i], items[index]);
 			}
 		}
 	}
 }
-var fillFields = function(template, items, index, replaceTemp) {
+var fillFields = function(template, items, replaceTemp) {
 	if(!replaceTemp) replaceTemp = 'item.';
 	for(var field in items) {
 		if(typeof items[field] == 'object' && !items.length) { // if object not array, TODO array later
-			template = fillFields(template, items[field], index, replaceTemp + field + '.');
+			template = fillFields(template, items[field], replaceTemp + field + '.');
 		}
 		else { // if string
 			template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[index][field]);
