@@ -50,6 +50,7 @@ function processChilds(itemPage) {
 
 /*## PROCESS TYPE ##*/
 function processType(c) {
+	console.log("DEBUG processType: " + JSON.stringify(c));
 	var dec = require('./components/' + c.type + '.js');
 	dec.process(c);
 	processParamIntoComp(c);
