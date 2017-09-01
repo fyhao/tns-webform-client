@@ -24,6 +24,20 @@ function showItemNSPage(itemPage) {
 	itemPage.comp = page;
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
+	ctx.itemPage = itemPage;
+	if(typeof itemPage.flows != 'undefined') {
+		for(var i in itemPage.flows) {
+			ctx.flows[i] = itemPage.flows[i];
+		}
+	}
+	var flow = itemPage.flow;
+	ctx.createFlowEngine(flow).execute(function() {});
+
+	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
+		modFlow.FLOW_ENGINE_CANCELED = true;
+		ctx.enable_FLOW_ENGINE_CANCELLED();
+		console.log('FLOW engine canceled FROM showItemNSPage')
+	})
 }
 function processComponents(itemPage) {
 	if(itemPage.content) {
@@ -68,82 +82,71 @@ function processParamIntoComp(c) {
 function processTapable(dec, c) {
 	if(dec.tapable) {
 		c.comp.on(buttonModule.Button.tapEvent, function (args) {
-			// Execute flow
-			// FLOW - start
-			var ctx = {}; // context object
-			ctx.c = c;
-			ctx.wv = wv;
-			ctx.flows = {};
-			ctx.vars = {};
-			ctx.blobVars = {};
-			ctx._logs = [];
-			ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
-			ctx.enable_FLOW_ENGINE_CANCELLED = function() {
-				var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
-				if(queues && queues.length) {
-					for(var i = 0; i < queues.length; i++) {
-						queues[i]();
-					}
-				}
-			}
-			ctx.createFlowEngine = function(flow) {
-				if(typeof flow != 'undefined') {
-					if(typeof flow == 'object') {
-						// flow object
-						return new modFlow.FlowEngine(flow).setContext(ctx);
-					}
-					else if(typeof flow == 'string') {
-						// flow name
-						if(typeof ctx.flows[flow] != 'undefined') {
-							return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
-						}
-					}
-				}
-				// return dummy function for silent execution
-				return {
-					execute : function(next) {
-						if(next.length == 1) {
-							setTimeout(function() {
-								next({});
-							}, 1);
-						}
-						else {
-							setTimeout(next, 1);
-						}
-					}
-					,
-					setInputVars : function(_vars){
-						return this;
-					}
-				};
-			}
-			ctx.showItemWebform = modWebform.showItemWebform;
-			ctx.showCategory = _funcs['showCategory'];
-			ctx.showWebView = _funcs['showWebView'];
-			ctx.showCategoryItems = _funcs['showCategoryItems'];
-			ctx.showListChooser = _funcs['showListChooser'];
-			
-			// #47 iterate all webform level flows and put into context flow collection
-			if(typeof c.flows != 'undefined') {
-				for(var i in c.flows) {
-					ctx.flows[i] = c.flows[i];
-				}
-			}
-			
 			var flow = c.flow;
-			// #47 FlowEngine webform level
 			ctx.createFlowEngine(flow).execute(function() {});
-			
-			c.comp.parentPage.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
-				modFlow.FLOW_ENGINE_CANCELED = true;
-				ctx.enable_FLOW_ENGINE_CANCELLED();
-				console.log('FLOW engine canceled')
-			})
-			
-		    // FLOW - end
 		});
 	}
 }
+
+// Execute flow
+// FLOW - start
+var ctx = {}; // context object
+
+ctx.flows = {};
+ctx.vars = {};
+ctx.blobVars = {};
+ctx._logs = [];
+ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
+ctx.enable_FLOW_ENGINE_CANCELLED = function() {
+	var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
+	if(queues && queues.length) {
+		for(var i = 0; i < queues.length; i++) {
+			queues[i]();
+		}
+	}
+}
+ctx.createFlowEngine = function(flow) {
+	if(typeof flow != 'undefined') {
+		if(typeof flow == 'object') {
+			// flow object
+			return new modFlow.FlowEngine(flow).setContext(ctx);
+		}
+		else if(typeof flow == 'string') {
+			// flow name
+			if(typeof ctx.flows[flow] != 'undefined') {
+				return new modFlow.FlowEngine(ctx.flows[flow]).setContext(ctx);
+			}
+		}
+	}
+	// return dummy function for silent execution
+	return {
+		execute : function(next) {
+			if(next.length == 1) {
+				setTimeout(function() {
+					next({});
+				}, 1);
+			}
+			else {
+				setTimeout(next, 1);
+			}
+		}
+		,
+		setInputVars : function(_vars){
+			return this;
+		}
+	};
+}
+ctx.showItemWebform = modWebform.showItemWebform;
+ctx.showCategory = _funcs['showCategory'];
+ctx.showWebView = _funcs['showWebView'];
+ctx.showCategoryItems = _funcs['showCategoryItems'];
+ctx.showListChooser = _funcs['showListChooser'];
+
+
+
+// FLOW - end
+
+
 module.exports.showItemNSPage = showItemNSPage;
 var _funcs = {};
 module.exports.setFunc = function(name, func) {
