@@ -39,11 +39,10 @@ function processContent(itemPage) {
 	itemPage.comp.content = itemPage.content.comp;
 }
 function processChilds(itemPage) {
-	itemPage.comp.childs = [];
 	if(itemPage.childs.length) {
 		itemPage.childs.forEach(function(child) {
 			processType(child);
-			itemPage.comp.childs.push(child.comp);
+			itemPage.comp.addChild(child.comp);
 		});
 	}
 }
