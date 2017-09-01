@@ -19,7 +19,7 @@ var modWidget = require('./modWidget.js');
 var modHTMLRenderer = require('./modHTMLRenderer.js');
 var modWebform = require('./modWebform.js');
 
-function showItemNSPage = function(itemPage) {
+function showItemNSPage(itemPage) {
 	var page = new pagesModule.Page();
 	itemPage.comp = page;
 	processComponents(itemPage);
