@@ -43,6 +43,7 @@ var fillItemTemplateVars = function(itemTemplate, items, index) {
 			if(items.length) { // array
 				console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
 				itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]);
+				itemTemplate[i] = fillFields(itemTemplate[i], items[index]);
 			}
 			// replace {{item.<field>}}
 			else { // object
