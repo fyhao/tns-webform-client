@@ -38,6 +38,7 @@ var fillItemTemplateVars = function(itemTemplate, items, index) {
 		else {
 			// replace {{item}}
 			if(items.length) { // array
+				console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
 				itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]);
 			}
 			// replace {{item.<field>}}
@@ -54,6 +55,7 @@ var fillFields = function(template, items, replaceTemp) {
 			template = fillFields(template, items[field], replaceTemp + field + '.');
 		}
 		else { // if string
+			console.log('in fillFields before replaceAll');
 			template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[index][field]);
 		}
 	}
