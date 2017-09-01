@@ -10,7 +10,7 @@ module.exports = {
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
 			console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
-				var itemTemplate = c.itemTemplate;
+				var itemTemplate = util.clone(c.itemTemplate);
 				fillItemTemplateVars(itemTemplate, c.items, args1.index);
 				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
 				c.processType(itemTemplate);
