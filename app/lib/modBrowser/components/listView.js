@@ -33,6 +33,7 @@ module.exports = {
 
 var fillItemTemplateVars = function(itemTemplate, items, index) {
 	for(var i in itemTemplate) {
+		console.log('fillItemTemplateVars itemTemplate[i] type: ' + typeof(itemTemplate[i]));
 		if(typeof itemTemplate[i] == 'function') continue;
 		if(typeof itemTemplate[i] == 'object') {
 			fillItemTemplateVars(itemTemplate[i], items, index);
