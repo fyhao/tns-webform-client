@@ -84,7 +84,7 @@ function processParamIntoComp(c) {
 		if(key == 'comp') continue;
 		if(key == 'flow') continue;
 		if(typeof c.comp[key] == 'undefined') {
-			c.comp.key = c[key];
+			c.comp[key] = c[key];
 		}
 	}
 }
