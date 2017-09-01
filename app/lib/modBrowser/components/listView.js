@@ -34,11 +34,11 @@ var fillItemTemplateVars = function(itemTemplate, items, index) {
 		}
 		else {
 			// replace {{item}}
-			if(items.length) {
+			if(items.length) { // array
 				itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]);
 			}
 			// replace {{item.<field>}}
-			else {
+			else { // object
 				itemTemplate[i] = fillFields(itemTemplate[i], items[index]);
 			}
 		}
