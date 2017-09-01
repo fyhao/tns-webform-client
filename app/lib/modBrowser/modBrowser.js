@@ -192,8 +192,10 @@ modWebform.setFunc('showCategory', showCategory);
 modWebform.setFunc('showCategoryItems', showCategoryItems);
 modWebform.setFunc('showListChooser', showListChooser);
 modWebform.setFunc('showWebView', showWebView);
+modWebform.setFunc('showItemNSPage', modPage.showItemNSPage);
 
 modPage.setFunc('showCategory', showCategory);
 modPage.setFunc('showCategoryItems', showCategoryItems);
 modPage.setFunc('showListChooser', showListChooser);
 modPage.setFunc('showWebView', showWebView);
+modPage.setFunc('showItemNSPage', modPage.showItemNSPage);

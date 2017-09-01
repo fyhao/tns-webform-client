@@ -143,7 +143,7 @@ ctx.showCategory = _funcs['showCategory'];
 ctx.showWebView = _funcs['showWebView'];
 ctx.showCategoryItems = _funcs['showCategoryItems'];
 ctx.showListChooser = _funcs['showListChooser'];
-
+ctx.showItemNSPage = _funcs['showItemNSPage'];
 
 
 // FLOW - end
