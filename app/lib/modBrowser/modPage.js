@@ -82,7 +82,7 @@ function processParamIntoComp(c) {
 function processTapable(dec, c) {
 	if(dec.tapable) {
 		c.comp.on(buttonModule.Button.tapEvent, function (args) {
-			var flow = c.flow;
+			var flow = c.tap;
 			ctx.createFlowEngine(flow).execute(function() {});
 		});
 	}
