@@ -55,6 +55,7 @@ function processComponents(itemPage) {
 	}
 	if(itemPage.css) {
 		itemPage.comp.addCss(itemPage.css);
+		console.log('itemPage.comp.addCss:' + itemPage.css);
 	}
 }
 
