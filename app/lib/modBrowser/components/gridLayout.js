@@ -1,8 +1,9 @@
-var GridLayout = require("ui/layouts/grid-layout").GridLayout;
+var gridLayoutModule = require("ui/layouts/grid-layout");
 module.exports = {
 	
 	process : function(c) {
-		c.comp = new GridLayout();
+		c.comp = new gridLayoutModule.GridLayout();
+		var ItemSpec = gridLayoutModule.ItemSpec;
 		var gridLayout = c.comp;
 		if(c.columns) {
 			var arr = c.columns.split(',');
