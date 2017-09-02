@@ -256,6 +256,7 @@ var showItemWebform = function(item, opts) {
 	ctx.showWebView = _funcs['showWebView'];
 	ctx.showCategoryItems = _funcs['showCategoryItems'];
 	ctx.showListChooser = _funcs['showListChooser'];
+	ctx.showItemNSPage = _funcs['showItemNSPage'];
 	
 	// #47 iterate all webform level flows and put into context flow collection
 	if(typeof item.flows != 'undefined') {

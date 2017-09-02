@@ -113,13 +113,25 @@ describe('#modHTMLRenderer modWidget', function() {
   describe('#button', function() {
 	it('should able to render single button', function(done) {
 		createTestCase({type:'button', name:'SendBtn',title:'CLICK TO SEND'}, 
-		'<input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/>', 
+		'<input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible;width:100%;"/>', 
 		'NO CODE HERE',
 		done);
     });
 	it('should able to render multiple buttons', function(done) {
 		createTestCase({type:'button', buttons:[{name:'SendBtn',title:'CLICK TO SEND'},{name:'ResetBtn',title:'CLICK TO RESET'}]}, 
 		'<div><input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/><input type="button" id="ResetBtn" value="CLICK TO RESET" style="visibility:visible"/></div>', 
+		'NO CODE HERE',
+		done);
+    });
+	it('should able to render 3 buttons with cols 3', function(done) {
+		createTestCase({type:'button', cols:3, buttons:[{name:'SendBtn',title:'CLICK TO SEND'},{name:'ResetBtn',title:'CLICK TO RESET'},{name:'ResetBtn3',title:'CLICK TO RESET3'}]}, 
+		'<div><input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/><input type="button" id="ResetBtn" value="CLICK TO RESET" style="visibility:visible"/><input type="button" id="ResetBtn3" value="CLICK TO RESET3" style="visibility:visible"/></div>', 
+		'NO CODE HERE',
+		done);
+    });
+	it('should able to render 4 buttons with cols 3', function(done) {
+		createTestCase({type:'button', cols:3, buttons:[{name:'SendBtn',title:'CLICK TO SEND'},{name:'SendBtn2',title:'CLICK TO SEND2'},{name:'ResetBtn',title:'CLICK TO RESET'},{name:'ResetBtn3',title:'CLICK TO RESET3'}]}, 
+		'<div><input type="button" id="SendBtn" value="CLICK TO SEND" style="visibility:visible"/><input type="button" id="SendBtn2" value="CLICK TO SEND2" style="visibility:visible"/><input type="button" id="ResetBtn" value="CLICK TO RESET" style="visibility:visible"/></div><div><input type="button" id="ResetBtn3" value="CLICK TO RESET3" style="visibility:visible"/></div>', 
 		'NO CODE HERE',
 		done);
     });
