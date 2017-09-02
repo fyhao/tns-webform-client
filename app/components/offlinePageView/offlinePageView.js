@@ -102,7 +102,7 @@ function menuItemTap(args) {
 				modOfflinePage.deleteById(item.id, function() {
 					console.log('deleted offline page id = ' + item.id);
 				});
-			});
+			}});
 			util.showOptionDialog(menuOptions);
 		}});
 		util.showOptionDialog(options);
