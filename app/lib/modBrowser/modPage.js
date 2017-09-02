@@ -78,6 +78,7 @@ function processType(c) {
 	processParamIntoComp(c);
 	processTapable(dec, c);
 	processComponents(c);
+	if(dec.postComponentProcess) dec.postComponentProcess(c);
 }
 function processParamIntoComp(c) {
 	for(var key in c) {
