@@ -45,6 +45,10 @@ function showItemNSPage(itemPage) {
 		ctx.enable_FLOW_ENGINE_CANCELLED();
 		console.log('FLOW engine canceled FROM showItemNSPage')
 	})
+	
+	if(itemPage.css) {
+		itemPage.comp.addCss(itemPage.css);
+	}
 }
 function processComponents(itemPage) {
 	if(itemPage.content) {
@@ -52,10 +56,6 @@ function processComponents(itemPage) {
 	}
 	if(itemPage.childs) {
 		processChilds(itemPage);
-	}
-	if(itemPage.css) {
-		itemPage.comp.addCss(itemPage.css);
-		console.log('itemPage.comp.addCss:' + itemPage.css);
 	}
 }
 
