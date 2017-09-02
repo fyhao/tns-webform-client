@@ -53,6 +53,9 @@ function processComponents(itemPage) {
 	if(itemPage.childs) {
 		processChilds(itemPage);
 	}
+	if(itemPage.css) {
+		itemPage.comp.addCss(itemPage.css);
+	}
 }
 
 function processContent(itemPage) {
