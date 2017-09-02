@@ -70,7 +70,7 @@ function processChilds(itemPage) {
 
 /*## PROCESS TYPE ##*/
 function processType(c) {
-	console.log("DEBUG processType: " + JSON.stringify(c));
+	//console.log("DEBUG processType: " + JSON.stringify(c));
 	c.processType = processType;
 	c.ctx = ctx;
 	var dec = require('./components/' + c.type + '.js');
