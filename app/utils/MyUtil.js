@@ -163,6 +163,42 @@ var util = {
 		btn.ios.position = enums.IOSActionItemPosition.right;
 		page.actionBar.actionItems.addItem(btn);
 	}
+	,
+	fillItemTemplateVars : function(itemTemplate, items, index) {
+		for(var i in itemTemplate) {
+			console.log('fillItemTemplateVars itemTemplate[i] type: ' + typeof(itemTemplate[i]));
+			if(typeof itemTemplate[i] == 'function') continue;
+			if(typeof itemTemplate[i] == 'object') {
+				util.fillItemTemplateVars(itemTemplate[i], items, index);
+			}
+			else if(typeof itemTemplate[i] == 'string') {
+				
+				if(items.length) { // array
+					console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
+					itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]); // replace {{item}}
+					itemTemplate[i] = util.fillFields(itemTemplate[i], items[index]); // replace {{item.<field>}}
+				}
+				
+				else { // object
+					itemTemplate[i] = util.fillFields(itemTemplate[i], items[index]);
+				}
+			}
+		}
+	}
+	,
+	fillFields : function(template, items, replaceTemp) {
+		if(!replaceTemp) replaceTemp = 'item.';
+		for(var field in items) {
+			if(typeof items[field] == 'object' && !items.length) { // if object not array, TODO array later
+				template = util.fillFields(template, items[field], replaceTemp + field + '.');
+			}
+			else { // if string
+				console.log('in fillFields before replaceAll');
+				template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[field]);
+			}
+		}
+		return template;
+	}
 };
 
 module.exports = util;

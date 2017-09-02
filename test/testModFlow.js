@@ -14,6 +14,7 @@ describe('modFlow', function() {
 		ctx.vars = {};
 		ctx.blobVars = {};
 		ctx._logs = [];
+		ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
 				if(typeof flow == 'object') {

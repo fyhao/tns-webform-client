@@ -1,0 +1,16 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:widgets="utils/widgets" loaded="pageLoaded" id="offlinePageViewScreen" cssClass="screen">
+    <Page.actionBar>
+        <widgets:action-bar />
+    </Page.actionBar>
+
+    <StackLayout>
+		<ListView class="list" items="{{ menuItems }}" itemTap="menuItemTap">
+			<ListView.itemTemplate>
+				<GridLayout cssClass="list-item" columns="auto, *">
+					<Label cssClass="list-title" col="1" text="{{ title }}" textWrap="true" />
+				</GridLayout>
+			</ListView.itemTemplate>
+		</ListView>
+        <!-- END_CUSTOM_CODE_homeView -->
+    </StackLayout>
+</Page>
