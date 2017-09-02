@@ -22,6 +22,9 @@ var modWebform = require('./modWebform.js');
 function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
+	if(itemPage.css) {
+		page.addCss(itemPage.css);
+	}
 	itemPage.comp = page;
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
@@ -46,9 +49,6 @@ function showItemNSPage(itemPage) {
 		console.log('FLOW engine canceled FROM showItemNSPage')
 	})
 	
-	if(itemPage.css) {
-		itemPage.comp.addCss(itemPage.css);
-	}
 }
 function processComponents(itemPage) {
 	if(itemPage.content) {
