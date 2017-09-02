@@ -22,9 +22,7 @@ var modWebform = require('./modWebform.js');
 function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
-	if(itemPage.css) {
-		page.addCss(itemPage.css);
-	}
+	page.addCss('button {background-color:red;}');
 	itemPage.comp = page;
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
