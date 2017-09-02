@@ -3,6 +3,7 @@ module.exports = {
 	
 	process : function(c) {
 		c.comp = new GridLayout();
+		var gridLayout = c.comp;
 		if(c.columns) {
 			var arr = c.columns.split(',');
 			for(var i in arr) {
