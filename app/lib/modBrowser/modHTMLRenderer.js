@@ -1,4 +1,5 @@
 var modWidget = require('./modWidget.js');
+var helperStyles = require('./helperStyles.js');
 function HTMLRenderer() {
 	var params = null;
 	var events = null;
@@ -19,8 +20,10 @@ function HTMLRenderer() {
 		+ 'input[type=text]{width:360px;height:35px;font-size:16px;}'
 		+ 'textarea{width:360px;font-size:16px;height:500px;}'
 		+ 'select{height:30px;font-size:16px;width:360px;}'
-		+ 'input,textarea,select{margin:5 0 0 5;}'
+		+ 'input,textarea,select{margin:5 5 5 5;}'
 		+ '</style>' + html;
+		
+		html += helperStyles.render();
 		
 		html += `<script>var _createIFrame = function (src) {
 		var rootElm = document.documentElement;

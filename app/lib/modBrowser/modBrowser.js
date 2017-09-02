@@ -13,6 +13,7 @@ var util = require('../../utils/MyUtil');
 var sharer = require('../../utils/nativeSharer');
 var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
+var modPage = require('./modPage.js');
 var modOfflinePage = require('../modOfflinePage/modOfflinePage.js');
 module.exports.createBrowser = function() {
 	return new Browser();
@@ -51,7 +52,8 @@ function showListChooser(options, callback) {
 	}
 	showCategoryItems(cat);
 }
-function showCategoryItems(cat) {
+function showCategoryItems(cat, opts) {
+	if(typeof opts == 'undefined') opts = {};
     var page = new pagesModule.Page();
 	var listView = new listViewModule.ListView();
     page.content = listView;
@@ -92,7 +94,8 @@ function showCategoryItems(cat) {
 						modWebform.showItemWebform(this.menu.webform);
 					}
 					if(this.menu.supportOffline) {
-						modOfflinePage.addPageInCategory(cat);
+						var url = opts.url || null;
+						modOfflinePage.addPageInCategory(cat, url);
 					}
 				}
 			};
@@ -114,7 +117,7 @@ function showCategory(url) {
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
-                showCategoryItems(cat);
+                showCategoryItems(cat, {url:url});
             }
         });
     }
@@ -139,6 +142,9 @@ function showItem(item) {
 		item.onSelected();
 		
 		//helpers.back();
+	}
+	else if(item.type == 'page') {
+		modPage.showItemNSPage(item.page);
 	}
 }
 function showItemVideo(item) {
@@ -186,3 +192,10 @@ modWebform.setFunc('showCategory', showCategory);
 modWebform.setFunc('showCategoryItems', showCategoryItems);
 modWebform.setFunc('showListChooser', showListChooser);
 modWebform.setFunc('showWebView', showWebView);
+modWebform.setFunc('showItemNSPage', modPage.showItemNSPage);
+
+modPage.setFunc('showCategory', showCategory);
+modPage.setFunc('showCategoryItems', showCategoryItems);
+modPage.setFunc('showListChooser', showListChooser);
+modPage.setFunc('showWebView', showWebView);
+modPage.setFunc('showItemNSPage', modPage.showItemNSPage);
