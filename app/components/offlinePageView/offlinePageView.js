@@ -100,9 +100,9 @@ function menuItemTap(args) {
 			var menuOptions = [];
 			menuOptions.push({id:'opt1',text:'Yes, delete it',func:function() {
 				modOfflinePage.deleteById(item.id, function() {
-					console.log('deleted offline page id = '  item.id);
+					console.log('deleted offline page id = ' + item.id);
 				});
-			});
+			}});
 			util.showOptionDialog(menuOptions);
 		}});
 		util.showOptionDialog(options);
