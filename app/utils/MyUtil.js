@@ -166,7 +166,7 @@ var util = {
 	,
 	fillItemTemplateVars : function(itemTemplate, items, index) {
 		for(var i in itemTemplate) {
-			console.log('fillItemTemplateVars itemTemplate[i] type: ' + typeof(itemTemplate[i]));
+			//console.log('fillItemTemplateVars itemTemplate[i] type: ' + typeof(itemTemplate[i]));
 			if(typeof itemTemplate[i] == 'function') continue;
 			if(typeof itemTemplate[i] == 'object') {
 				util.fillItemTemplateVars(itemTemplate[i], items, index);
@@ -174,7 +174,7 @@ var util = {
 			else if(typeof itemTemplate[i] == 'string') {
 				
 				if(items.length) { // array
-					console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
+					//console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
 					itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]); // replace {{item}}
 					itemTemplate[i] = util.fillFields(itemTemplate[i], items[index]); // replace {{item.<field>}}
 				}
@@ -193,7 +193,7 @@ var util = {
 				template = util.fillFields(template, items[field], replaceTemp + field + '.');
 			}
 			else { // if string
-				console.log('in fillFields before replaceAll');
+				//console.log('in fillFields before replaceAll');
 				template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[field]);
 			}
 		}
