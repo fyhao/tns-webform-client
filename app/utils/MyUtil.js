@@ -199,6 +199,10 @@ var util = {
 		}
 		return template;
 	}
+	,
+	parseCode : function(str, ctx) {
+		return str;
+	}
 };
 
 module.exports = util;
