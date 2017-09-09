@@ -783,5 +783,24 @@ describe('modFlow', function() {
 		});
     }); // end it
   });
-  
+  describe('#evaluate inline code (evalParser)', function() {
+	it('should able to evaluate inline code', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'setVar',name:'boy',value:'b'},
+					{type:'setVar',name:'car',value:'this is {{apple}} and {{boy}}'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["car"], "this is a and b");
+			done();
+		});
+    });
+  });
 });
