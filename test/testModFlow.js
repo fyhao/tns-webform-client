@@ -784,26 +784,4 @@ describe('modFlow', function() {
     }); // end it
   });
   
-  describe('#parseCode', function() {
-	it('should able to parseCode without code defined', function(done) {
-		var str = 'some text';
-		var ctx = {
-			vars : {}
-		};
-		var util = ProjRequire('app/utils/MyUtil.js');
-		var result = util.parseCode(str);
-		assert.equal(result, 'some text');
-		done();
-	});
-	it('should able to parseCode with single code bracket defined', function(done) {
-		var str = 'some text {{item}}';
-		var ctx = {
-			vars : {item:'a'}
-		};
-		var util = ProjRequire('app/utils/MyUtil.js');
-		var result = util.parseCode(str, ctx);
-		assert.equal(result, 'some text a');
-		done();
-	});
-  });
 });
