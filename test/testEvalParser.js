@@ -143,10 +143,24 @@ describe('testEvalParser', function() {
 
   describe('#Intermediate Cases', function() {
 	
-	it('Intermediate testing', function(done) {
+	it('Testing on conditional statements', function(done) {
 		testParse('I am {{age > 60 ? "old" : "young"}}', 'I am old', {age:123});
 		testParse('I am {{if(age>60) return "old"; else return "young";}}', 'I am old', {age:123});
 		testParse('I am {{if(age>60) {return "old"} else {return "young"} }}', 'I am old', {age:123});
+		testParse('I am {{if(age>60 && age<=80) {return "old"} else {return "very old"} }}', 'I am very old', {age:123});
+		testParse('I am {{if(age>60 && age<=80) {return "old"} else {return "very old"} }}', 'I am very old', {age:60});
+		testParse('I am {{if(age>60 && age<=80) {return "old"} else {return "very old"} }}', 'I am old', {age:80});
+		testParse('I am {{if(age>60 && age<=80) {return "old"} else {return "very old"} }}', 'I am very old', {age:59});
+		testParse('I am {{if(age>60 && age<=80) {return "old"} else {return "very old"} }}', 'I am very old', {age:81});
+		done();
+    });
+	it('Testing on while statements', function(done) {
+		testParse('I am {{t=1;while(age>120){age-=50;t+=1;} return "age:"+age+";" + t}}', 'I am age:73;2', {age:123});
+		done();
+    });
+	it('Testing on comment statements', function(done) {
+		testParse('I am {{/*some comments return age*/return age}}', 'I am 123', {age:123});
+		testParse('I am {{//some comments return age\nreturn age}}', 'I am 123', {age:123});
 		done();
     });
   });
