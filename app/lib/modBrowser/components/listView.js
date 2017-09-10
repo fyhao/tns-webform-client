@@ -6,14 +6,14 @@ module.exports = {
 		c.comp = new listViewModule.ListView();
 		var ctx = c.ctx;
 		var listView = c.comp;
-		console.log('processing listview, items: ' + JSON.stringify(c.items));
+		//console.log('processing listview, items: ' + JSON.stringify(c.items));
 		listView.items = c.items;
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
-			console.log('listView itemLoadingEvent');
+			//console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
 				var itemTemplate = util.clone(c.itemTemplate);
 				util.fillItemTemplateVars(itemTemplate, c.items, args1.index);
-				console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
+				//console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
 				c.processType(itemTemplate);
 				if(!args1.view) {
 					args1.view = itemTemplate.comp;
