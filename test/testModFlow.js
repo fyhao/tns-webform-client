@@ -796,6 +796,10 @@ describe('modFlow', function() {
 					{type:'setVar',name:'dog',value:[{name:'apple',age:12},{name:'boy',age:45}]},
 					{type:'setVar',name:'ele',value:'name {{dog[0].name}} and {{dog[0].age}}'},
 					{type:'runLoop',flow:'subFlow',array:'dog'},
+					{type:'setVar',name:'cond',value:'1'},
+					{type:'{{cond == 1 ? "FlowOne" : "FlowTwo"}}'},
+					{type:'setVar',name:'cond',value:'2'},
+					{type:'{{cond == 1 ? "FlowOne" : "FlowTwo"}}'},
 				]
 			}
 			,
@@ -803,6 +807,16 @@ describe('modFlow', function() {
 				subFlow : {
 					steps : [
 						{type:'setVar',name:'subFlowResult',value:'{{item.name}} and {{item.age}}'},
+					]
+				},
+				FlowOne : {
+					steps : [
+						{type:'setVar',name:'FlowOneResult',value:'1'},
+					]
+				},
+				FlowTwo : {
+					steps : [
+						{type:'setVar',name:'FlowTwoResult',value:'2'},
 					]
 				}
 			}
@@ -812,6 +826,8 @@ describe('modFlow', function() {
 			assert.equal(ctx.vars["car"], "this is a and b");
 			assert.equal(ctx.vars["ele"], "name apple and 12");
 			assert.equal(ctx.vars["subFlowResult"], "boy and 45");
+			assert.equal(ctx.vars["FlowOneResult"], "1");
+			assert.equal(ctx.vars["FlowTwoResult"], "2");
 			done();
 		});
     });
