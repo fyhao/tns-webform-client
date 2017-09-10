@@ -208,6 +208,8 @@ var showItemWebform = function(item, opts) {
 	ctx.item = item;
 	ctx.wv = wv;
 	ctx.flows = {};
+	ctx.webforms = {};
+	ctx.pages = {};
 	ctx.vars = {};
 	ctx.blobVars = {};
 	ctx._logs = [];
@@ -262,6 +264,16 @@ var showItemWebform = function(item, opts) {
 	if(typeof item.flows != 'undefined') {
 		for(var i in item.flows) {
 			ctx.flows[i] = item.flows[i];
+		}
+	}
+	if(typeof item.pages != 'undefined') {
+		for(var i in item.pages) {
+			ctx.pages[i] = item.pages[i];
+		}
+	}
+	if(typeof item.webforms != 'undefined') {
+		for(var i in item.webforms) {
+			ctx.webforms[i] = item.webforms[i];
 		}
 	}
 	
