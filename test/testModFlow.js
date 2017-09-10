@@ -11,6 +11,8 @@ describe('modFlow', function() {
 	    var ctx = {}; // context object
 		ctx.item = item;
 		ctx.flows = {};
+		ctx.webforms = {};
+		ctx.pages = {};
 		ctx.vars = {};
 		ctx.blobVars = {};
 		ctx._logs = [];
@@ -782,5 +784,72 @@ describe('modFlow', function() {
 			done();
 		});
     }); // end it
+  });
+  describe('#evaluate inline code (evalParser)', function() {
+	it('should able to evaluate inline code', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'setVar',name:'boy',value:'b'},
+					{type:'setVar',name:'car',value:'this is {{apple}} and {{boy}}'},
+					{type:'setVar',name:'dog',value:[{name:'apple',age:12},{name:'boy',age:45}]},
+					{type:'setVar',name:'ele',value:'name {{dog[0].name}} and {{dog[0].age}}'},
+					{type:'runLoop',flow:'subFlow',array:'dog'},
+					{type:'setVar',name:'cond',value:'2'},
+					{type:'{{cond == 1 ? "FlowOne" : "FlowTwo"}}'},
+					{type:'setVar',name:'cond',value:'1'},
+					{type:'{{cond == 1 ? "FlowOne" : "FlowTwo"}}'},
+				]
+			}
+			,
+			flows : {
+				subFlow : {
+					steps : [
+						{type:'setVar',name:'subFlowResult',value:'{{item.name}} and {{item.age}}'},
+					]
+				},
+				FlowOne : {
+					steps : [
+						{type:'setVar',name:'FlowOneResult',value:'{{FlowOneResult}}{{FlowTwoResult}}a'},
+					]
+				},
+				FlowTwo : {
+					steps : [
+						{type:'setVar',name:'FlowTwoResult',value:'{{FlowOneResult}}{{FlowTwoResult}}b'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["car"], "this is a and b");
+			assert.equal(ctx.vars["ele"], "name apple and 12");
+			assert.equal(ctx.vars["subFlowResult"], "boy and 45");
+			assert.equal(ctx.vars["FlowOneResult"], "ba");
+			assert.equal(ctx.vars["FlowTwoResult"], "b");
+			done();
+		});
+    });
+	it('should able to evaluate variable expression into inline code expression', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'setVar',name:'boy',value:'b'},
+					{type:'setVar',name:'car',value:'this is {{apple+"##boy##"}} and {{boy+"##apple##"}}'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["car"], "this is ab and ba");
+			done();
+		});
+    });
   });
 });

@@ -8,7 +8,14 @@ module.exports = {
 				vars[step_var] = ctx.vars[step_var];
 			}
 		}
-		ctx.showItemWebform(step.webform, {
+		var webform = {};
+		if(typeof step.webform == 'string') {
+			webform = ctx.webforms[step.webform];
+		}
+		else {
+			webform = step.webform;
+		}
+		ctx.showItemWebform(webform, {
 			vars : vars,
 			refresh:function() {
 				if(opts.refresh) opts.refresh();
