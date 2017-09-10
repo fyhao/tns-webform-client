@@ -11,6 +11,8 @@ describe('modFlow', function() {
 	    var ctx = {}; // context object
 		ctx.item = item;
 		ctx.flows = {};
+		ctx.webforms = {};
+		ctx.pages = {};
 		ctx.vars = {};
 		ctx.blobVars = {};
 		ctx._logs = [];
