@@ -7,35 +7,35 @@ var util = ProjRequire('app/utils/MyUtil.js');
 describe('testModPage', function() {
   this.timeout(15000);
   describe('#fillItemTemplateVars', function() {
-	it('fill with items 1D array, single {{item}}, single itemTemplate', function(done) {
+	it('fill with items 1D array, single [[item]], single itemTemplate', function(done) {
 		var items = [
 			'a','b','c'
 		];
 		var itemTemplate = [
-			{type:'label',text:'test {{item}}'}
+			{type:'label',text:'test [[item]]'}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 0);
 		assert.equal(itemTemplate[0].text, 'test a');
 		done();
     });
-	it('fill with items 1D array, multi {{item}}, single itemTemplate', function(done) {
+	it('fill with items 1D array, multi [[item]], single itemTemplate', function(done) {
 		var items = [
 			'a','b','c'
 		];
 		var itemTemplate = [
-			{type:'label',text:'test {{item}} with {{item}}'}
+			{type:'label',text:'test [[item]] with [[item]]'}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 1);
 		assert.equal(itemTemplate[0].text, 'test b with b');
 		done();
     });
-	it('fill with items 1D array, single {{item}}, multi itemTemplate', function(done) {
+	it('fill with items 1D array, single [[item]], multi itemTemplate', function(done) {
 		var items = [
 			'a','b','c'
 		];
 		var itemTemplate = [
-			{type:'label',text:'testa {{item}}'},
-			{type:'label',text:'testb {{item}}'}
+			{type:'label',text:'testa [[item]]'},
+			{type:'label',text:'testb [[item]]'}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 0);
 		assert.equal(itemTemplate[0].text, 'testa a');
@@ -47,8 +47,8 @@ describe('testModPage', function() {
 			'a','b','c'
 		];
 		var itemTemplate = [
-			{type:'label',text:'testa {{item}} with {{item}}'},
-			{type:'label',text:'testb {{item}} with {{item}}'}
+			{type:'label',text:'testa [[item]] with [[item]]'},
+			{type:'label',text:'testb [[item]] with [[item]]'}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 1);
 		assert.equal(itemTemplate[0].text, 'testa b with b');
@@ -61,7 +61,7 @@ describe('testModPage', function() {
 			{name:'muthu',age:30}
 		];
 		var itemTemplate = [
-			{type:'label',text:'name {{item.name}} age {{item.age}}'}
+			{type:'label',text:'name [[item.name]] age [[item.age]]'}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 0);
 		assert.equal(itemTemplate[0].text, 'name ali age 20');
@@ -73,7 +73,7 @@ describe('testModPage', function() {
 			{name:'muthu',age:30,address:{state:'KL'}}
 		];
 		var itemTemplate = [
-			{type:'label',text:'name {{item.name}} age {{item.age}} and state is {{item.address.state}}'}
+			{type:'label',text:'name [[item.name]] age [[item.age]] and state is [[item.address.state]]'}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 1);
 		assert.equal(itemTemplate[0].text, 'name muthu age 30 and state is KL');
@@ -85,7 +85,7 @@ describe('testModPage', function() {
 			{name:'muthu',age:30,address:{state:'KL'}}
 		];
 		var itemTemplate = [
-			{type:'label',text:'name {{item.name}} age {{item.age}} and state is {{item.address.state}}',innerLevel:{text:'test {{item.address.state}}'}}
+			{type:'label',text:'name [[item.name]] age [[item.age]] and state is [[item.address.state]]',innerLevel:{text:'test [[item.address.state]]'}}
 		];
 		util.fillItemTemplateVars(itemTemplate, items, 1);
 		assert.equal(itemTemplate[0].text, 'name muthu age 30 and state is KL');

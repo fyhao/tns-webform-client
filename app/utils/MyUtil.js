@@ -175,7 +175,7 @@ var util = {
 				
 				if(items.length) { // array
 					//console.log('in fillItemTemplateVars before replaceAll: ' + itemTemplate[i]);
-					itemTemplate[i] = util.replaceAll(itemTemplate[i], '{{item}}', items[index]); // replace {{item}}
+					itemTemplate[i] = util.replaceAll(itemTemplate[i], '[[item]]', items[index]); // replace {{item}}
 					itemTemplate[i] = util.fillFields(itemTemplate[i], items[index]); // replace {{item.<field>}}
 				}
 				
@@ -194,7 +194,7 @@ var util = {
 			}
 			else { // if string
 				//console.log('in fillFields before replaceAll');
-				template = util.replaceAll(template, '{{' + replaceTemp + field + '}}', items[field]);
+				template = util.replaceAll(template, '[[' + replaceTemp + field + ']]', items[field]);
 			}
 		}
 		return template;
