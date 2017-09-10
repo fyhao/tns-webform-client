@@ -793,12 +793,25 @@ describe('modFlow', function() {
 					{type:'setVar',name:'apple',value:'a'},
 					{type:'setVar',name:'boy',value:'b'},
 					{type:'setVar',name:'car',value:'this is {{apple}} and {{boy}}'},
+					{type:'setVar',name:'dog',value:[{name:'apple',age:12},{name:'boy',age:45}]},
+					{type:'setVar',name:'ele',value:'name {{dog[0].name}} and {{dog[0].age}}'},
+					{type:'runLoop',flow:'subFlow',array:'dog'},
 				]
+			}
+			,
+			flows : {
+				subFlow : {
+					steps : [
+						{type:'setVar',name:'subFlowResult',value:'{{item.name}} and {{item.age}}'},
+					]
+				}
 			}
 		};
 		
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["car"], "this is a and b");
+			assert.equal(ctx.vars["ele"], "name apple and 12");
+			assert.equal(ctx.vars["subFlowResult"], "boy and 45");
 			done();
 		});
     });
