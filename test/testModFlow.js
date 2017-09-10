@@ -815,5 +815,23 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to evaluate variable expression into inline code expression', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'setVar',name:'boy',value:'b'},
+					{type:'setVar',name:'car',value:'this is {{apple+"##boy##"}} and {{boy+"##apple##"}}'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["car"], "this is ab and ba");
+			done();
+		});
+    });
   });
 });
