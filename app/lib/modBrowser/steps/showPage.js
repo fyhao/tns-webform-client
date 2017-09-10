@@ -9,7 +9,7 @@ module.exports = {
 		else {
 			page = step.page;
 		}
-		ctx.showItemNSPage(step.page);
+		ctx.showItemNSPage(page);
 		setTimeout(next, 1);
 	}
 }
