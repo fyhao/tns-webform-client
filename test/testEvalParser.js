@@ -49,13 +49,23 @@ describe('testEvalParser', function() {
 		assert.equal(result[0], "'pre {{age}} post'");
 		done();
     });
-	it('able to eval multi placeholder with another sub placeholder inside code', function(done) {
+	it('able to eval two placeholder with another sub placeholder inside code', function(done) {
 		var str = "My name is {{name}} and {{'pre {{age}} post'}} years old.";
 		var parser = new EvalParser();
 		var result = parser.evaluate(str);
 		assert.equal(result.length, 2);
 		assert.equal(result[0], 'name');
 		assert.equal(result[1], "'pre {{age}} post'");
+		done();
+    });
+	it('able to eval multi placeholder with another sub placeholder inside code', function(done) {
+		var str = "My name is {{name}} and {{'pre {{age}} post'}} years {{'pre2 {{age2}} post2'}}.";
+		var parser = new EvalParser();
+		var result = parser.evaluate(str);
+		assert.equal(result.length, 3);
+		assert.equal(result[0], 'name');
+		assert.equal(result[1], "'pre {{age}} post'");
+		assert.equal(result[2], "'pre2 {{age2}} post2'");
 		done();
     });
   });
@@ -84,6 +94,36 @@ describe('testEvalParser', function() {
 		var parser = new EvalParser();
 		var result = parser.evalCode("'fyhao is ' + age + ' years old'", {age:123});
 		assert.equal(result, 'fyhao is 123 years old');
+		done();
+    });
+	it('able to eval object', function(done) {
+		var parser = new EvalParser();
+		var result = parser.evalCode("'fyhao is ' + y.age + ' years old'", {y:{age:123}});
+		assert.equal(result, 'fyhao is 123 years old');
+		done();
+    });
+	it('able to eval array', function(done) {
+		var parser = new EvalParser();
+		var result = parser.evalCode("'fyhao is ' + y[1] + ' years old'", {y:[123,456]});
+		assert.equal(result, 'fyhao is 456 years old');
+		done();
+    });
+	it('able to eval a variable with return', function(done) {
+		var parser = new EvalParser();
+		var result = parser.evalCode('return age', {age:123});
+		assert.equal(result, '123');
+		done();
+    });
+	it('able to eval string with return', function(done) {
+		var parser = new EvalParser();
+		var result = parser.evalCode("return 'fyhao'", {});
+		assert.equal(result, 'fyhao');
+		done();
+    });
+	it('able to eval JS operations with return', function(done) {
+		var parser = new EvalParser();
+		var result = parser.evalCode('return 3+6', {});
+		assert.equal(result, '9');
 		done();
     });
   });
