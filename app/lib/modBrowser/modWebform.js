@@ -266,6 +266,16 @@ var showItemWebform = function(item, opts) {
 			ctx.flows[i] = item.flows[i];
 		}
 	}
+	if(typeof item.pages != 'undefined') {
+		for(var i in item.pages) {
+			ctx.pages[i] = item.pages[i];
+		}
+	}
+	if(typeof item.webforms != 'undefined') {
+		for(var i in item.webforms) {
+			ctx.webforms[i] = item.webforms[i];
+		}
+	}
 	
 	var flow = item.flow;
 	// #47 FlowEngine webform level

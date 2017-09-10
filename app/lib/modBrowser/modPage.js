@@ -40,6 +40,16 @@ function showItemNSPage(itemPage) {
 			ctx.flows[i] = itemPage.flows[i];
 		}
 	}
+	if(typeof itemPage.pages != 'undefined') {
+		for(var i in itemPage.pages) {
+			ctx.pages[i] = itemPage.pages[i];
+		}
+	}
+	if(typeof itemPage.webforms != 'undefined') {
+		for(var i in itemPage.webforms) {
+			ctx.webforms[i] = itemPage.webforms[i];
+		}
+	}
 	var flow = itemPage.flow;
 	ctx.createFlowEngine(flow).execute(function() {});
 
