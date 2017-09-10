@@ -25,7 +25,11 @@ module.exports = function(){
 			code = 'return ' + code;
 		}
 		var val = new Function('vars', 'vars;for(key in vars) {global[key] = vars[key];} ' + code);
-		return val(vars);
+		try {
+			return val(vars);
+		} catch (e) {
+			return '';
+		}
 	}
 	var replacePatternRes = function(result, pattern, res) {
 		pattern = '{{' + pattern + '}}';

@@ -126,6 +126,12 @@ describe('testEvalParser', function() {
 		assert.equal(result, '9');
 		done();
     });
+	it('able to evaluate expression if variable not defined', function(done) {
+		var parser = new EvalParser();
+		var result = parser.evalCode('boy', {});
+		assert.equal(result, '');
+		done();
+    });
   });
   
   describe('#Basic Invalid Cases', function() {
