@@ -2,6 +2,6 @@ var scrollViewModule = require("ui/scroll-view");
 module.exports = {
 	
 	process : function(c) {
-		c.comp = new scrollViewModule.scrollView();
+		c.comp = new scrollViewModule.ScrollView();
 	}
 }
