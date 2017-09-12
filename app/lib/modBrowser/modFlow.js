@@ -79,9 +79,15 @@ var FlowEngine = function(flow) {
 		for(var k in ctx.vars) {
 			c = util.replaceAll(c, '##' + k + '##', ctx.vars[k]);
 		}
+		var __vars = {};
+		for(var k in vars) {
+			__vars[k] = vars[k];
+		}
+		for(var k in ctx.vars) {
+			__vars[k] = ctx.vars[k];
+		}
 		var parser = new evalParser();
-		c = parser.parse(c, ctx.vars);
-		c = parser.parse(c, vars);
+		c = parser.parse(c, __vars);
 		return c;
 	}
 	var replaceVarsStep = function(step) {
