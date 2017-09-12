@@ -132,7 +132,22 @@ describe('modFlow', function() {
 		});
     });
   });
-  
+  describe('#dummy', function() {
+	it('should able to perform dummy flow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'dummy'}
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+  });
   describe('#subflow', function() {
 	it('should able to call subflows', function(done) {
 		var webform = {
