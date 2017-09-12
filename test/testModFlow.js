@@ -149,7 +149,7 @@ describe('modFlow', function() {
     });
   });
   describe('#blank flow', function() {
-	it('should able to perform flow for zero steps', function(done) {
+	it('should able to bypass flow for zero steps', function(done) {
 		var webform = {
 			heading:'test form',
 			params: [],
