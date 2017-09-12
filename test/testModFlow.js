@@ -163,6 +163,18 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to bypass flow if steps not defined', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
   });
   describe('#subflow', function() {
 	it('should able to call subflows', function(done) {
