@@ -65,6 +65,9 @@ var FlowEngine = function(flow) {
 			}
 			setTimeout(checkNext, 10);
 		}
+		else {
+			setTimeout(done, 1);
+		}
 	}
 	this.cancel = function() {
 		this.canceled = true;

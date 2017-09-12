@@ -148,6 +148,22 @@ describe('modFlow', function() {
 		});
     });
   });
+  describe('#blank flow', function() {
+	it('should able to perform flow for zero steps', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+  });
   describe('#subflow', function() {
 	it('should able to call subflows', function(done) {
 		var webform = {
