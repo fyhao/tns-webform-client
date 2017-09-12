@@ -132,7 +132,50 @@ describe('modFlow', function() {
 		});
     });
   });
-  
+  describe('#dummy', function() {
+	it('should able to perform dummy flow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'dummy'}
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+  });
+  describe('#blank flow', function() {
+	it('should able to bypass flow for zero steps', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+	it('should able to bypass flow if steps not defined', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+  });
   describe('#subflow', function() {
 	it('should able to call subflows', function(done) {
 		var webform = {
@@ -798,6 +841,8 @@ describe('modFlow', function() {
 					{type:'setVar',name:'dog',value:[{name:'apple',age:12},{name:'boy',age:45}]},
 					{type:'setVar',name:'ele',value:'name {{dog[0].name}} and {{dog[0].age}}'},
 					{type:'runLoop',flow:'subFlow',array:'dog'},
+					{type:'setVar',name:'FlowOneResult',value:''},
+					{type:'setVar',name:'FlowTwoResult',value:''},
 					{type:'setVar',name:'cond',value:'2'},
 					{type:'{{cond == 1 ? "FlowOne" : "FlowTwo"}}'},
 					{type:'setVar',name:'cond',value:'1'},
@@ -848,6 +893,31 @@ describe('modFlow', function() {
 		
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["car"], "this is ab and ba");
+			done();
+		});
+    });
+	it('should able to evaluate subflow inputvars for inline JS expression', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'subFlow',someInput:'b'},
+					{type:'setVar',name:'apple',value:'a'},
+				]
+			},
+			flows : {
+				subFlow : {
+					steps : [
+						{type:'setVar',name:'subFlowResult',value:'{{someInput}}'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["subFlowResult"], "b");
 			done();
 		});
     });
