@@ -168,5 +168,37 @@ describe('#modHTMLRenderer modWidget', function() {
 		'document.getElementById("country").selectedOptions[0].value',
 		done);
     });
+	it('should able to handle invalid widget', function(done) {
+		//function createTestCase(param, content, code, done) {
+		var param = {'type':'invalid'}
+		var content = null;
+		var code = 'k';
+		var webform = {
+			heading:'test form',
+			params: [
+				param
+			],
+		};
+		var HTMLRenderer = new modHTMLRenderer.HTMLRenderer();
+		HTMLRenderer.init(webform);
+		var html = HTMLRenderer.renderHTML();
+		assert.equal(html.indexOf(content) != -1, true);
+		modWidget.init(param);
+		assert.equal(content, modWidget.renderWidget(webform.params[0]))
+		var _testRanCodes = [];
+		if(code != 'NO CODE HERE') {
+			var result = modWidget.parseValue(webform.params[0], {
+				wv : {
+					runJSSync : function(code) {
+						_testRanCodes.push(code);
+						return 'returnedValue';
+					}
+				}
+			});
+			assert.equal(result, null);
+			assert.equal(_testRanCodes.length, 0);
+		}
+		done()
+    });
   });
 });
