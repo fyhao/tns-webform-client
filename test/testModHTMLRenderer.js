@@ -168,6 +168,15 @@ describe('#modHTMLRenderer modWidget', function() {
 		'document.getElementById("country").selectedOptions[0].value',
 		done);
     });
+	it('should able to render selectone with object', function(done) {
+		createTestCase({type:'selectone', name:'country', options:{my:'Malaysia',sg:'Singapore'}, value:'sg'}, 
+		'<select id="country" style="visibility:visible" onfocus="this.oldvalue = this.selectedOptions[0].value"><option value="my" >Malaysia</option><option value="sg" selected>Singapore</option></select>', 
+		'document.getElementById("country").selectedOptions[0].value',
+		done);
+    });
+  });
+  
+  describe('#invalid', function() {
 	it('should able to handle invalid widget', function(done) {
 		//function createTestCase(param, content, code, done) {
 		var param = {'type':'invalid'}
