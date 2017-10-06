@@ -7,7 +7,14 @@ module.exports = {
 		var ctx = c.ctx;
 		var listView = c.comp;
 		//console.log('processing listview, items: ' + JSON.stringify(c.items));
-		listView.items = c.items;
+		var items = null;
+		if(typeof c.items == 'object') {
+			items = c.items;
+		}
+		else if(typeof c.items == 'string') {
+			items = ctx.vars[c.items];
+		}
+		listView.items = items;
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
 			//console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
