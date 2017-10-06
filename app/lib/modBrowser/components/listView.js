@@ -19,7 +19,7 @@ module.exports = {
 			//console.log('listView itemLoadingEvent');
 			if(c.itemTemplate) {
 				var itemTemplate = util.clone(c.itemTemplate);
-				util.fillItemTemplateVars(itemTemplate, c.items, args1.index);
+				util.fillItemTemplateVars(itemTemplate, items, args1.index);
 				//console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
 				c.processType(itemTemplate);
 				if(!args1.view) {
@@ -32,15 +32,15 @@ module.exports = {
 					args1.view = new labelModule.Label();
 					args1.view.height = 44;
 				}
-				args1.view.item = c.items[args1.index];
-				args1.view.text = c.items[args1.index].title;
+				args1.view.item = items[args1.index];
+				args1.view.text = items[args1.index].title;
 			}
 		});
 		listView.on(listViewModule.ListView.itemTapEvent, function (args2) {
 			var tappedItemIndex = args2.index;
 			var tappedItemView = args2.view;
 			var flow = c.tap;
-			ctx.vars['_items'] = c.items;
+			ctx.vars['_items'] = items;
 			ctx.vars['_index'] = args2.index;
 			ctx.createFlowEngine(flow).execute(function() {});
 		});
