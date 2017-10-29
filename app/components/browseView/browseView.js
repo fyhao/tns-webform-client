@@ -54,7 +54,7 @@ function goScan(args) {
 
 function goVersion() {
 	var version = require('../../utils/version');
-	alert('Version: ' + version);
+	alert('Version: ' + version.version);
 }
 exports.goTap = goTap;
 exports.goScan = goScan;
