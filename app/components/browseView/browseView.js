@@ -51,7 +51,13 @@ function goScan(args) {
 		});
     }
 }
+
+function goVersion() {
+	var version = require('../../utils/version');
+	alert('Version: ' + version);
+}
 exports.goTap = goTap;
 exports.goScan = goScan;
+exports.goVersion = goVersion;
 // END_CUSTOM_CODE_homeView
 exports.pageLoaded = pageLoaded;
