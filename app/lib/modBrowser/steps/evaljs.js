@@ -1,7 +1,7 @@
 module.exports = {
 	
 	process : function(ctx, step, next) {
-		if(step.var != 'undefined' && step.code.indexOf('return') == -1) {
+		if(typeof step.var != 'undefined' && step.code.indexOf('return') == -1) {
 			step.code = 'return ' + step.code;
 		}
 		var val = new Function('vars', 'vars; ' + step.code);
