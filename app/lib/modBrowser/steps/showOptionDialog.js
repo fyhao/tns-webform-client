@@ -6,11 +6,11 @@ module.exports = {
 		for(var i = 0; i < step.options.length; i++) {
 			var opt = {};
 			opt.text = step.options[i];
-			opt.func = function() {
-				ctx.vars[step.result] = this.text;
-			}
 			options.push(opt);
 		}
-		util.showOptionDialog(options, {done:next});
+		util.showOptionDialog(options, {doneResult:function(result) {
+			ctx.vars[step.result] = result;
+			setTimeout(next, 1);
+		}});
 	}
 }

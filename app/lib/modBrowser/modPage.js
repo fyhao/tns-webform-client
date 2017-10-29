@@ -54,9 +54,9 @@ function showItemNSPage(itemPage) {
 	ctx.createFlowEngine(flow).execute(function() {});
 
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
-		modFlow.FLOW_ENGINE_CANCELED = true;
-		ctx.enable_FLOW_ENGINE_CANCELLED();
-		console.log('FLOW engine canceled FROM showItemNSPage')
+		//modFlow.FLOW_ENGINE_CANCELED = true;
+		//ctx.enable_FLOW_ENGINE_CANCELLED();
+		//console.log('FLOW engine canceled FROM showItemNSPage')
 	})
 	
 }

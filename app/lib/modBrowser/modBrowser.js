@@ -136,15 +136,35 @@ function showItem(item) {
         showCategory(item.requesturl);
     }
     else if(item.type == 'webform') {
-        modWebform.showItemWebform(item.webform);
+		if(typeof item.requesturl != 'undefined') {
+			util.frequest({
+				url : item.requesturl,
+				callbackJSON : function(webform) {
+					modWebform.showItemWebform(webform);
+				}
+			});
+		}
+		else {
+			modWebform.showItemWebform(item.webform);
+		}
     }
+	else if(item.type == 'page') {
+		if(typeof item.requesturl != 'undefined') {
+			util.frequest({
+				url : item.requesturl,
+				callbackJSON : function(page) {
+					modPage.showItemNSPage(page);
+				}
+			});
+		}
+		else {
+			modPage.showItemNSPage(item.page);
+		}
+	}
 	else if(item.type == 'option') {
 		item.onSelected();
 		
 		//helpers.back();
-	}
-	else if(item.type == 'page') {
-		modPage.showItemNSPage(item.page);
 	}
 }
 function showItemVideo(item) {
