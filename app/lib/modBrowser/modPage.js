@@ -22,9 +22,7 @@ var propParser = require('./helperPropParser.js');
 function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
-	if(itemPage.css) {
-		page.addCss(itemPage.css);
-	}
+	
 	itemPage.comp = page;
 	ctx.itemPage = itemPage;
 	ctx.showItemWebform = modWebform.showItemWebform;
@@ -54,6 +52,9 @@ function showItemNSPage(itemPage) {
 		}
 	}
 	itemPage.css = propParser.parse(ctx, itemPage.css);
+	if(itemPage.css) {
+		page.addCss(itemPage.css);
+	}
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
 	var flow = itemPage.flow;
