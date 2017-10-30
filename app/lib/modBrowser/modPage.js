@@ -50,7 +50,7 @@ function showItemNSPage(itemPage) {
 			ctx.webforms[i] = itemPage.webforms[i];
 		}
 	}
-	if(typeof item.props != 'undefined') {
+	if(typeof itemPage.props != 'undefined') {
 		for(var i in item.props) {
 			ctx.props[i] = item.props[i];
 		}
