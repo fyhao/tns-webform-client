@@ -55,6 +55,7 @@ function showItemNSPage(itemPage) {
 			ctx.props[i] = itemPage.props[i];
 		}
 	}
+	itemPage.css = propParser.parse(ctx, itemPage.css);
 	var flow = itemPage.flow;
 	ctx.createFlowEngine(flow).execute(function() {});
 
