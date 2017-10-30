@@ -18,7 +18,7 @@ var modFlow = require('./modFlow.js');
 var modWidget = require('./modWidget.js');
 var modHTMLRenderer = require('./modHTMLRenderer.js');
 var modWebform = require('./modWebform.js');
-
+var propParser = require('./helperPropParser.js');
 function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
@@ -48,6 +48,11 @@ function showItemNSPage(itemPage) {
 	if(typeof itemPage.webforms != 'undefined') {
 		for(var i in itemPage.webforms) {
 			ctx.webforms[i] = itemPage.webforms[i];
+		}
+	}
+	if(typeof item.props != 'undefined') {
+		for(var i in item.props) {
+			ctx.props[i] = item.props[i];
 		}
 	}
 	var flow = itemPage.flow;
@@ -89,6 +94,11 @@ function processType(c) {
 	c.ctx = ctx;
 	var dec = require('./components/' + c.type + '.js');
 	dec.process(c);
+	for(var i in c) {
+		if(typeof c[i] == 'string') {
+			c[i] = propParser.parse(ctx, c[i]);
+		}
+	}
 	processParamIntoComp(c);
 	processTapable(dec, c);
 	processComponents(c);
@@ -124,6 +134,7 @@ ctx.pages = {};
 ctx.vars = {};
 ctx.blobVars = {};
 ctx._logs = [];
+ctx.props = {};
 ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
 ctx.enable_FLOW_ENGINE_CANCELLED = function() {
 	var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
