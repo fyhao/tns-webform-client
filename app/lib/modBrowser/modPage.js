@@ -51,8 +51,8 @@ function showItemNSPage(itemPage) {
 		}
 	}
 	if(typeof itemPage.props != 'undefined') {
-		for(var i in item.props) {
-			ctx.props[i] = item.props[i];
+		for(var i in itemPage.props) {
+			ctx.props[i] = itemPage.props[i];
 		}
 	}
 	var flow = itemPage.flow;
