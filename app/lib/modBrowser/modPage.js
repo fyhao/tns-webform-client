@@ -26,8 +26,6 @@ function showItemNSPage(itemPage) {
 		page.addCss(itemPage.css);
 	}
 	itemPage.comp = page;
-	processComponents(itemPage);
-	helpers.navigate(function(){return page;});
 	ctx.itemPage = itemPage;
 	ctx.showItemWebform = modWebform.showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
@@ -56,6 +54,8 @@ function showItemNSPage(itemPage) {
 		}
 	}
 	itemPage.css = propParser.parse(ctx, itemPage.css);
+	processComponents(itemPage);
+	helpers.navigate(function(){return page;});
 	var flow = itemPage.flow;
 	ctx.createFlowEngine(flow).execute(function() {});
 
