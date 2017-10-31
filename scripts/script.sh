@@ -8,7 +8,7 @@ echo "inside script PROVISIONING_PROFILE = $PROVISIONING_PROFILE"
 PROVISIONING_TYPE="${e[2]}"
 
 # #319 version info
-sed "s/##version##/$TRAVIS_BUILD_NUMBER/g" app/utils/version.js
+sed -e "s/##version##/$TRAVIS_BUILD_NUMBER/g" app/utils/version.js
 
 if test "$TRAVIS_BRANCH" = 'staging'; then
 	if test "$PROVISIONING_TYPE" = '0'; then
