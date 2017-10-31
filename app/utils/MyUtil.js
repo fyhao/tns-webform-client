@@ -150,6 +150,7 @@ var util = {
 				}
 			}
 			if(opts.done) opts.done();
+			if(opts.doneResult) opts.doneResult(result);
 		});
 	}
 	,

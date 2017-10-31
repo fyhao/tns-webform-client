@@ -16,6 +16,7 @@ describe('modFlow', function() {
 		ctx.vars = {};
 		ctx.blobVars = {};
 		ctx._logs = [];
+		ctx.props = {};
 		ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
@@ -100,6 +101,12 @@ describe('modFlow', function() {
 				ctx.flows[i] = item.flows[i];
 			}
 		}
+		
+		if(typeof item.props != 'undefined') {
+			for(var i in item.props) {
+				ctx.props[i] = item.props[i];
+			}
+		}
 
 		var flow = item.flow;
 		// #47 FlowEngine webform level
@@ -132,7 +139,50 @@ describe('modFlow', function() {
 		});
     });
   });
-  
+  describe('#dummy', function() {
+	it('should able to perform dummy flow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'dummy'}
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+  });
+  describe('#blank flow', function() {
+	it('should able to bypass flow for zero steps', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+	it('should able to bypass flow if steps not defined', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			done();
+		});
+    });
+  });
   describe('#subflow', function() {
 	it('should able to call subflows', function(done) {
 		var webform = {
@@ -798,6 +848,8 @@ describe('modFlow', function() {
 					{type:'setVar',name:'dog',value:[{name:'apple',age:12},{name:'boy',age:45}]},
 					{type:'setVar',name:'ele',value:'name {{dog[0].name}} and {{dog[0].age}}'},
 					{type:'runLoop',flow:'subFlow',array:'dog'},
+					{type:'setVar',name:'FlowOneResult',value:''},
+					{type:'setVar',name:'FlowTwoResult',value:''},
 					{type:'setVar',name:'cond',value:'2'},
 					{type:'{{cond == 1 ? "FlowOne" : "FlowTwo"}}'},
 					{type:'setVar',name:'cond',value:'1'},
@@ -851,5 +903,97 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to evaluate subflow inputvars for inline JS expression', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'a'},
+					{type:'subFlow',someInput:'b'},
+					{type:'setVar',name:'apple',value:'a'},
+				]
+			},
+			flows : {
+				subFlow : {
+					steps : [
+						{type:'setVar',name:'subFlowResult',value:'{{someInput}}'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["subFlowResult"], "b");
+			done();
+		});
+    });
+  });
+  
+  describe('#evaluate property %%prop:xxx%%', function() {
+	it('should able to evaluate property for workflows steps', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'%%prop:_apple%%'},
+					{type:'setVar',name:'bat',value:'%%prop:_bat%%'},
+					{type:'setVar',name:'car',value:'%%prop:_car%%'},
+					{type:'setVar',name:'dog',value:'%%prop:_dog%%'},
+					{type:'setVar',name:'result',value:'{{dog.type}}-{{dog.params.length}}'}
+				]
+			}
+			,
+			props : {
+				_apple : 'value_apple_value',
+				_bat : 3,
+				_car : true,
+				_dog : {type:'webform',params:[]}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["apple"], "value_apple_value");
+			assert.equal(ctx.vars["bat"], 3);
+			assert.equal(ctx.vars["car"], true);
+			assert.equal(ctx.vars["result"], 'webform-0');
+			done();
+		});
+    }); // end it
+	it('should able to evaluate property of a property', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'%%prop:_apple%%'},
+					{type:'setVar',name:'car',value:'%%prop:_car%%'},
+					{type:'setVar',name:'resultcar',value:'{{car._dog}}'},
+					{type:'setVar',name:'resultele',value:'{{car._ele.horse}}-{{car._ele.cat}}'},
+				]
+			}
+			,
+			props : {
+				_apple : '%%prop:_bat%%',
+				_bat : 'bat',
+				_car : {
+					_dog : '%%prop:_apple%%',
+					_ele : '%%prop:_fish%%'
+				},
+				_fish : {
+					horse : '%%prop:_apple%%',
+					cat : 'cat123'
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["apple"], "bat");
+			assert.equal(ctx.vars["resultcar"], "bat");
+			assert.equal(ctx.vars["resultele"], "bat-cat123");
+			done();
+		});
+    }); // end it
   });
 });

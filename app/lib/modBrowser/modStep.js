@@ -36,7 +36,7 @@ var StepProcessor = function(ctx, step, next) {
 				def = require('./steps/' + step.type + '.js');
 				stepDefinitions[step.type] = def;
 			} catch (e) {
-				console.log(e);
+				//console.log(e);
 			}
 		}
 	}

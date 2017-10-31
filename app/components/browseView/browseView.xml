@@ -10,6 +10,7 @@
         <TextView id="urlTF" text="someurl" />
         <Button text="GO" tap="goTap" />
 		<Button text="SCAN" tap="goScan" />
+		<Button text="VERSION" tap="goVersion" />
         <!-- END_CUSTOM_CODE_homeView -->
     </StackLayout>
 </Page>

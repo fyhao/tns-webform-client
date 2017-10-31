@@ -11,6 +11,13 @@ module.exports = {
 			comp[step.field] = step.value;
 			setTimeout(next, 1);
 		}
+		if(step.op == 'js') {
+			var comp = getViewById(step.id);
+			ctx.vars['_comp'] = comp;
+			var val = new Function('vars', 'vars; ' + step.code);
+			ctx.vars[step.var] = val(ctx.vars);
+			setTimeout(next, 1);
+		}
 		else {
 			setTimeout(next, 1);
 		}
