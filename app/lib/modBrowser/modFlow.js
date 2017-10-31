@@ -1,6 +1,7 @@
 var util = require('../../utils/MyUtil');
 var modStep = require('./modStep.js');
 var evalParser = require('./helperEvalParser.js');
+var propParser = require('./helperPropParser.js');
 FLOW_ENGINE_CANCELED = false;
 var FlowEngine = function(flow) {
 	var _FLOW_ENGINE_CANCELED = false;
@@ -65,6 +66,9 @@ var FlowEngine = function(flow) {
 			}
 			setTimeout(checkNext, 10);
 		}
+		else {
+			setTimeout(done, 1);
+		}
 	}
 	this.cancel = function() {
 		this.canceled = true;
@@ -76,9 +80,16 @@ var FlowEngine = function(flow) {
 		for(var k in ctx.vars) {
 			c = util.replaceAll(c, '##' + k + '##', ctx.vars[k]);
 		}
+		var __vars = {};
+		for(var k in vars) {
+			__vars[k] = vars[k];
+		}
+		for(var k in ctx.vars) {
+			__vars[k] = ctx.vars[k];
+		}
 		var parser = new evalParser();
-		c = parser.parse(c, ctx.vars);
-		c = parser.parse(c, vars);
+		c = parser.parse(c, __vars);
+		c = propParser.parse(ctx,c);
 		return c;
 	}
 	var replaceVarsStep = function(step) {

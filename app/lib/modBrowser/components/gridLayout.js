@@ -52,11 +52,17 @@ module.exports = {
 	,
 	postComponentProcess : function(c) {
 		var gridLayout = c.comp;
-		for(var i in c._innerItems) {
-			var arr = c._innerItems[i];
-			var type = arr[0];
-			var item = arr[1];
-			
+		if(c.childs && c.childs.length) {
+			c.childs.forEach(function(child) {
+				var row = child.row;
+				var col = child.col;
+				if(typeof row != 'undefined') {
+					gridLayoutModule.GridLayout.setRow(child.comp, row);
+				}
+				if(typeof col != 'undefined') {
+					gridLayoutModule.GridLayout.setColumn(child.comp, col);
+				}
+			});
 		}
 	}
 }
