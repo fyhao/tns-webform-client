@@ -18,16 +18,12 @@ var modFlow = require('./modFlow.js');
 var modWidget = require('./modWidget.js');
 var modHTMLRenderer = require('./modHTMLRenderer.js');
 var modWebform = require('./modWebform.js');
-
+var propParser = require('./helperPropParser.js');
 function showItemNSPage(itemPage) {
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
-	if(itemPage.css) {
-		page.addCss(itemPage.css);
-	}
+	
 	itemPage.comp = page;
-	processComponents(itemPage);
-	helpers.navigate(function(){return page;});
 	ctx.itemPage = itemPage;
 	ctx.showItemWebform = modWebform.showItemWebform;
 	ctx.showCategory = _funcs['showCategory'];
@@ -50,6 +46,17 @@ function showItemNSPage(itemPage) {
 			ctx.webforms[i] = itemPage.webforms[i];
 		}
 	}
+	if(typeof itemPage.props != 'undefined') {
+		for(var i in itemPage.props) {
+			ctx.props[i] = itemPage.props[i];
+		}
+	}
+	itemPage.css = propParser.parse(ctx, itemPage.css);
+	if(itemPage.css) {
+		page.addCss(itemPage.css);
+	}
+	processComponents(itemPage);
+	helpers.navigate(function(){return page;});
 	var flow = itemPage.flow;
 	ctx.createFlowEngine(flow).execute(function() {});
 
@@ -89,6 +96,11 @@ function processType(c) {
 	c.ctx = ctx;
 	var dec = require('./components/' + c.type + '.js');
 	dec.process(c);
+	for(var i in c) {
+		if(typeof c[i] == 'string') {
+			c[i] = propParser.parse(ctx, c[i]);
+		}
+	}
 	processParamIntoComp(c);
 	processTapable(dec, c);
 	processComponents(c);
@@ -124,6 +136,7 @@ ctx.pages = {};
 ctx.vars = {};
 ctx.blobVars = {};
 ctx._logs = [];
+ctx.props = {};
 ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
 ctx.enable_FLOW_ENGINE_CANCELLED = function() {
 	var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
