@@ -213,6 +213,7 @@ var showItemWebform = function(item, opts) {
 	ctx.vars = {};
 	ctx.blobVars = {};
 	ctx._logs = [];
+	ctx.props = {};
 	ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
 	ctx.enable_FLOW_ENGINE_CANCELLED = function() {
 		var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
@@ -276,7 +277,11 @@ var showItemWebform = function(item, opts) {
 			ctx.webforms[i] = item.webforms[i];
 		}
 	}
-	
+	if(typeof item.props != 'undefined') {
+		for(var i in item.props) {
+			ctx.props[i] = item.props[i];
+		}
+	}
 	var flow = item.flow;
 	// #47 FlowEngine webform level
 	ctx.createFlowEngine(flow).execute(function() {});

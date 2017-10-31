@@ -16,6 +16,7 @@ describe('modFlow', function() {
 		ctx.vars = {};
 		ctx.blobVars = {};
 		ctx._logs = [];
+		ctx.props = {};
 		ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
@@ -98,6 +99,12 @@ describe('modFlow', function() {
 		if(typeof item.flows != 'undefined') {
 			for(var i in item.flows) {
 				ctx.flows[i] = item.flows[i];
+			}
+		}
+		
+		if(typeof item.props != 'undefined') {
+			for(var i in item.props) {
+				ctx.props[i] = item.props[i];
 			}
 		}
 
@@ -921,5 +928,72 @@ describe('modFlow', function() {
 			done();
 		});
     });
+  });
+  
+  describe('#evaluate property %%prop:xxx%%', function() {
+	it('should able to evaluate property for workflows steps', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'%%prop:_apple%%'},
+					{type:'setVar',name:'bat',value:'%%prop:_bat%%'},
+					{type:'setVar',name:'car',value:'%%prop:_car%%'},
+					{type:'setVar',name:'dog',value:'%%prop:_dog%%'},
+					{type:'setVar',name:'result',value:'{{dog.type}}-{{dog.params.length}}'}
+				]
+			}
+			,
+			props : {
+				_apple : 'value_apple_value',
+				_bat : 3,
+				_car : true,
+				_dog : {type:'webform',params:[]}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["apple"], "value_apple_value");
+			assert.equal(ctx.vars["bat"], 3);
+			assert.equal(ctx.vars["car"], true);
+			assert.equal(ctx.vars["result"], 'webform-0');
+			done();
+		});
+    }); // end it
+	it('should able to evaluate property of a property', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'apple',value:'%%prop:_apple%%'},
+					{type:'setVar',name:'car',value:'%%prop:_car%%'},
+					{type:'setVar',name:'resultcar',value:'{{car._dog}}'},
+					{type:'setVar',name:'resultele',value:'{{car._ele.horse}}-{{car._ele.cat}}'},
+				]
+			}
+			,
+			props : {
+				_apple : '%%prop:_bat%%',
+				_bat : 'bat',
+				_car : {
+					_dog : '%%prop:_apple%%',
+					_ele : '%%prop:_fish%%'
+				},
+				_fish : {
+					horse : '%%prop:_apple%%',
+					cat : 'cat123'
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["apple"], "bat");
+			assert.equal(ctx.vars["resultcar"], "bat");
+			assert.equal(ctx.vars["resultele"], "bat-cat123");
+			done();
+		});
+    }); // end it
   });
 });
