@@ -822,7 +822,8 @@ describe('modFlow', function() {
 					{type:'crypto', action:'decrypt', ciphertext:'c', deciphered:'d',password:'myPassword'},
 					{type:'crypto', action:'encrypt', plaintext:'apple',ciphered:'e'},
 					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'f'},
-					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'g',password:'myPassword'}
+					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'g',password:'myPassword'},
+					{type:'crypto', action:'testNotExist', ciphertext:'e', deciphered:'g',password:'myPassword'}
 				]
 			}
 		};
@@ -970,7 +971,7 @@ describe('modFlow', function() {
 					{type:'setVar',name:'apple',value:'%%prop:_apple%%'},
 					{type:'setVar',name:'car',value:'%%prop:_car%%'},
 					{type:'setVar',name:'resultcar',value:'{{car._dog}}'},
-					{type:'setVar',name:'resultele',value:'{{car._ele.horse}}-{{car._ele.cat}}'},
+					{type:'setVar',name:'resultele',value:'{{car._ele.horse}}-{{car._ele.cat}}-{{car._ele.mon}}-{{car._ele.nan}}-{{car._ele.orange}}'},
 				]
 			}
 			,
@@ -983,7 +984,10 @@ describe('modFlow', function() {
 				},
 				_fish : {
 					horse : '%%prop:_apple%%',
-					cat : 'cat123'
+					cat : 'cat123',
+					mon : '%%prop%%',
+					nan : '%%test:test%%',
+					orange : '%%prop:_notexist%%'
 				}
 			}
 		};
@@ -991,7 +995,7 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["apple"], "bat");
 			assert.equal(ctx.vars["resultcar"], "bat");
-			assert.equal(ctx.vars["resultele"], "bat-cat123");
+			assert.equal(ctx.vars["resultele"], "bat-cat123-%%prop%%-%%test:test%%-%%prop:_notexist%%");
 			done();
 		});
     }); // end it
