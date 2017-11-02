@@ -6,6 +6,11 @@ var application = require('application'),
 
 require('./lib/modURLHandler/modURLHandler.js').handleURLScheme();
 
+var geolocation = require("nativescript-geolocation");
+if(!geolocation.isEnabled()) {
+	iosLocationManager.requestWhenInUseAuthorization();
+}
+
 // END_CUSTOM_CODE_nativeScriptApp
 application.start({
     moduleName: mainModule
