@@ -129,8 +129,11 @@ function processOnEvent(c) {
 	for(var k in c) {
 		if(k.startsWith("event.")) {
 			var eventName = k.substring('event.'.length);
+			c.comp.off(eventName);
+			c.comp.flow = c[k];
 			c.comp.on(eventName, function(args) {
-				var flow = c[k];
+				var flow = this.flow;
+				console.log('processOnEvent:' + eventName + ':' + flow);
 				ctx.vars['_args'] = args;
 				ctx.createFlowEngine(flow).execute(function() {});
 			});
