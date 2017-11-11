@@ -130,15 +130,14 @@ function processOnEvent(c) {
 		if(k.startsWith("event.")) {
 			var eventName = k.substring('event.'.length);
 			c.comp.off(eventName);
-			var fn = function(c) {
+			var fn = function(flow) {
 				return function(args) {
-					var flow = c[k];
 					console.log('processOnEvent:' + eventName + ':' + flow);
 					ctx.vars['_args'] = args;
 					ctx.createFlowEngine(flow).execute(function() {});
 				};
 			}
-			c.comp.on(eventName, fn(c));
+			c.comp.on(eventName, fn(c[k]));
 		}
 	}
 }
