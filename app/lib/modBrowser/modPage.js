@@ -103,6 +103,7 @@ function processType(c) {
 	}
 	processParamIntoComp(c);
 	processTapable(dec, c);
+	processOnEvent(c);
 	processComponents(c);
 	if(dec.postComponentProcess) dec.postComponentProcess(c);
 }
@@ -124,6 +125,18 @@ function processTapable(dec, c) {
 	}
 }
 
+function processOnEvent(c) {
+	for(var k in c) {
+		if(k.startsWith("event.")) {
+			var eventName = k.substring('event.'.length);
+			c.comp.on(eventName, function(args) {
+				var flow = c[k];
+				ctx.vars['_args'] = args;
+				ctx.createFlowEngine(flow).execute(function() {});
+			});
+		}
+	}
+}
 var _funcs = {};
 
 // Execute flow
