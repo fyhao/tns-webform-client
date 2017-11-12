@@ -103,6 +103,7 @@ function processType(c) {
 	}
 	processParamIntoComp(c);
 	processTapable(dec, c);
+	processOnEvent(c);
 	processComponents(c);
 	if(dec.postComponentProcess) dec.postComponentProcess(c);
 }
@@ -110,9 +111,7 @@ function processParamIntoComp(c) {
 	for(var key in c) {
 		if(key == 'comp') continue;
 		if(key == 'flow') continue;
-		if(typeof c.comp[key] == 'undefined') {
-			c.comp[key] = c[key];
-		}
+		c.comp[key] = c[key];
 	}
 }
 function processTapable(dec, c) {
@@ -124,6 +123,22 @@ function processTapable(dec, c) {
 	}
 }
 
+function processOnEvent(c) {
+	for(var k in c) {
+		if(k.startsWith("event.")) {
+			var eventName = k.substring('event.'.length);
+			c.comp.off(eventName);
+			var fn = function(flow) {
+				return function(args) {
+					console.log('processOnEvent:' + eventName + ':' + flow);
+					ctx.vars['_args'] = args;
+					ctx.createFlowEngine(flow).execute(function() {});
+				};
+			}
+			c.comp.on(eventName, fn(c[k]));
+		}
+	}
+}
 var _funcs = {};
 
 // Execute flow
