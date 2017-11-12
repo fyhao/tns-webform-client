@@ -2,12 +2,13 @@ var SpeechRecognition =require("nativescript-speech-recognition").SpeechRecognit
 module.exports = {
 	
 	process : function(ctx, step, next) {
+		var locale = typeof(step.locale) != 'undefined' ? step.locale : 'en-US';
 		try {
 			var speechRecognition = new SpeechRecognition();
 			speechRecognition.available().then(function(status) {
 				if(typeof step.timeout != 'undefined') {
 					speechRecognition.startListening({
-						locale: "en-US",
+						locale: locale,
 						onResult : function(res) {
 							ctx.vars[step.result] = res.text;
 							setTimeout(next, 1);
@@ -20,7 +21,7 @@ module.exports = {
 				else if(typeof step.action != 'undefined') {
 					if(step.action == 'startListening') {
 						speechRecognition.startListening({
-							locale: "en-US",
+							locale: locale,
 							onResult : function(res) {
 								ctx.vars[step.result] = res.text;
 							}
