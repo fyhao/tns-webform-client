@@ -9,6 +9,8 @@ export PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
 export DEVELOPMENT_TEAM="C4F7EVGZVS"
 export 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xcbuild-safe.sh"'
 
+export TRAVIS_BRANCH="staging"
+
 
 #Before Install
 chmod +x ./scripts/*.sh
