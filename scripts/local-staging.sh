@@ -47,7 +47,7 @@ echo "Travis before_script"
 
 #Script
 echo "Travis script"
-./scripts/script.sh
+tns build ios --release --for-device --provision "$PROVISIONING_PROFILE" --teamId "$DEVELOPMENT_TEAM"
 
 #after_script
 echo "Travis after_script"
