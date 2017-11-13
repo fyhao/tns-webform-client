@@ -37,6 +37,8 @@ e[1]="$PROVISIONING_PROFILE"
 e[2]="$PROVISIONING_TYPE"
 echo "${e[@]}" > /tmp/tempout
 
+npm install
+
 # End of Before Install
 
 #Before Script
