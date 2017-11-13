@@ -11,6 +11,7 @@ export 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xc
 
 export TRAVIS_BRANCH="staging"
 
+../secured.sh
 
 #Before Install
 chmod +x ./scripts/*.sh
