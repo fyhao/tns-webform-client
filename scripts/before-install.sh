@@ -25,7 +25,7 @@ echo "${e[@]}" > /tmp/tempout
 
 
 
-curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
 source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION
 PATH="`npm bin`:`npm bin -g`:$PATH"
 if test "$TRAVIS_BRANCH" = 'staging'; then
