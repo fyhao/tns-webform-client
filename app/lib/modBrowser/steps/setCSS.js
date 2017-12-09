@@ -8,7 +8,7 @@ module.exports = {
 				var value = styles[style];
 				setCSSStyleSync(ctx, name, style, value);
 			}
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 		else {
 			var style = step.style;

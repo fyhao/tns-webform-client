@@ -10,6 +10,6 @@ module.exports = {
 			page = step.page;
 		}
 		ctx.showItemNSPage(page);
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

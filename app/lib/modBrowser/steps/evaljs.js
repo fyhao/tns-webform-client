@@ -6,6 +6,6 @@ module.exports = {
 		}
 		var val = new Function('vars', 'vars; ' + step.code);
 		ctx.vars[step.var] = val(ctx.vars);
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

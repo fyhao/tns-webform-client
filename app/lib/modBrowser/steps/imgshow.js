@@ -4,7 +4,7 @@ module.exports = {
 		var query = typeof(step.query) != 'undefined' ? step.query : '';
     	util.imgshow().load(query, function(result) {
 			ctx.vars[step.var] = result;
-			setTimeout(checkNext, 1);
+			setTimeout(checkNext, global.STEP_TIMEOUT);
 		});
 	}
 }

@@ -18,7 +18,7 @@ module.exports = {
 					}
 				}
 				ctx.vars[step.result] = result;
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			});
 		}
 		else if(action == 'showFileChooser') {
@@ -39,7 +39,7 @@ module.exports = {
 				util.showOptionDialog(options, {done:next});
 			}
 			else {
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 		}
 		else if(action == 'downloadAsText') {
@@ -48,14 +48,14 @@ module.exports = {
 				var localFile = res.localFile;
 				localFile.readText().then(function(content) {
 					ctx.vars[step.content] = content;
-					setTimeout(next, 1);
+					setTimeout(next, global.STEP_TIMEOUT);
 				});
 			});
 		}
 		else if(action == 'uploadFileTo') {
 			client.uploadFileTo(ctx.vars[step.content], step.path, function(writeRes) {
 				ctx.vars[step.result] = writeRes;
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			});
 		}
 		else if(action == 'log') {
@@ -65,12 +65,12 @@ module.exports = {
 					console.log(result.entries[i]);
 				}
 			}
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 		else if(action == 'code') {
 			var fn = new Function('ctx','client', 'ctx; client;' + step.code);
 			fn(ctx, client);
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 	}
 }

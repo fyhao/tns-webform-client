@@ -4,22 +4,22 @@ module.exports = {
 		if(step.op == 'get') {
 			var comp = getViewById(step.id);
 			ctx.vars[step.result] = comp[step.field];
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 		else if(step.op == 'set') {
 			var comp = getViewById(step.id);
 			comp[step.field] = step.value;
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 		if(step.op == 'js') {
 			var comp = getViewById(step.id);
 			ctx.vars['_comp'] = comp;
 			var val = new Function('vars', 'vars; ' + step.code);
 			ctx.vars[step.var] = val(ctx.vars);
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 		else {
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 	}
 }

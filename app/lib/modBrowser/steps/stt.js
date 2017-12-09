@@ -11,7 +11,7 @@ module.exports = {
 						locale: locale,
 						onResult : function(res) {
 							ctx.vars[step.result] = res.text;
-							setTimeout(next, 1);
+							setTimeout(next, global.STEP_TIMEOUT);
 						}
 					})
 					setTimeout(function() {
@@ -30,7 +30,7 @@ module.exports = {
 					else if(step.action == 'stopListening') {
 						speechRecognition.stopListening();
 					}
-					setTimeout(next, 1);
+					setTimeout(next, global.STEP_TIMEOUT);
 				}
 			});
 		} catch(e) {
