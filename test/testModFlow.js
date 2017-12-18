@@ -1000,4 +1000,33 @@ describe('modFlow', function() {
 		});
     }); // end it
   });
+  
+  
+  describe('#asyncFlow to support requestFlow #358', function() {
+	it('should able to call requestFlow within asyncFlow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'asyncFlow',flow:'asyncRequestFlow'}
+				]
+			},
+			flows : {
+				asyncRequestFlow: [
+					{type:'requestFlow',url:''}
+				]
+			}
+		};
+		var mock = require('mock-require');
+		 
+		mock('utils/MyUtil.js', { request: function() {
+		  console.log('http.request called');
+		}});
+		executeWebform(webform, function(ctx) {
+			
+			done();
+		});
+    }); // end it
+  });
 });
