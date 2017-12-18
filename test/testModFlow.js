@@ -1002,29 +1002,41 @@ describe('modFlow', function() {
   });
   
   
-  describe('#asyncFlow to support requestFlow #358', function() {
+  describe('#asyncFlow to support requestFlow', function() {
 	it('should able to call requestFlow within asyncFlow', function(done) {
 		var webform = {
 			heading:'test form',
 			params: [],
 			flow : {
 				steps: [
-					{type:'asyncFlow',flow:'asyncRequestFlow'}
+					{type:'setVar',name:'debug',value:'1'},
+					{type:'asyncFlow',flow:'asyncRequestFlow'},
+					{type:'setVar',name:'debug',value:'2'},
+					{type:'waitUntil',var:'debug',value:'3'}
 				]
 			},
 			flows : {
-				asyncRequestFlow: [
-					{type:'requestFlow',url:''}
-				]
+				asyncRequestFlow: {
+					steps : [
+						{type:'setVar',name:'debug',value:'3'},
+						{type:'requestFlow',url:''},
+					]
+				}
 			}
 		};
 		var mock = require('mock-require');
 		 
-		mock('utils/MyUtil.js', { request: function() {
+		mock('../app/utils/MyUtil', { frequest: function() {
 		  console.log('http.request called');
 		}});
+		  
+		mock('../app/utils/nativeActivityIndicator', { enableActivityIndicator: function() {
+		  console.log('enableActivityIndicator called');
+		},disableActivityIndicator: function() {
+		  console.log('disableActivityIndicator called');
+		}});
 		executeWebform(webform, function(ctx) {
-			
+			assert.equal(ctx.vars["debug"], "3");
 			done();
 		});
     }); // end it
