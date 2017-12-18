@@ -1012,7 +1012,8 @@ describe('modFlow', function() {
 					{type:'setVar',name:'debug',value:'1'},
 					{type:'asyncFlow',flow:'asyncRequestFlow'},
 					{type:'setVar',name:'debug',value:'2'},
-					{type:'waitUntil',var:'debug',value:'3'}
+					{type:'waitUntil',var:'debug',value:'3'},
+					{type:'downloadedFlow'}	
 				]
 			},
 			flows : {
@@ -1020,23 +1021,34 @@ describe('modFlow', function() {
 					steps : [
 						{type:'setVar',name:'debug',value:'3'},
 						{type:'requestFlow',url:''},
+						{type:'setVar',name:'debug',value:'4'},
 					]
 				}
 			}
 		};
 		var mock = require('mock-require');
 		 
-		mock('../app/utils/MyUtil', { frequest: function() {
-		  console.log('http.request called');
+		mock('../app/utils/MyUtil', { frequest: function(opts) {
+		  console.log('mock http.request called');
+		  // simulate json response in frequest
+		  opts.callbackJSON({
+			  flows : {
+				  downloadedFlow : {
+					  steps : [
+						{type:'setVar',name:'debug',value:'5'},
+					  ]
+				  }
+			  }
+		  });
 		}});
 		  
 		mock('../app/utils/nativeActivityIndicator', { enableActivityIndicator: function() {
-		  console.log('enableActivityIndicator called');
+		  console.log('mock enableActivityIndicator called');
 		},disableActivityIndicator: function() {
-		  console.log('disableActivityIndicator called');
+		  console.log('mock disableActivityIndicator called');
 		}});
 		executeWebform(webform, function(ctx) {
-			assert.equal(ctx.vars["debug"], "3");
+			assert.equal(ctx.vars["debug"], "5");
 			done();
 		});
     }); // end it
