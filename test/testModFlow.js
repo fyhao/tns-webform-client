@@ -1012,7 +1012,7 @@ describe('modFlow', function() {
 					{type:'setVar',name:'debug',value:'1'},
 					{type:'asyncFlow',flow:'asyncRequestFlow'},
 					{type:'setVar',name:'debug',value:'2'},
-					{type:'waitUntil',var:'debug',value:'3'},
+					{type:'waitUntil',var:'debug',value:'4'},
 					{type:'downloadedFlow'}	
 				]
 			},
