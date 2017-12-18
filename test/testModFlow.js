@@ -1012,7 +1012,7 @@ describe('modFlow', function() {
 					{type:'setVar',name:'debug',value:'1'},
 					{type:'asyncFlow',flow:'asyncRequestFlow'},
 					{type:'setVar',name:'debug',value:'2'},
-					{type:'waitUntil',var:'debug',value:'4'},
+					{type:'waitUntil',var:'debug',value:'5'},
 					{type:'downloadedFlow'}	
 				]
 			},
@@ -1021,7 +1021,8 @@ describe('modFlow', function() {
 					steps : [
 						{type:'setVar',name:'debug',value:'3'},
 						{type:'requestFlow',url:''},
-						{type:'setVar',name:'debug',value:'4'},
+						{type:'waitUntil',var:'debug',value:'4'},
+						{type:'setVar',name:'debug',value:'5'},
 					]
 				}
 			}
@@ -1035,9 +1036,14 @@ describe('modFlow', function() {
 			  flows : {
 				  downloadedFlow : {
 					  steps : [
-						{type:'setVar',name:'debug',value:'5'},
+						{type:'setVar',name:'debug',value:'6'},
 					  ]
 				  }
+			  },
+			  flow : {
+				  steps : [
+					{type:'setVar',name:'debug',value:'4'},
+				  ]
 			  }
 		  });
 		}});
@@ -1048,7 +1054,7 @@ describe('modFlow', function() {
 		  console.log('mock disableActivityIndicator called');
 		}});
 		executeWebform(webform, function(ctx) {
-			assert.equal(ctx.vars["debug"], "5");
+			assert.equal(ctx.vars["debug"], "6");
 			done();
 		});
     }); // end it
