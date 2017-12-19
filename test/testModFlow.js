@@ -1059,4 +1059,41 @@ describe('modFlow', function() {
 		});
     }); // end it
   });
+  
+  describe('#imgshow', function() {
+	it('should able to call imgshow service', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'debug',value:'1'},
+					{type:'imgshow',query:'q:name=test',var:'result'},
+					{type:'setVar',name:'debug',value:'2'}
+				]
+			}
+		};
+		
+		var mock = require('mock-require');
+		 
+		mock('../app/utils/MyUtil', { imgshow:function() {
+			return {
+				load : function(query, cb) {
+					mock.stop('../app/utils/MyUtil');
+					var util = require('../app/utils/MyUtil');
+					util.getVersionString = function() {return 'dummy version';}
+					util.frequest = function(opts) {
+						opts.callback('imgshow service response');
+					}
+					return util.imgshow().load(query, cb);
+				}
+			};
+		}});
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["debug"], "2");
+			assert.equal(ctx.vars["result"], "imgshow service response");
+			done();
+		});
+    }); // end it
+  });
 });
