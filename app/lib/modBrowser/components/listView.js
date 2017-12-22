@@ -13,6 +13,7 @@ module.exports = {
 		}
 		else if(typeof c.items == 'string') {
 			items = ctx.vars[c.items];
+			c.items = items;
 		}
 		listView.items = items;
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
