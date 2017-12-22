@@ -1058,6 +1058,55 @@ describe('modFlow', function() {
 			done();
 		});
     }); // end it
+	
+	it('should able to call requestFlow within asyncFlow with flow only', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'debug',value:'1'},
+					{type:'asyncFlow',flow:'asyncRequestFlow'},
+					{type:'setVar',name:'debug',value:'2'},
+					{type:'waitUntil',var:'debug',value:'5'},
+					{type:'downloadedFlow'}	
+				]
+			},
+			flows : {
+				asyncRequestFlow: {
+					steps : [
+						{type:'setVar',name:'debug',value:'3'},
+						{type:'requestFlow',url:''},
+						{type:'waitUntil',var:'debug',value:'4'},
+						{type:'setVar',name:'debug',value:'5'},
+					]
+				}
+			}
+		};
+		var mock = require('mock-require');
+		 
+		mock('../app/utils/MyUtil', { frequest: function(opts) {
+		  console.log('mock http.request called');
+		  // simulate json response in frequest
+		  opts.callbackJSON({
+			  flow : {
+				  steps : [
+					{type:'setVar',name:'debug',value:'4'},
+				  ]
+			  }
+		  });
+		}});
+		  
+		mock('../app/utils/nativeActivityIndicator', { enableActivityIndicator: function() {
+		  console.log('mock enableActivityIndicator called');
+		},disableActivityIndicator: function() {
+		  console.log('mock disableActivityIndicator called');
+		}});
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["debug"], "6");
+			done();
+		});
+    }); // end it
   });
   
   describe('#imgshow', function() {
