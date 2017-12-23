@@ -58,7 +58,10 @@ function showItemNSPage(itemPage) {
 	processComponents(itemPage);
 	helpers.navigate(function(){return page;});
 	var flow = itemPage.flow;
-	ctx.createFlowEngine(flow).execute(function() {});
+	setTimeout(function() {
+		ctx.createFlowEngine(flow).execute(function() {});
+	}, 500);
+	
 
 	page.addEventListener(pagesModule.Page.navigatedFromEvent, function(evt) {
 		//modFlow.FLOW_ENGINE_CANCELED = true;

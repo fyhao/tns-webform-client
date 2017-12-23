@@ -11,6 +11,7 @@ module.exports = {
 var stepDefinitions = [];
 
 // CONSTANTS
+global.STEP_TIMEOUT = 0;
 
 // REGION _processStep
 

@@ -13,7 +13,7 @@ module.exports = {
 					res = true;
 				}
 				ctx.vars[step.result] = res;
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 			options.push(opt);
 		}

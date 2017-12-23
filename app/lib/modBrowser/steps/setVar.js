@@ -7,6 +7,6 @@ module.exports = {
 		else {
 			ctx.vars[step.name] = step.value;
 		}
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

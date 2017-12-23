@@ -12,6 +12,6 @@ module.exports = {
 			console.log('some error detected')
 		}
 		  
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

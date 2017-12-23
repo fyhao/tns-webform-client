@@ -1,4 +1,5 @@
 var listViewModule = require("ui/list-view");
+var labelModule = require("ui/label");
 var util = require('../../../utils/MyUtil.js');
 module.exports = {
 	
@@ -13,6 +14,7 @@ module.exports = {
 		}
 		else if(typeof c.items == 'string') {
 			items = ctx.vars[c.items];
+			c.items = items;
 		}
 		listView.items = items;
 		listView.on(listViewModule.ListView.itemLoadingEvent, function (args1) {
@@ -22,9 +24,7 @@ module.exports = {
 				util.fillItemTemplateVars(itemTemplate, items, args1.index);
 				//console.log('listView after fillItemTemplateVars itemTemplate: ' + JSON.stringify(itemTemplate));
 				c.processType(itemTemplate);
-				if(!args1.view) {
-					args1.view = itemTemplate.comp;
-				}
+				args1.view = itemTemplate.comp;
 			}
 			else {
 				if (!args1.view) {
