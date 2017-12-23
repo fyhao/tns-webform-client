@@ -4,13 +4,23 @@ module.exports = {
 	process : function(ctx, step, next) {
 		var locale = typeof(step.locale) != 'undefined' ? step.locale : 'en-US';
 		try {
-			var speechRecognition = new SpeechRecognition();
+			var speechRecognition = null;
+			if(typeof ctx.speechRecognition == 'undefined') {
+				speechRecognition = new SpeechRecognition();
+				ctx.speechRecognition = speechRecognition;
+			}
+			else {
+			    speechRecognition = ctx.speechRecognition;
+			}
+			
 			speechRecognition.available().then(function(status) {
 				if(typeof step.timeout != 'undefined') {
 					speechRecognition.startListening({
 						locale: locale,
 						onResult : function(res) {
 							ctx.vars[step.result] = res.text;
+							speechRecognition = null;
+							delete ctx['speechRecognition'];
 							setTimeout(next, global.STEP_TIMEOUT);
 						}
 					})
@@ -24,6 +34,8 @@ module.exports = {
 							locale: locale,
 							onResult : function(res) {
 								ctx.vars[step.result] = res.text;
+								speechRecognition = null;
+								delete ctx['speechRecognition'];
 							}
 						});
 					}
