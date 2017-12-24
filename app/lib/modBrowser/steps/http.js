@@ -20,19 +20,19 @@ module.exports = {
 			frequestObj.callbackJSON = function(json) {
 				ctx.vars[step.varJson] = json;
 				activityIndicator.disableActivityIndicator();
-				setTimeout(checkNext, 1);
+				setTimeout(checkNext, global.STEP_TIMEOUT);
 			}
 		}
 		else if(typeof step.var !== 'undefined') {
 			frequestObj.callback = function(body) {
 				ctx.vars[step.var] = body;
 				activityIndicator.disableActivityIndicator();
-				setTimeout(checkNext, 1);
+				setTimeout(checkNext, global.STEP_TIMEOUT);
 			}
 		}
 		else {
 			activityIndicator.disableActivityIndicator();
-			setTimeout(checkNext, 1);
+			setTimeout(checkNext, global.STEP_TIMEOUT);
 			return;
 		}
 		activityIndicator.enableActivityIndicator();
@@ -45,6 +45,6 @@ var callErrorFlow = function(flow, err) {
 	ctx.vars['http_error'] = err;
 	ctx.createFlowEngine(flow).execute(function() {
 		activityIndicator.disableActivityIndicator();
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	});
 }

@@ -5,6 +5,6 @@ module.exports = {
 		setTimeout(function() {
 			ctx.createFlowEngine(step.flow).execute(function() {});
 		}, delay);
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

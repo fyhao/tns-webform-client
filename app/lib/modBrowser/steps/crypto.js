@@ -16,6 +16,6 @@ module.exports = {
 			var deciphered = Aes.Ctr.decrypt(ctx.vars[step.ciphertext], password, 128);
 			ctx.vars[step.deciphered] = deciphered;
 		}
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

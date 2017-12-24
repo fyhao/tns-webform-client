@@ -5,11 +5,11 @@ module.exports = {
 		scanner.scan(function(err, result) {
 			if(err) {
 				// TODO trigger error flow
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 				return;
 			}
 			ctx.vars[step.result] = result.text;
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		});
 	}
 }

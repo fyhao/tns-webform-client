@@ -18,7 +18,7 @@ var monitor = function(ctx, step, next) {
 				ctx.createFlowEngine(step.on_fail).execute(next);
 			}
 			else {
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 		}
 		else { // not timeout, re check after tick
@@ -27,7 +27,7 @@ var monitor = function(ctx, step, next) {
 					ctx.createFlowEngine(step.on_success).execute(next);
 				}
 				else {
-					setTimeout(next, 1);
+					setTimeout(next, global.STEP_TIMEOUT);
 				}
 			}
 			else {

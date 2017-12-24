@@ -10,7 +10,7 @@ module.exports = {
 		}
 		util.showOptionDialog(options, {doneResult:function(result) {
 			ctx.vars[step.result] = result;
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}});
 	}
 }
