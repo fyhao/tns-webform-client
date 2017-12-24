@@ -72,6 +72,6 @@ module.exports = {
 				ctx.createFlowEngine(flow).execute(function() {});
 			}
 		});
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }

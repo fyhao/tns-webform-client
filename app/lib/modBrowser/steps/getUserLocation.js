@@ -9,7 +9,7 @@ module.exports = {
 			else {
 				ctx.vars[step.var] = loc;
 			}
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		});
 	}
 }

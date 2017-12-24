@@ -82,6 +82,16 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	
+	<!-- Speech recognition usage consent -->
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>My custom recognition usage description. Overriding the default empty one in the plugin.</string>
+
+	<!-- Microphone usage constent -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>My custom microphone usage description. Overriding the default empty one in the plugin.</string>
+
+
 	<key>method</key>
     <string>ad-hoc</string>
 	<key>teamID</key>

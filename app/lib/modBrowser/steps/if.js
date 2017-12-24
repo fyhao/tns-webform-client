@@ -26,21 +26,21 @@ module.exports = {
 		if(validated) {
 			if(step.yes_subflow != null) {
 				ctx.createFlowEngine(step.yes_subflow).execute(function() {
-					setTimeout(next, 1);
+					setTimeout(next, global.STEP_TIMEOUT);
 				});
 			}
 			else {
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 		}
 		else {
 			if(step.no_subflow != null) {
 				ctx.createFlowEngine(step.no_subflow).execute(function() {
-					setTimeout(next, 1);
+					setTimeout(next, global.STEP_TIMEOUT);
 				});
 			}
 			else {
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 		}
 	}

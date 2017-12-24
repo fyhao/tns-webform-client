@@ -5,13 +5,13 @@ module.exports = {
 	process : function(ctx, step, next) {
 		camera.takePicture(function(err, imageAsset) {
 			if(err) {
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 			else {
 				var image = new imageModule.Image();
 				image.src = imageAsset;
 				ctx.blobVars[step.blob] = imageAsset;
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 		});
 	}

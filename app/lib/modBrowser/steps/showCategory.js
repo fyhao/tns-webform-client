@@ -7,6 +7,6 @@ module.exports = {
 		else if(step.cat) {
 			ctx.showCategoryItems(step.cat);
 		}
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }
