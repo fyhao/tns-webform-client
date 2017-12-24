@@ -9,7 +9,7 @@ module.exports = {
 			processArray(ctx, step, next);
 		}
 		else {
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 	}
 }
@@ -26,14 +26,14 @@ var processLoop = function(ctx, step, next) {
 			var vstep = filterStep(step);
 			ctx.createFlowEngine(step.flow).setInputVars(vstep).execute(function() {
 				i += _step; // for step
-				setTimeout(checkNext, 1);
+				setTimeout(checkNext, global.STEP_TIMEOUT);
 			});
 		}
 		else {
-			setTimeout(next, 1);
+			setTimeout(next, global.STEP_TIMEOUT);
 		}
 	}
-	setTimeout(checkNext, 1);
+	setTimeout(checkNext, global.STEP_TIMEOUT);
 }
 
 var processArray = function(ctx, step, next) {
@@ -47,17 +47,17 @@ var processArray = function(ctx, step, next) {
 				var vstep = filterStep(step);
 				ctx.createFlowEngine(step.flow).setInputVars(vstep).execute(function(outputVars) {
 					i++;
-					setTimeout(checkNext, 1);
+					setTimeout(checkNext, global.STEP_TIMEOUT);
 				});
 			}
 			else {
-				setTimeout(next, 1);
+				setTimeout(next, global.STEP_TIMEOUT);
 			}
 		}
-		setTimeout(checkNext, 1);
+		setTimeout(checkNext, global.STEP_TIMEOUT);
 	}
 	else {
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }
 

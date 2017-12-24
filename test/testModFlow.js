@@ -822,7 +822,8 @@ describe('modFlow', function() {
 					{type:'crypto', action:'decrypt', ciphertext:'c', deciphered:'d',password:'myPassword'},
 					{type:'crypto', action:'encrypt', plaintext:'apple',ciphered:'e'},
 					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'f'},
-					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'g',password:'myPassword'}
+					{type:'crypto', action:'decrypt', ciphertext:'e', deciphered:'g',password:'myPassword'},
+					{type:'crypto', action:'testNotExist', ciphertext:'e', deciphered:'g',password:'myPassword'}
 				]
 			}
 		};
@@ -970,7 +971,7 @@ describe('modFlow', function() {
 					{type:'setVar',name:'apple',value:'%%prop:_apple%%'},
 					{type:'setVar',name:'car',value:'%%prop:_car%%'},
 					{type:'setVar',name:'resultcar',value:'{{car._dog}}'},
-					{type:'setVar',name:'resultele',value:'{{car._ele.horse}}-{{car._ele.cat}}'},
+					{type:'setVar',name:'resultele',value:'{{car._ele.horse}}-{{car._ele.cat}}-{{car._ele.mon}}-{{car._ele.nan}}-{{car._ele.orange}}'},
 				]
 			}
 			,
@@ -983,7 +984,10 @@ describe('modFlow', function() {
 				},
 				_fish : {
 					horse : '%%prop:_apple%%',
-					cat : 'cat123'
+					cat : 'cat123',
+					mon : '%%prop%%',
+					nan : '%%test:test%%',
+					orange : '%%prop:_notexist%%'
 				}
 			}
 		};
@@ -991,7 +995,152 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["apple"], "bat");
 			assert.equal(ctx.vars["resultcar"], "bat");
-			assert.equal(ctx.vars["resultele"], "bat-cat123");
+			assert.equal(ctx.vars["resultele"], "bat-cat123-%%prop%%-%%test:test%%-%%prop:_notexist%%");
+			done();
+		});
+    }); // end it
+  });
+  
+  
+  describe('#asyncFlow to support requestFlow', function() {
+	it('should able to call requestFlow within asyncFlow', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'debug',value:'1'},
+					{type:'asyncFlow',flow:'asyncRequestFlow'},
+					{type:'setVar',name:'debug',value:'2'},
+					{type:'waitUntil',var:'debug',value:'5'},
+					{type:'downloadedFlow'}	
+				]
+			},
+			flows : {
+				asyncRequestFlow: {
+					steps : [
+						{type:'setVar',name:'debug',value:'3'},
+						{type:'requestFlow',url:''},
+						{type:'waitUntil',var:'debug',value:'4'},
+						{type:'setVar',name:'debug',value:'5'},
+					]
+				}
+			}
+		};
+		var mock = require('mock-require');
+		 
+		mock('../app/utils/MyUtil', { frequest: function(opts) {
+		  console.log('mock http.request called');
+		  // simulate json response in frequest
+		  opts.callbackJSON({
+			  flows : {
+				  downloadedFlow : {
+					  steps : [
+						{type:'setVar',name:'debug',value:'6'},
+					  ]
+				  }
+			  },
+			  flow : {
+				  steps : [
+					{type:'setVar',name:'debug',value:'4'},
+				  ]
+			  }
+		  });
+		}});
+		  
+		mock('../app/utils/nativeActivityIndicator', { enableActivityIndicator: function() {
+		  console.log('mock enableActivityIndicator called');
+		},disableActivityIndicator: function() {
+		  console.log('mock disableActivityIndicator called');
+		}});
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["debug"], "6");
+			done();
+		});
+    }); // end it
+	
+	it('should able to call requestFlow within asyncFlow with flow only', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'debug',value:'1'},
+					{type:'asyncFlow',flow:'asyncRequestFlow'},
+					{type:'setVar',name:'debug',value:'2'},
+					{type:'waitUntil',var:'debug',value:'5'},
+					{type:'downloadedFlow'}	
+				]
+			},
+			flows : {
+				asyncRequestFlow: {
+					steps : [
+						{type:'setVar',name:'debug',value:'3'},
+						{type:'requestFlow',url:''},
+						{type:'waitUntil',var:'debug',value:'4'},
+						{type:'setVar',name:'debug',value:'5'},
+					]
+				}
+			}
+		};
+		var mock = require('mock-require');
+		 
+		mock('../app/utils/MyUtil', { frequest: function(opts) {
+		  console.log('mock http.request called');
+		  // simulate json response in frequest
+		  opts.callbackJSON({
+			  flow : {
+				  steps : [
+					{type:'setVar',name:'debug',value:'4'},
+				  ]
+			  }
+		  });
+		}});
+		  
+		mock('../app/utils/nativeActivityIndicator', { enableActivityIndicator: function() {
+		  console.log('mock enableActivityIndicator called');
+		},disableActivityIndicator: function() {
+		  console.log('mock disableActivityIndicator called');
+		}});
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["debug"], "6");
+			done();
+		});
+    }); // end it
+  });
+  
+  describe('#imgshow', function() {
+	it('should able to call imgshow service', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'debug',value:'1'},
+					{type:'imgshow',query:'q:name=test',var:'result'},
+					{type:'setVar',name:'debug',value:'2'}
+				]
+			}
+		};
+		
+		var mock = require('mock-require');
+		 
+		mock('../app/utils/MyUtil', { imgshow:function() {
+			return {
+				load : function(query, cb) {
+					mock.stop('../app/utils/MyUtil');
+					var util = require('../app/utils/MyUtil');
+					util.getVersionString = function() {return 'dummy version';}
+					util.frequest = function(opts) {
+						opts.callback('imgshow service response');
+					}
+					return util.imgshow().load(query, cb);
+				}
+			};
+		}});
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["debug"], "2");
+			assert.equal(ctx.vars["result"], "imgshow service response");
 			done();
 		});
     }); // end it

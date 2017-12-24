@@ -3,6 +3,5 @@ module.exports = {
 	tapable : true,
 	process : function(c) {
 		c.comp = new buttonModule.Button();
-		c.comp.text = c.text;
 	}
 }

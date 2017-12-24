@@ -9,6 +9,6 @@ module.exports = {
 		var page = new pagesModule.Page();
 		page.content = image;
 		helpers.navigate(function(){return page;});
-		setTimeout(next, 1);
+		setTimeout(next, global.STEP_TIMEOUT);
 	}
 }
