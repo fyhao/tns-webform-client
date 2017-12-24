@@ -297,6 +297,9 @@ var showItemWebform = function(item, opts) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		ctx.enable_FLOW_ENGINE_CANCELLED();
 		console.log('FLOW engine canceled')
+		if(typeof item.on_unload != 'undefined') {
+			ctx.createFlowEngine(item.on_unload).execute(function() {});
+		}
 	})
   
 }
