@@ -11,7 +11,7 @@ module.exports = {
 			comp[step.field] = step.value;
 			setTimeout(next, global.STEP_TIMEOUT);
 		}
-		if(step.op == 'js') {
+		else if(step.op == 'js') {
 			var comp = getViewById(step.id);
 			ctx.vars['_comp'] = comp;
 			var val = new Function('vars', 'vars; ' + step.code);

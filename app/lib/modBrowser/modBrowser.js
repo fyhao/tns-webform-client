@@ -15,6 +15,7 @@ var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
 var modPage = require('./modPage.js');
 var modOfflinePage = require('../modOfflinePage/modOfflinePage.js');
+var activityIndicator = require('../../utils/nativeActivityIndicator');
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -114,9 +115,11 @@ function showCategoryItems(cat, opts) {
 }
 function showCategory(url) {
     var loadData = function() {
+		activityIndicator.enableActivityIndicator();
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
+				activityIndicator.disableActivityIndicator();
                 showCategoryItems(cat, {url:url});
             }
         });
@@ -137,9 +140,11 @@ function showItem(item) {
     }
     else if(item.type == 'webform') {
 		if(typeof item.requesturl != 'undefined') {
+			activityIndicator.enableActivityIndicator();
 			util.frequest({
 				url : item.requesturl,
 				callbackJSON : function(webform) {
+					activityIndicator.disableActivityIndicator();
 					modWebform.showItemWebform(webform);
 				}
 			});
@@ -150,9 +155,11 @@ function showItem(item) {
     }
 	else if(item.type == 'page') {
 		if(typeof item.requesturl != 'undefined') {
+			activityIndicator.enableActivityIndicator();
 			util.frequest({
 				url : item.requesturl,
 				callbackJSON : function(page) {
+					activityIndicator.disableActivityIndicator();
 					modPage.showItemNSPage(page);
 				}
 			});
