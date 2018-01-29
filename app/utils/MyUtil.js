@@ -143,14 +143,16 @@ var util = {
 			actions: options_dg
 		}).then(function (result) {
 			console.log("Dialog result: " + result)
+			var selectedOption = null;
 			for(var i = 0; i < filterOptions.length; i++) {
 				var option = filterOptions[i];
 				if(option.text == result) {
 					if(option.func) option.func();
+					selectedOption = option;
 				}
 			}
 			if(opts.done) opts.done();
-			if(opts.doneResult) opts.doneResult(result);
+			if(opts.doneResult) opts.doneResult(result, selectedOption);
 		});
 	}
 	,
