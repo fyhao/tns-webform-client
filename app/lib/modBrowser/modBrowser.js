@@ -56,6 +56,7 @@ function showListChooser(options, callback) {
 function showCategoryItems(cat, opts) {
 	if(typeof opts == 'undefined') opts = {};
     var page = new pagesModule.Page();
+	page.addCss('listView .listitem {padding:10;}')
 	var listView = new listViewModule.ListView();
     page.content = listView;
 	listView.items = cat.list;
@@ -64,6 +65,7 @@ function showCategoryItems(cat, opts) {
 			// Create label if it is not already created.
 			args1.view = new labelModule.Label();
 			args1.view.height = 44;
+			args1.view.class = 'listitem';
 		}
 		args1.view.cat = cat.list[args1.index];
 		args1.view.text = cat.list[args1.index].title;
