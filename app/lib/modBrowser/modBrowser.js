@@ -15,6 +15,7 @@ var helpers = require('../../utils/widgets/helper');
 var modWebform = require('./modWebform.js');
 var modPage = require('./modPage.js');
 var modOfflinePage = require('../modOfflinePage/modOfflinePage.js');
+var activityIndicator = require('../../utils/nativeActivityIndicator');
 module.exports.createBrowser = function() {
 	return new Browser();
 }
@@ -55,6 +56,7 @@ function showListChooser(options, callback) {
 function showCategoryItems(cat, opts) {
 	if(typeof opts == 'undefined') opts = {};
     var page = new pagesModule.Page();
+	page.addCss('listView .listitem {padding:10;}')
 	var listView = new listViewModule.ListView();
     page.content = listView;
 	listView.items = cat.list;
@@ -63,6 +65,7 @@ function showCategoryItems(cat, opts) {
 			// Create label if it is not already created.
 			args1.view = new labelModule.Label();
 			args1.view.height = 44;
+			args1.view.class = 'listitem';
 		}
 		args1.view.cat = cat.list[args1.index];
 		args1.view.text = cat.list[args1.index].title;
@@ -114,9 +117,11 @@ function showCategoryItems(cat, opts) {
 }
 function showCategory(url) {
     var loadData = function() {
+		activityIndicator.enableActivityIndicator();
         util.frequest({
             url : url,
             callbackJSON : function(cat) {
+				activityIndicator.disableActivityIndicator();
                 showCategoryItems(cat, {url:url});
             }
         });
@@ -137,9 +142,11 @@ function showItem(item) {
     }
     else if(item.type == 'webform') {
 		if(typeof item.requesturl != 'undefined') {
+			activityIndicator.enableActivityIndicator();
 			util.frequest({
 				url : item.requesturl,
 				callbackJSON : function(webform) {
+					activityIndicator.disableActivityIndicator();
 					modWebform.showItemWebform(webform);
 				}
 			});
@@ -150,9 +157,11 @@ function showItem(item) {
     }
 	else if(item.type == 'page') {
 		if(typeof item.requesturl != 'undefined') {
+			activityIndicator.enableActivityIndicator();
 			util.frequest({
 				url : item.requesturl,
 				callbackJSON : function(page) {
+					activityIndicator.disableActivityIndicator();
 					modPage.showItemNSPage(page);
 				}
 			});

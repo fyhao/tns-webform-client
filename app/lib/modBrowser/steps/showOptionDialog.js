@@ -8,8 +8,11 @@ module.exports = {
 			opt.text = step.options[i];
 			options.push(opt);
 		}
-		util.showOptionDialog(options, {doneResult:function(result) {
+		util.showOptionDialog(options, {doneResult:function(result, selectedOption) {
 			ctx.vars[step.result] = result;
+			if(selectedOption && selectedOption.id && step.selectedId) {
+				ctx.vars[step.selectedId] = selectedOption.id;
+			}
 			setTimeout(next, global.STEP_TIMEOUT);
 		}});
 	}

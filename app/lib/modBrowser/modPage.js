@@ -67,6 +67,9 @@ function showItemNSPage(itemPage) {
 		//modFlow.FLOW_ENGINE_CANCELED = true;
 		//ctx.enable_FLOW_ENGINE_CANCELLED();
 		//console.log('FLOW engine canceled FROM showItemNSPage')
+		if(typeof itemPage.on_unload != 'undefined') {
+			ctx.createFlowEngine(itemPage.on_unload).execute(function() {});
+		}
 	})
 	
 }

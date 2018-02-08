@@ -790,6 +790,73 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to evaljs to ctx.createFlowEngine within timeout', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'evaljs',code:'ctx.createFlowEngine("show_option").execute(next);',timeout:10},
+				]
+			}
+			,
+			flows : {
+				show_option : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], "2");
+			done();
+		});
+    });
+	it('should able to evaljs to ctx.createFlowEngine bypassed if not within timeout', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'evaljs',code:'ctx.createFlowEngine("show_option").execute(function() {});',timeout:10},
+				]
+			}
+			,
+			flows : {
+				show_option : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], "2");
+			done();
+		});
+    });
+	it('should able to evaljs to use MyUtil function', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'abc'},
+					{type:'evaljs',code:'return util.replaceAll(vars.result,"b","d")',var:'result2'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result2"], "adc");
+			done();
+		});
+    });
   });
   describe('#crypto', function() {
 	it('should able to encrypt and decrypt', function(done) {
@@ -1145,4 +1212,6 @@ describe('modFlow', function() {
 		});
     }); // end it
   });
+  
+  
 });
