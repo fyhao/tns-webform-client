@@ -4,10 +4,10 @@ module.exports = {
 	process : function(ctx, step, next) {
 		var options = [];
 		for(var i = 0; i < step.options.length; i++) {
-			var option = step.options;
+			var option = step.options[i];
 			if(typeof option == 'string') {
 				var opt = {};
-				opt.text = step.options[i];
+				opt.text = option;
 				options.push(opt);
 			}
 			else {
