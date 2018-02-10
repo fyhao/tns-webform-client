@@ -18,7 +18,7 @@ env:
     - PROFILE_NAME="tnswebformprofile"
     - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
     - 'CODE_SIGN_IDENTITY="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
-    - PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+    - PROVISIONING_PROFILE="2be14cbd-34c3-4091-9d70-c1d4c4a7c028"
     - DEVELOPMENT_TEAM="C4F7EVGZVS"
     - 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xcbuild-safe.sh"'
 
