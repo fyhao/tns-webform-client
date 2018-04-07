@@ -15,10 +15,8 @@ module.exports = {
 				callErrorFlow(step.errorFlow, err);
 			}
 		}
-		
-		if(typeof step.varJson !== 'undefined') {
-			frequestObj.callbackJSON = function(json, response) {
-				ctx.vars[step.varJson] = json;
+		if(typeof step.varResponse != 'undefined') {
+			frequestObj.callback = function(body, response) {
 				if(typeof step.varResponse != 'undefined') {
 					ctx.vars[step.varResponse] = response;
 				}
@@ -26,12 +24,16 @@ module.exports = {
 				setTimeout(checkNext, global.STEP_TIMEOUT);
 			}
 		}
+		else if(typeof step.varJson !== 'undefined') {
+			frequestObj.callbackJSON = function(json) {
+				ctx.vars[step.varJson] = json;
+				activityIndicator.disableActivityIndicator();
+				setTimeout(checkNext, global.STEP_TIMEOUT);
+			}
+		}
 		else if(typeof step.var !== 'undefined') {
-			frequestObj.callback = function(body, response) {
+			frequestObj.callback = function(body) {
 				ctx.vars[step.var] = body;
-				if(typeof step.varResponse != 'undefined') {
-					ctx.vars[step.varResponse] = response;
-				}
 				activityIndicator.disableActivityIndicator();
 				setTimeout(checkNext, global.STEP_TIMEOUT);
 			}
