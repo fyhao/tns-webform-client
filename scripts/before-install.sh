@@ -8,7 +8,7 @@ echo "Current running branch $TRAVIS_BRANCH"
 PROVISIONING_TYPE="1"
 if test "$PROVISIONING_TYPE" = '1'; then
 	PROFILE_NAME="tnswebformprofile"
-	PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+	PROVISIONING_PROFILE="2be14cbd-34c3-4091-9d70-c1d4c4a7c028"
 fi
 
 if test "$PROVISIONING_TYPE" = '2'; then
