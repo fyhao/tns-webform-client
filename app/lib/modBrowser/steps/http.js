@@ -17,15 +17,21 @@ module.exports = {
 		}
 		
 		if(typeof step.varJson !== 'undefined') {
-			frequestObj.callbackJSON = function(json) {
+			frequestObj.callbackJSON = function(json, response) {
 				ctx.vars[step.varJson] = json;
+				if(typeof step.varResponse != 'undefined') {
+					ctx.vars[step.varResponse] = response;
+				}
 				activityIndicator.disableActivityIndicator();
 				setTimeout(checkNext, global.STEP_TIMEOUT);
 			}
 		}
 		else if(typeof step.var !== 'undefined') {
-			frequestObj.callback = function(body) {
+			frequestObj.callback = function(body, response) {
 				ctx.vars[step.var] = body;
+				if(typeof step.varResponse != 'undefined') {
+					ctx.vars[step.varResponse] = response;
+				}
 				activityIndicator.disableActivityIndicator();
 				setTimeout(checkNext, global.STEP_TIMEOUT);
 			}

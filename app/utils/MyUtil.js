@@ -24,10 +24,20 @@ var util = {
             })
             .then(function(response) {
 				if(typeof opts.callbackJSON !== 'undefined') {
-					opts.callbackJSON(JSON.parse(response._bodyInit));
+					if(opts.callbackJSON.length == 2) {
+						opts.callbackJSON(JSON.parse(response._bodyInit), response);
+					}
+					else {
+						opts.callbackJSON(JSON.parse(response._bodyInit));
+					}
 				}
 				else if(typeof opts.callback !== 'undefined') {
-					opts.callback(response._bodyInit);
+					if(opts.callback.length == 2) {
+						opts.callback(JSON.parse(response._bodyInit), response);
+					}
+					else {
+						opts.callback(JSON.parse(response._bodyInit));
+					}
 				}
                 
             }, function(error) {
