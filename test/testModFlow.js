@@ -1251,5 +1251,44 @@ describe('modFlow', function() {
 			done();
 		});
     }); // end it
+	
+	it('should able to parallel nothing', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'setVar',name:'task_1_flag',value:'0'},
+					{type:'setVar',name:'task_2_flag',value:'0'},
+					{type:'parallel',flows:[],timeout:1},
+					{type:'parallel',timeout:1},
+					{type:'setVar',name:'result',value:'4'},
+				]
+			}
+			,
+			flows : {
+				task_1 : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+						{type:'setVar',name:'task_1_flag',value:'1'}
+					]
+				},
+				task_2 : {
+					steps : [
+						{type:'setVar',name:'result',value:'3'},
+						{type:'setVar',name:'task_2_flag',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '4');
+			assert.equal(ctx.vars["task_1_flag"], '1');
+			assert.equal(ctx.vars["task_2_flag"], '2');
+			done();
+		});
+    }); // end it
   });
 });
