@@ -1285,8 +1285,8 @@ describe('modFlow', function() {
 		
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["result"], '4');
-			assert.equal(ctx.vars["task_1_flag"], '1');
-			assert.equal(ctx.vars["task_2_flag"], '2');
+			assert.equal(ctx.vars["task_1_flag"], '0');
+			assert.equal(ctx.vars["task_2_flag"], '0');
 			done();
 		});
     }); // end it
