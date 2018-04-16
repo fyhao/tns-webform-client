@@ -7,7 +7,7 @@ module.exports = {
 				console.log('timermgr success cb');
 				//success cb called
 				if(typeof step.success_flow != 'undefined') {
-					ctx.createFlowEngine(step.success_flow).execute();
+					ctx.createFlowEngine(step.success_flow).execute(function() {});
 				}
 			});
 			setTimeout(next, global.STEP_TIMEOUT);

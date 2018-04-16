@@ -1303,22 +1303,22 @@ describe('modFlow', function() {
 			flow : {
 				steps: [
 					{type:'setVar',name:'result',value:'0'},
-					{type:'timer',action:'start',id:'myTimer',timeout:1000,success_flow:'success'},
-					{type:'waitUntil',var:'result',value:'1',timeout:10000},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'waitUntil',var:'result',value:'1',timeout:500},
 					{type:'timer',action:'stop',id:'myTimer'}
 				]
 			},
 			flows:{
 				success: {
 					steps : [
-						{type:'setVar',name:'result',value:'0'},
+						{type:'setVar',name:'result',value:'1'},
 					]
 				}
 			}
 		};
 		
 		executeWebform(webform, function(ctx) {
-			//assert.equal(ctx.vars["result"], '1');
+			assert.equal(ctx.vars["result"], '1');
 			done();
 		});
     }); // end it

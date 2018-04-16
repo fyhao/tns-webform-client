@@ -25,7 +25,7 @@ var Timer = function(id,timeout,success_cb) {
 				clearInterval(rt);
 				rt = null;
 			}
-		},500);
+		},100);
 	}
 }
 
