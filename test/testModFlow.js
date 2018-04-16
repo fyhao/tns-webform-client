@@ -1296,7 +1296,7 @@ describe('modFlow', function() {
   
   
   describe('#timer', function() {
-	it('should able to create timer', function(done) {
+	it('should able to start a timer', function(done) {
 		var webform = {
 			heading:'test form',
 			params: [],
@@ -1305,7 +1305,6 @@ describe('modFlow', function() {
 					{type:'setVar',name:'result',value:'0'},
 					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
 					{type:'waitUntil',var:'result',value:'1',timeout:500},
-					{type:'timer',action:'stop',id:'myTimer'}
 				]
 			},
 			flows:{
@@ -1319,6 +1318,36 @@ describe('modFlow', function() {
 		
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["result"], '1');
+			assert.equal(ctx.timermgr.getList().length,1);
+			ctx.timermgr.stop('myTimer');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to stop a timer', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '0');
+			assert.equal(ctx.timermgr.getList().length,0);
 			done();
 		});
     }); // end it

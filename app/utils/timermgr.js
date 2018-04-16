@@ -5,6 +5,18 @@ var TimerManager = function() {
 		timer.start();
 		list.push(timer);
 	}
+	this.stop = function(id) {
+		for(var i = 0; i < list.length; i++) {
+			if(list[i].id == id) {
+				list[i].stop();
+				list.splice(i,1);
+			}
+		}
+	}
+	
+	this.getList = function() {
+		return list;
+	}
 }
 
 var Timer = function(id,timeout,success_cb) {
@@ -25,7 +37,11 @@ var Timer = function(id,timeout,success_cb) {
 				clearInterval(rt);
 				rt = null;
 			}
-		},100);
+		},10);
+	}
+	this.stop = function() {
+		clearInterval(rt);
+		rt = null;
 	}
 }
 
