@@ -18,6 +18,8 @@ describe('modFlow', function() {
 		ctx._logs = [];
 		ctx.props = {};
 		ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
+		var TimerManager = ProjRequire('app/utils/timermgr.js');
+		ctx.timermgr = new TimerManager();
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
 				if(typeof flow == 'object') {
@@ -1287,6 +1289,36 @@ describe('modFlow', function() {
 			assert.equal(ctx.vars["result"], '4');
 			assert.equal(ctx.vars["task_1_flag"], '0');
 			assert.equal(ctx.vars["task_2_flag"], '0');
+			done();
+		});
+    }); // end it
+  });
+  
+  
+  describe('#timer', function() {
+	it('should able to create timer', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:1000,success_flow:'success'},
+					{type:'waitUntil',var:'result',value:'1',timeout:10000},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'0'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			//assert.equal(ctx.vars["result"], '1');
 			done();
 		});
     }); // end it
