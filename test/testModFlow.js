@@ -1351,5 +1351,32 @@ describe('modFlow', function() {
 			done();
 		});
     }); // end it
+	
+	it('should able to safely bypass timer if no defined action is set', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start111',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop111',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '0');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
   });
 });
