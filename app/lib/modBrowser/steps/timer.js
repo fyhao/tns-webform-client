@@ -24,7 +24,12 @@ module.exports = {
 			ctx.timermgr.stop(step.id);
 			setTimeout(next, global.STEP_TIMEOUT);
 		}
+		else if(step.action == 'get') {
+			ctx.vars[step.var] = ctx.timermgr.get(step.id)[step.field];
+			setTimeout(next, global.STEP_TIMEOUT);
+		}
 		else if(step.action == 'update') {
+			ctx.timermgr.update(step.id, step.field, step.value);
 			setTimeout(next, global.STEP_TIMEOUT);
 		}
 		else {

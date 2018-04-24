@@ -13,10 +13,26 @@ var TimerManager = function() {
 			}
 		}
 	}
+	this.get = function(id) {
+		for(var i = 0; i < list.length; i++) {
+			if(list[i].id == id) {
+				return list[i];
+			}
+		}
+		return null;
+	}
 	this.reset = function(id) {
 		for(var i = 0; i < list.length; i++) {
 			if(list[i].id == id) {
 				list[i].reset();
+				break;
+			}
+		}
+	}
+	this.update = function(id, field, value) {
+		for(var i = 0; i < list.length; i++) {
+			if(list[i].id == id) {
+				list[i][field] = value;
 				break;
 			}
 		}

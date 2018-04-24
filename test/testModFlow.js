@@ -1416,6 +1416,73 @@ describe('modFlow', function() {
 		});
     }); // end it
 	
+	it('should able to get timer detail by field', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
+					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				},
+				stop: {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result_timeout"], 300);
+			done();
+		});
+    }); // end it
+	
+	it('should able to update timer detail by field', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
+					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout'},
+					{type:'timer',action:'update',id:'myTimer',field:'timeout',value:200},
+					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout2'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				},
+				stop: {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result_timeout"], 300);
+			assert.equal(ctx.vars["result_timeout2"], 200);
+			done();
+		});
+    }); // end it
+	
 	it('should able to safely bypass timer if no defined action is set', function(done) {
 		var webform = {
 			heading:'test form',
