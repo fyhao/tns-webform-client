@@ -1332,7 +1332,71 @@ describe('modFlow', function() {
 			flow : {
 				steps: [
 					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'waitUntil',var:'result',value:'2',timeout:500},
+					
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				},
+				stop: {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '2');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to start a timer after stop', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
 					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '0');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to reset a timer after start', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'reset',id:'myTimer'},
 					{type:'timer',action:'stop',id:'myTimer'}
 				]
 			},
