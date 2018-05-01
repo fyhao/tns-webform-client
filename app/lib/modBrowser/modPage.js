@@ -72,6 +72,8 @@ function showItemNSPage(itemPage) {
 		}
 	})
 	
+	var TimerManager = require('../../utils/timermgr');
+	ctx.timermgr = new TimerManager();
 }
 function processComponents(itemPage) {
 	if(itemPage.content) {
