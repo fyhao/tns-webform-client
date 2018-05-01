@@ -140,6 +140,57 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	
+	
+	it('should able to setVar with options (in object, key values)', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',options:{a:'1',b:'2',c:'3'}},
+					{type:'setVar',options:{d:'1',e:'2',f:'3'},local:1},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["a"],"1");
+			assert.equal(ctx.vars["b"],"2");
+			assert.equal(ctx.vars["c"],"3");
+			assert.equal(ctx._vars["d"],"1");
+			assert.equal(ctx._vars["e"],"2");
+			assert.equal(ctx._vars["f"],"3");
+			done();
+		});
+    });
+	
+	it('should able to setVar with options (in array, key values)', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',options:[
+						{name:'a',value:'1'},
+						{name:'b',value:'2'},
+						{name:'c',value:'3'},
+						{name:'d',value:'1',local:1},
+						{name:'e',value:'2',local:1},
+						{name:'f',value:'3',local:1}
+					]},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["a"],"1");
+			assert.equal(ctx.vars["b"],"2");
+			assert.equal(ctx.vars["c"],"3");
+			assert.equal(ctx._vars["d"],"1");
+			assert.equal(ctx._vars["e"],"2");
+			assert.equal(ctx._vars["f"],"3");
+			done();
+		});
+    });
   });
   describe('#dummy', function() {
 	it('should able to perform dummy flow', function(done) {
