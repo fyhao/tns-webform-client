@@ -33,6 +33,8 @@ var TimerManager = function() {
 		for(var i = 0; i < list.length; i++) {
 			if(list[i].id == id) {
 				list[i][field] = value;
+				list[i].stop();
+				list[i].start();
 				break;
 			}
 		}
@@ -44,6 +46,7 @@ var TimerManager = function() {
 }
 
 var Timer = function(id,timeout,success_cb, stop_cb) {
+	var me = this;
 	this.id = id;
 	this.timeout = timeout;
 	this.success_cb = success_cb;
@@ -57,7 +60,7 @@ var Timer = function(id,timeout,success_cb, stop_cb) {
 		rt = setInterval(function() {
 			var now = new Date();
 			var diff = now.getTime() - startTime.getTime();
-			if(diff > timeout) {
+			if(diff > me.timeout) {
 				if(success_cb)success_cb();
 				clearInterval(rt);
 				rt = null;

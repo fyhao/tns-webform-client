@@ -1455,11 +1455,13 @@ describe('modFlow', function() {
 			flow : {
 				steps: [
 					{type:'setVar',name:'result',value:'0'},
+					{type:'setVar',name:'stopped',value:'0'},
 					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
 					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout'},
 					{type:'timer',action:'update',id:'myTimer',field:'timeout',value:200},
 					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout2'},
-					{type:'timer',action:'stop',id:'myTimer'}
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'waitUntil',var:'stopped',value:'1',timeout:500},
 				]
 			},
 			flows:{
@@ -1471,6 +1473,7 @@ describe('modFlow', function() {
 				stop: {
 					steps : [
 						{type:'setVar',name:'result',value:'2'},
+						{type:'setVar',name:'stopped',value:'1'},
 					]
 				}
 			}
