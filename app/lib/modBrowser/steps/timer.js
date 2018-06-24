@@ -3,7 +3,8 @@ module.exports = {
 	
 	process : function(ctx, step, next) {
 		if(step.action == 'start') {
-			ctx.timermgr.start(step.id, step.timeout, function() {
+			var tick = typeof step.tick != 'undefined' ? parseInt(step.tick) : 10;
+			ctx.timermgr.start(step.id, step.timeout, tick, function() {
 				//success cb called
 				if(typeof step.success_flow != 'undefined') {
 					ctx.createFlowEngine(step.success_flow).execute(function() {});

@@ -161,6 +161,8 @@ ctx.blobVars = {};
 ctx._logs = [];
 ctx.props = {};
 ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
+var TimerManager = require('../../utils/timermgr.js');
+ctx.timermgr = new TimerManager();
 ctx.enable_FLOW_ENGINE_CANCELLED = function() {
 	var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
 	if(queues && queues.length) {
