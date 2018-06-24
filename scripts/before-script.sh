@@ -6,9 +6,12 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 	PROFILE_NAME="${e[0]}"
 	PROVISIONING_PROFILE="${e[1]}"
 	echo "inside before script PROVISIONING_PROFILE = $PROVISIONING_PROFILE"
-	openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/$PROFILE_NAME.mobileprovision.enc -d -a -out scripts/profile/$PROFILE_NAME.mobileprovision
-	openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
-	openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
+	echo "CHECK OPENSSL VERSION"
+	openssl version
+	openssl smime -decrypt -in scripts/certs/dist.cer.enc -binary -inform DEM -inkey scripts/key/private-key.pem -out scripts/certs/dist.cer
+	openssl smime -decrypt -in scripts/certs/dist.p12.enc -binary -inform DEM -inkey scripts/key/private-key.pem -out scripts/certs/dist.p12
+	openssl smime -decrypt -in scripts/profile/$PROFILE_NAME.mobileprovision.enc -binary -inform DEM -inkey scripts/key/private-key.pem -out scripts/profile/$PROFILE_NAME.mobileprovision
+
 
 	rm -fr platforms/ios
 	./scripts/add-key.sh
