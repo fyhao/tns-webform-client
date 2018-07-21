@@ -90,6 +90,7 @@ function menuItemTap(args) {
 						item.cat = data;
 						modOfflinePage.updateById(item.id, item, function() {
 							console.log('saved offline page id = ' + item.id);
+							alert('Updated source URL');
 						});
 					}
 				});
@@ -112,6 +113,7 @@ function menuItemTap(args) {
 			menuOptions.push({id:'opt1',text:'Yes, delete it',func:function() {
 				modOfflinePage.deleteById(item.id, function() {
 					console.log('deleted offline page id = ' + item.id);
+					alert('Deleted');
 				});
 			}});
 			util.showOptionDialog(menuOptions);
