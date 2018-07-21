@@ -27,7 +27,10 @@ function pageLoaded(args) {
 	
 	// NAVBUTTON - start
 	var navButton = new actionBarModule.NavigationButton();
-	navButton.text = 'Edit'
+	if(!editMode)
+		navButton.text = 'Edit';
+	else
+		navButton.text = 'Done';
 	navButton.height = 44;
 	navButton.on(buttonModule.Button.tapEvent, function() {
 		if(!editMode)
