@@ -4,9 +4,9 @@
     </Page.actionBar>
 
     <StackLayout>
-		<ListView class="list" items="{{ menuItems }}" itemTap="menuItemTap">
+		<ListView class="list" items="{{ menuItems }}" itemTap="menuItemTap" css="padding:10;">
 			<ListView.itemTemplate>
-				<GridLayout cssClass="list-item" columns="auto, *" css="padding:10;">
+				<GridLayout cssClass="list-item" columns="auto, *">
 					<Label cssClass="list-title" col="1" text="{{ title }}" textWrap="true" height="44" />
 				</GridLayout>
 			</ListView.itemTemplate>
