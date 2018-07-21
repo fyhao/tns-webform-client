@@ -5,7 +5,7 @@
 
     <ListView class="list" items="{{ menuItems }}" itemTap="menuItemTap">
         <ListView.itemTemplate>
-            <GridLayout cssClass="list-item" columns="auto, *">
+            <GridLayout cssClass="list-item" columns="auto, *" css="padding:10;">
                 <Label cssClass="list-icon km-icon" text="{{ icon }}" />
                 <Label cssClass="list-title" col="1" text="{{ title }}" textWrap="true" />
             </GridLayout>

@@ -14,7 +14,6 @@ var isInit = true,
 // additional functions
 function pageLoaded(args) {
     var page = args.object;
-	page.addCss('listView .list-title {padding:10;}')
     helpers.platformInit(page);
     page.bindingContext = viewModel;
     // additional pageLoaded
