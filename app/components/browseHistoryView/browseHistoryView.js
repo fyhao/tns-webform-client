@@ -10,7 +10,6 @@ var isInit = true,
 // additional functions
 function pageLoaded(args) {
     var page = args.object;
-
     helpers.platformInit(page);
     page.bindingContext = viewModel;
     // additional pageLoaded
