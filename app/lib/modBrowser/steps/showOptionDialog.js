@@ -14,21 +14,25 @@ module.exports = {
 				options.push(option);
 			}
 		}
-		util.showOptionDialog(options, {doneResult:function(result, selectedOption) {
-			ctx.vars[step.result] = result;
-			if(step.selectedId) {
-				if(selectedOption && selectedOption.id) {
-					ctx.vars[step.selectedId] = selectedOption.id;
-				}
-				else {
-					var none = 'none';
-					if(step.none) {
-						none = step.none;
+		var message = typeof(step.message) != 'undefined' ? step.message : 'Please select an option';
+		util.showOptionDialog(options, {
+			doneResult:function(result, selectedOption) {
+				ctx.vars[step.result] = result;
+				if(step.selectedId) {
+					if(selectedOption && selectedOption.id) {
+						ctx.vars[step.selectedId] = selectedOption.id;
 					}
-					ctx.vars[step.selectedId] = none;
+					else {
+						var none = 'none';
+						if(step.none) {
+							none = step.none;
+						}
+						ctx.vars[step.selectedId] = none;
+					}
 				}
-			}
-			setTimeout(next, global.STEP_TIMEOUT);
-		}});
+				setTimeout(next, global.STEP_TIMEOUT);
+			},
+			message : message
+		});
 	}
 }
