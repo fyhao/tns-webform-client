@@ -16,8 +16,17 @@ module.exports = {
 		}
 		util.showOptionDialog(options, {doneResult:function(result, selectedOption) {
 			ctx.vars[step.result] = result;
-			if(selectedOption && selectedOption.id && step.selectedId) {
-				ctx.vars[step.selectedId] = selectedOption.id;
+			if(step.selectedId) {
+				if(selectedOption && selectedOption.id) {
+					ctx.vars[step.selectedId] = selectedOption.id;
+				}
+				else {
+					var none = 'none';
+					if(step.none) {
+						none = step.none;
+					}
+					ctx.vars[step.selectedId] = none;
+				}
 			}
 			setTimeout(next, global.STEP_TIMEOUT);
 		}});
