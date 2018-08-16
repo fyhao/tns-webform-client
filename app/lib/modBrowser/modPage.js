@@ -19,7 +19,8 @@ var modWidget = require('./modWidget.js');
 var modHTMLRenderer = require('./modHTMLRenderer.js');
 var modWebform = require('./modWebform.js');
 var propParser = require('./helperPropParser.js');
-function showItemNSPage(itemPage) {
+function showItemNSPage(itemPage, opts) {
+	if(typeof opts == 'undefined') opts = {};
 	//console.log('showItemNSPage: ' + JSON.stringify(itemPage));
 	var page = new pagesModule.Page();
 	
@@ -69,6 +70,14 @@ function showItemNSPage(itemPage) {
 		//console.log('FLOW engine canceled FROM showItemNSPage')
 		if(typeof itemPage.on_unload != 'undefined') {
 			ctx.createFlowEngine(itemPage.on_unload).execute(function() {});
+			if(typeof opts.inner == 'undefined' || !opts.inner) {
+				for(var k in ctx.vars) {
+					delete ctx.vars[k];
+				}
+				for(var m in ctx.blobVars) {
+					delete ctx.blobVars[m];
+				}
+			}
 		}
 	})
 	
