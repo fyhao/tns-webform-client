@@ -140,6 +140,57 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	
+	
+	it('should able to setVar with options (in object, key values)', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',options:{a:'1',b:'2',c:'3'}},
+					{type:'setVar',options:{d:'1',e:'2',f:'3'},local:1},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["a"],"1");
+			assert.equal(ctx.vars["b"],"2");
+			assert.equal(ctx.vars["c"],"3");
+			assert.equal(ctx._vars["d"],"1");
+			assert.equal(ctx._vars["e"],"2");
+			assert.equal(ctx._vars["f"],"3");
+			done();
+		});
+    });
+	
+	it('should able to setVar with options (in array, key values)', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',options:[
+						{name:'a',value:'1'},
+						{name:'b',value:'2'},
+						{name:'c',value:'3'},
+						{name:'d',value:'1',local:1},
+						{name:'e',value:'2',local:1},
+						{name:'f',value:'3',local:1}
+					]},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["a"],"1");
+			assert.equal(ctx.vars["b"],"2");
+			assert.equal(ctx.vars["c"],"3");
+			assert.equal(ctx._vars["d"],"1");
+			assert.equal(ctx._vars["e"],"2");
+			assert.equal(ctx._vars["f"],"3");
+			done();
+		});
+    });
   });
   describe('#dummy', function() {
 	it('should able to perform dummy flow', function(done) {
@@ -1455,11 +1506,13 @@ describe('modFlow', function() {
 			flow : {
 				steps: [
 					{type:'setVar',name:'result',value:'0'},
+					{type:'setVar',name:'stopped',value:'0'},
 					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
 					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout'},
 					{type:'timer',action:'update',id:'myTimer',field:'timeout',value:200},
 					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout2'},
-					{type:'timer',action:'stop',id:'myTimer'}
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'waitUntil',var:'stopped',value:'1',timeout:500},
 				]
 			},
 			flows:{
@@ -1471,6 +1524,7 @@ describe('modFlow', function() {
 				stop: {
 					steps : [
 						{type:'setVar',name:'result',value:'2'},
+						{type:'setVar',name:'stopped',value:'1'},
 					]
 				}
 			}
