@@ -19,6 +19,7 @@ module.exports = {
 		}).then(function (r) {
 			//console.log("Dialog result: " + r.result + ", text: " + r.text);
 			ctx.vars[step.result] = r;
+			setTimeout(next, global.STEP_TIMEOUT);
 		});
 	}
 }
