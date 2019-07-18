@@ -5,7 +5,7 @@ export 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
 export PROFILE_NAME="tnswebformprofile"
 export NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
 export 'CODE_SIGN_IDENTITY="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
-export PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+export PROVISIONING_PROFILE="3af42d6a-9ec0-4cd8-9dce-ff94f5ef9afc"
 export DEVELOPMENT_TEAM="C4F7EVGZVS"
 export 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xcbuild-safe.sh"'
 
@@ -23,7 +23,7 @@ echo "Current running branch $TRAVIS_BRANCH"
 PROVISIONING_TYPE="1"
 if test "$PROVISIONING_TYPE" = '1'; then
 	PROFILE_NAME="tnswebformprofile"
-	PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+	PROVISIONING_PROFILE="3af42d6a-9ec0-4cd8-9dce-ff94f5ef9afc"
 fi
 
 if test "$PROVISIONING_TYPE" = '2'; then
