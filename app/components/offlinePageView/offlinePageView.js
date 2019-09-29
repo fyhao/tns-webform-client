@@ -14,7 +14,6 @@ var isInit = true,
 // additional functions
 function pageLoaded(args) {
     var page = args.object;
-
     helpers.platformInit(page);
     page.bindingContext = viewModel;
     // additional pageLoaded
@@ -28,7 +27,10 @@ function pageLoaded(args) {
 	
 	// NAVBUTTON - start
 	var navButton = new actionBarModule.NavigationButton();
-	navButton.text = 'Edit'
+	if(!editMode)
+		navButton.text = 'Edit';
+	else
+		navButton.text = 'Done';
 	navButton.height = 44;
 	navButton.on(buttonModule.Button.tapEvent, function() {
 		if(!editMode)
@@ -88,19 +90,30 @@ function menuItemTap(args) {
 						item.cat = data;
 						modOfflinePage.updateById(item.id, item, function() {
 							console.log('saved offline page id = ' + item.id);
+							alert('Updated source URL');
 						});
 					}
 				});
 			}});
 		}
 		options.push({id:'opt2',text:'Update title', func:function() {
-			
+			var dialogs = require("ui/dialogs");
+			// Second argument is optional.
+			dialogs.prompt("Please enter title - " + item.title, "").then(function (r) {
+				console.log("Dialog result: " + r.result + ", text: " + r.text);
+				item.title = r.text;
+				modOfflinePage.updateById(item.id, item, function() {
+					console.log('saved offline page id = ' + item.id);
+					alert('Title updated');
+				});
+			});
 		}});
 		options.push({id:'opt3',text:'Delete', func:function() {
 			var menuOptions = [];
 			menuOptions.push({id:'opt1',text:'Yes, delete it',func:function() {
 				modOfflinePage.deleteById(item.id, function() {
 					console.log('deleted offline page id = ' + item.id);
+					alert('Deleted');
 				});
 			}});
 			util.showOptionDialog(menuOptions);

@@ -215,6 +215,8 @@ var showItemWebform = function(item, opts) {
 	ctx._logs = [];
 	ctx.props = {};
 	ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
+	var TimerManager = require('../../utils/timermgr.js');
+	ctx.timermgr = new TimerManager();
 	ctx.enable_FLOW_ENGINE_CANCELLED = function() {
 		var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
 		if(queues && queues.length) {
@@ -297,6 +299,9 @@ var showItemWebform = function(item, opts) {
 		modFlow.FLOW_ENGINE_CANCELED = true;
 		ctx.enable_FLOW_ENGINE_CANCELLED();
 		console.log('FLOW engine canceled')
+		if(typeof item.on_unload != 'undefined') {
+			ctx.createFlowEngine(item.on_unload).execute(function() {});
+		}
 	})
   
 }

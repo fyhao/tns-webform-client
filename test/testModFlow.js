@@ -18,6 +18,8 @@ describe('modFlow', function() {
 		ctx._logs = [];
 		ctx.props = {};
 		ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
+		var TimerManager = ProjRequire('app/utils/timermgr.js');
+		ctx.timermgr = new TimerManager();
 		ctx.createFlowEngine = function(flow) {
 			if(typeof flow != 'undefined') {
 				if(typeof flow == 'object') {
@@ -135,6 +137,57 @@ describe('modFlow', function() {
 			assert.equal(ctx.vars["result"],"test test");
 			assert.equal(ctx._vars["orange"],"test2");
 			assert.equal(ctx.vars["result2"],"test2 test2");
+			done();
+		});
+    });
+	
+	
+	it('should able to setVar with options (in object, key values)', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',options:{a:'1',b:'2',c:'3'}},
+					{type:'setVar',options:{d:'1',e:'2',f:'3'},local:1},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["a"],"1");
+			assert.equal(ctx.vars["b"],"2");
+			assert.equal(ctx.vars["c"],"3");
+			assert.equal(ctx._vars["d"],"1");
+			assert.equal(ctx._vars["e"],"2");
+			assert.equal(ctx._vars["f"],"3");
+			done();
+		});
+    });
+	
+	it('should able to setVar with options (in array, key values)', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',options:[
+						{name:'a',value:'1'},
+						{name:'b',value:'2'},
+						{name:'c',value:'3'},
+						{name:'d',value:'1',local:1},
+						{name:'e',value:'2',local:1},
+						{name:'f',value:'3',local:1}
+					]},
+				]
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["a"],"1");
+			assert.equal(ctx.vars["b"],"2");
+			assert.equal(ctx.vars["c"],"3");
+			assert.equal(ctx._vars["d"],"1");
+			assert.equal(ctx._vars["e"],"2");
+			assert.equal(ctx._vars["f"],"3");
 			done();
 		});
     });
@@ -790,6 +843,73 @@ describe('modFlow', function() {
 			done();
 		});
     });
+	it('should able to evaljs to ctx.createFlowEngine within timeout', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'evaljs',code:'ctx.createFlowEngine("show_option").execute(next);',timeout:10},
+				]
+			}
+			,
+			flows : {
+				show_option : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], "2");
+			done();
+		});
+    });
+	it('should able to evaljs to ctx.createFlowEngine bypassed if not within timeout', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'evaljs',code:'ctx.createFlowEngine("show_option").execute(function() {});',timeout:10},
+				]
+			}
+			,
+			flows : {
+				show_option : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], "2");
+			done();
+		});
+    });
+	it('should able to evaljs to use MyUtil function', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'abc'},
+					{type:'evaljs',code:'return util.replaceAll(vars.result,"b","d")',var:'result2'},
+				]
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result2"], "adc");
+			done();
+		});
+    });
   });
   describe('#crypto', function() {
 	it('should able to encrypt and decrypt', function(done) {
@@ -1141,6 +1261,305 @@ describe('modFlow', function() {
 		executeWebform(webform, function(ctx) {
 			assert.equal(ctx.vars["debug"], "2");
 			assert.equal(ctx.vars["result"], "imgshow service response");
+			done();
+		});
+    }); // end it
+  });
+  
+  describe('#parallel', function() {
+	it('should able to parallel two tasks', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'setVar',name:'task_1_flag',value:'0'},
+					{type:'setVar',name:'task_2_flag',value:'0'},
+					{type:'parallel',flows:['task_1','task_2'],timeout:10},
+					{type:'setVar',name:'result',value:'4'},
+				]
+			}
+			,
+			flows : {
+				task_1 : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+						{type:'setVar',name:'task_1_flag',value:'1'}
+					]
+				},
+				task_2 : {
+					steps : [
+						{type:'setVar',name:'result',value:'3'},
+						{type:'setVar',name:'task_2_flag',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '4');
+			assert.equal(ctx.vars["task_1_flag"], '1');
+			assert.equal(ctx.vars["task_2_flag"], '2');
+			done();
+		});
+    }); // end it
+	
+	it('should able to parallel nothing', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'1'},
+					{type:'setVar',name:'task_1_flag',value:'0'},
+					{type:'setVar',name:'task_2_flag',value:'0'},
+					{type:'parallel',flows:[],timeout:1},
+					{type:'parallel',timeout:1},
+					{type:'setVar',name:'result',value:'4'},
+				]
+			}
+			,
+			flows : {
+				task_1 : {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+						{type:'setVar',name:'task_1_flag',value:'1'}
+					]
+				},
+				task_2 : {
+					steps : [
+						{type:'setVar',name:'result',value:'3'},
+						{type:'setVar',name:'task_2_flag',value:'2'}
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '4');
+			assert.equal(ctx.vars["task_1_flag"], '0');
+			assert.equal(ctx.vars["task_2_flag"], '0');
+			done();
+		});
+    }); // end it
+  });
+  
+  
+  describe('#timer', function() {
+	it('should able to start a timer', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'waitUntil',var:'result',value:'1',timeout:500},
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '1');
+			assert.equal(ctx.timermgr.getList().length,1);
+			ctx.timermgr.stop('myTimer');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to stop a timer', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'waitUntil',var:'result',value:'2',timeout:500},
+					
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				},
+				stop: {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '2');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to start a timer after stop', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '0');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to reset a timer after start', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'reset',id:'myTimer'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '0');
+			assert.equal(ctx.timermgr.getList().length,0);
+			done();
+		});
+    }); // end it
+	
+	it('should able to get timer detail by field', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
+					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout'},
+					{type:'timer',action:'stop',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				},
+				stop: {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result_timeout"], 300);
+			done();
+		});
+    }); // end it
+	
+	it('should able to update timer detail by field', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'setVar',name:'stopped',value:'0'},
+					{type:'timer',action:'start',id:'myTimer',timeout:300,success_flow:'success',stop_flow:'stop'},
+					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout'},
+					{type:'timer',action:'update',id:'myTimer',field:'timeout',value:200},
+					{type:'timer',action:'get',id:'myTimer',field:'timeout',var:'result_timeout2'},
+					{type:'timer',action:'stop',id:'myTimer'},
+					{type:'waitUntil',var:'stopped',value:'1',timeout:500},
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				},
+				stop: {
+					steps : [
+						{type:'setVar',name:'result',value:'2'},
+						{type:'setVar',name:'stopped',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result_timeout"], 300);
+			assert.equal(ctx.vars["result_timeout2"], 200);
+			done();
+		});
+    }); // end it
+	
+	it('should able to safely bypass timer if no defined action is set', function(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'setVar',name:'result',value:'0'},
+					{type:'timer',action:'start111',id:'myTimer',timeout:300,success_flow:'success'},
+					{type:'timer',action:'stop111',id:'myTimer'}
+				]
+			},
+			flows:{
+				success: {
+					steps : [
+						{type:'setVar',name:'result',value:'1'},
+					]
+				}
+			}
+		};
+		
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '0');
+			assert.equal(ctx.timermgr.getList().length,0);
 			done();
 		});
     }); // end it

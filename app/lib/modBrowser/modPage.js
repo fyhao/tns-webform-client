@@ -67,8 +67,13 @@ function showItemNSPage(itemPage) {
 		//modFlow.FLOW_ENGINE_CANCELED = true;
 		//ctx.enable_FLOW_ENGINE_CANCELLED();
 		//console.log('FLOW engine canceled FROM showItemNSPage')
+		if(typeof itemPage.on_unload != 'undefined') {
+			ctx.createFlowEngine(itemPage.on_unload).execute(function() {});
+		}
 	})
 	
+	var TimerManager = require('../../utils/timermgr');
+	ctx.timermgr = new TimerManager();
 }
 function processComponents(itemPage) {
 	if(itemPage.content) {
@@ -156,6 +161,8 @@ ctx.blobVars = {};
 ctx._logs = [];
 ctx.props = {};
 ctx.FLOW_ENGINE_CANCELED_notification_queues = [];
+var TimerManager = require('../../utils/timermgr.js');
+ctx.timermgr = new TimerManager();
 ctx.enable_FLOW_ENGINE_CANCELLED = function() {
 	var queues = ctx.FLOW_ENGINE_CANCELED_notification_queues;
 	if(queues && queues.length) {

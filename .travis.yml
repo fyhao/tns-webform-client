@@ -15,10 +15,10 @@ env:
   global:
     - APP_NAME="tnswebformclient"
     - 'DEVELOPER_NAME="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
-    - PROFILE_NAME="tnswebformprofile"
+    - PROFILE_NAME="tnswebformprofile2018"
     - NODE_VERSION="6" NPM_VERSION="3" TNS_VERSION="rc"
     - 'CODE_SIGN_IDENTITY="iPhone Distribution: Khor Yong Hao (C4F7EVGZVS)"'
-    - PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+    - PROVISIONING_PROFILE="bbcfa131-c020-456a-bf27-bb8ee0d2cebc"
     - DEVELOPMENT_TEAM="C4F7EVGZVS"
     - 'XCBUILD_SAFE_SH="/Users/travis/build/fyhao/tns-webform-client/scripts/xcbuild-safe.sh"'
 

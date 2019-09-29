@@ -7,8 +7,8 @@ echo "Current running branch $TRAVIS_BRANCH"
 ## 1 = ad hoc, 2 = app store, 0 = emulator
 PROVISIONING_TYPE="1"
 if test "$PROVISIONING_TYPE" = '1'; then
-	PROFILE_NAME="tnswebformprofile"
-	PROVISIONING_PROFILE="b96261dd-8691-46d4-89f4-1cfb195e10a3"
+	PROFILE_NAME="tnswebformprofile2018"
+	PROVISIONING_PROFILE="bbcfa131-c020-456a-bf27-bb8ee0d2cebc"
 fi
 
 if test "$PROVISIONING_TYPE" = '2'; then

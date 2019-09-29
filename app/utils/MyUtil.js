@@ -24,10 +24,20 @@ var util = {
             })
             .then(function(response) {
 				if(typeof opts.callbackJSON !== 'undefined') {
-					opts.callbackJSON(JSON.parse(response._bodyInit));
+					if(opts.callbackJSON.length == 2) {
+						opts.callbackJSON(JSON.parse(response._bodyInit), response);
+					}
+					else {
+						opts.callbackJSON(JSON.parse(response._bodyInit));
+					}
 				}
 				else if(typeof opts.callback !== 'undefined') {
-					opts.callback(response._bodyInit);
+					if(opts.callback.length == 2) {
+						opts.callback(response._bodyInit, response);
+					}
+					else {
+						opts.callback(response._bodyInit);
+					}
 				}
                 
             }, function(error) {
@@ -143,14 +153,16 @@ var util = {
 			actions: options_dg
 		}).then(function (result) {
 			console.log("Dialog result: " + result)
+			var selectedOption = null;
 			for(var i = 0; i < filterOptions.length; i++) {
 				var option = filterOptions[i];
 				if(option.text == result) {
 					if(option.func) option.func();
+					selectedOption = option;
 				}
 			}
 			if(opts.done) opts.done();
-			if(opts.doneResult) opts.doneResult(result);
+			if(opts.doneResult) opts.doneResult(result, selectedOption);
 		});
 	}
 	,
