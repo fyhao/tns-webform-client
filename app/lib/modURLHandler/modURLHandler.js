@@ -1,10 +1,16 @@
 var modBrowse = require('../modBrowse/modBrowse.js');
+var logs = [];
 module.exports.handleURLScheme = function() {
 	var handleOpenURL = require("nativescript-urlhandler").handleOpenURL;
-
-	handleOpenURL(function(appURL) {
-		parseAndHandle(appURL);
-	});
+	try {
+		logs.push('1');
+		handleOpenURL(function(appURL) {
+			logs.push('2');
+			parseAndHandle(appURL);
+		});
+	} catch (e) {
+		alert(e + " - " + JSON.stringify(logs));
+	}
 }
 
 var parseAndHandle = function(url) {
@@ -12,6 +18,7 @@ var parseAndHandle = function(url) {
 	if(!url.startsWith("wf://")) {
 		return;
 	}
+	logs.push('2.1:' + url);
 	var path = url.substring("wf://".length);
 	var arr = path.split('?');
 	var action = null;
@@ -29,12 +36,16 @@ var parseAndHandle = function(url) {
 			kv[k] = v;
 		}
 	}
+	logs.push('2.2:' + action + ',' + JSON.stringify(kv));
 	handle(action, kv);
 }
 // HANDLING part rules check
 var handle = function(action, params) {
+	logs.push('2.3:' + action);
 	if(action == 'load') {
+		logs.push('2.4:' + params.url);
 		if(params.url) {
+			logs.push('2.5');
 			loadWebForm(params.url);
 		}
 	}
@@ -42,5 +53,7 @@ var handle = function(action, params) {
 
 // ACTUAL HANDLING part
 var loadWebForm = function(url) {
+	logs.push('2.6');
 	modBrowse.browseURL(url);
+	logs.push('2.7');
 }
