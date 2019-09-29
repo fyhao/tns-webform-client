@@ -1,3 +1,4 @@
+var modBrowse = require('../modBrowse/modBrowse.js');
 module.exports.handleURLScheme = function() {
 	var handleOpenURL = require("nativescript-urlhandler").handleOpenURL;
 
