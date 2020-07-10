@@ -1563,5 +1563,42 @@ describe('modFlow', function() {
 			done();
 		});
     }); // end it
+	
+	it('should be OK to call onException with flow name', function test(done) {
+		var webform = {
+			heading:'test form',
+			params: [],
+			flow : {
+				steps: [
+					{type:'flow_1'},
+				]
+			},
+			flows:{
+				flow_1: {
+					steps : [
+						{type:'setVar',name:'a',value:'{{throw e}}'},
+						{type:'setVar',name:'result',value:'1'},
+					],
+					onException : 'exceptionFlow'
+				},
+				'exceptionFlow' : {
+					steps : [
+						{type:'setVar',name:'a',value:'{{throw e}}'},
+						{type:'setVar',name:'result',value:'2'},
+					],
+					onException : 'generalException'
+				},
+				'generalException' : {
+					steps : [
+						{type:'setVar',name:'result',value:'3'},
+					],
+				},
+			}
+		};
+		executeWebform(webform, function(ctx) {
+			assert.equal(ctx.vars["result"], '3');
+			done();
+		});
+	  }); // end it
   });
 });
