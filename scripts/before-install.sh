@@ -43,7 +43,7 @@ if test "$TRAVIS_BRANCH" = 'staging'; then
 		cd nativescript-cli
 		##git checkout fyhao-stable-master-1
 		##test latest branch 0811 works
-		git checkout latest-0811
+		git checkout latest-ns
 		git submodule update --init
 		npm install
 		grunt
