@@ -24,7 +24,7 @@
     "tns-core-modules": "3.2.0"
   },
   "devDependencies": {
-    "coveralls": "^2.13.0",
+    "coveralls": "^3.1.1",
     "nativescript-dev-android-snapshot": "^0.*.*",
     "wd": "^1.2.0",
     "istanbul": "^0.4.5",
