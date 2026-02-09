@@ -46,7 +46,7 @@ function init(config) {
  */
 function checkExistingAuth() {
     if (!authInstance || !authInstance.storage) {
-        return false;
+        return;
     }
     
     try {
