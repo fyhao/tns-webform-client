@@ -3,7 +3,9 @@
         "tns-core-modules": "2.5.1",
         "nativescript-barcodescanner": "^2.5.4",
         "nativescript-geolocation": "0.0.11",
-    	"nativescript-urlhandler": "1.1.0"
+        "nativescript-urlhandler": "1.1.0",
+        "nativescript-oauth2": "^3.0.2",
+        "nativescript-secure-storage": "^2.6.1"
     },
     "devDependencies": {
         "nativescript-dev-android-snapshot": "0.0.6"
