@@ -1,9 +1,11 @@
 {
     "dependencies": {
-        "tns-core-modules": "2.5.1",
-        "nativescript-barcodescanner": "^2.5.4",
+        "tns-core-modules": "6.5.27",
+        "nativescript-barcodescanner": "^3.4.2",
         "nativescript-geolocation": "0.0.11",
-    	"nativescript-urlhandler": "1.1.0"
+        "nativescript-urlhandler": "1.3.0",
+        "nativescript-oauth2": "^2.4.4",
+        "nativescript-secure-storage": "^2.6.1"
     },
     "devDependencies": {
         "nativescript-dev-android-snapshot": "0.0.6"

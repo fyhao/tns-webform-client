@@ -7,7 +7,25 @@
         <!-- additional view content -->
         <!-- START_CUSTOM_CODE_homeView -->
         <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
-<Button text="Sign in4567" tap="signIn" />
+        
+        <!-- Authentication Status Section -->
+        <StackLayout class="auth-section" padding="20">
+            <Label text="Authentication Status" class="h2" />
+            <Label text="{{ authStatus }}" class="auth-status" marginTop="10" />
+            
+            <StackLayout visibility="{{ isAuthenticated ? 'visible' : 'collapsed' }}" marginTop="10">
+                <Label text="User Information" class="h3" marginTop="10" />
+                <Label text="{{ 'Name: ' + userName }}" marginTop="5" />
+                <Label text="{{ 'Email: ' + userEmail }}" marginTop="5" />
+            </StackLayout>
+        </StackLayout>
+        
+        <!-- Authentication Buttons -->
+        <StackLayout class="auth-buttons" padding="20">
+            <Button text="Sign In" tap="signIn" visibility="{{ isAuthenticated ? 'collapsed' : 'visible' }}" class="btn btn-primary" />
+            <Button text="Sign Out" tap="signOut" visibility="{{ isAuthenticated ? 'visible' : 'collapsed' }}" class="btn btn-outline" marginTop="10" />
+        </StackLayout>
+        
         <!-- END_CUSTOM_CODE_homeView -->
     </StackLayout>
 </Page>

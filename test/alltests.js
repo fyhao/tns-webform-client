@@ -6,3 +6,4 @@ require('./testModHTMLRenderer.js');
 require('./testModOfflinePage.js');
 require('./testModPage.js');
 require('./testModFlow.js');
+require('./testModAuth.js');
